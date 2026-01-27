@@ -1,0 +1,4 @@
+color:
+  when: always
+  theme: custom
+  ls_colors: "di=38;5;180:fi=0:ln=36"
