@@ -11,9 +11,9 @@ command = "swww"
 arguments = [
   "img",
   "--transition-fps",
-  "60",
+  "90",
   "--transition-step",
-  "250",
+  "200",
   "--transition-type",
   "any",
 ]
