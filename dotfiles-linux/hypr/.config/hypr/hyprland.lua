@@ -542,6 +542,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("waybar")
     hl.exec_cmd("swaync")
     hl.exec_cmd("hyprlauncher -d")
-    hl.exec_cmd("aw-qt & disown")
+    hl.exec_cmd("aw-server & disown")
+    hl.exec_cmd("awatcher & disown")
     -- hl.exec_cmd("fcitx5") -- disabled: causes dropped keystrokes in Electron/Antigravity on Wayland
 end)

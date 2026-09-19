@@ -246,21 +246,27 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
-## 11. ActivityWatch Setup (App Usage Tracking)
+## 11. ActivityWatch Setup (App Usage Tracking for Hyprland/Wayland)
 
 - **Installation:**
   ```bash
-  yay -S activitywatch-bin
+  yay -S activitywatch-bin aw-awatcher
   ```
+  *(Note: `activitywatch-bin` provides the core server and web UI, while `aw-awatcher` provides the native Wayland/Hyprland window and AFK watcher that replaces the X11-only default watchers).*
 - **How to Launch:**
-  - Start the daemon & tray icon:
+  - Start the server and Hyprland watcher:
     ```bash
-    aw-qt &
+    aw-server &
+    awatcher &
     ```
   - Open the web dashboard:
     Navigate to [http://localhost:5600](http://localhost:5600) in any browser (or run `xdg-open http://localhost:5600`).
 - **Autostart in Hyprland:**
-  Add `hl.exec_cmd("aw-qt & disown")` to the autostart section in `hyprland.lua`.
+  Configured in `hyprland.lua`:
+  ```lua
+  hl.exec_cmd("aw-server & disown")
+  hl.exec_cmd("awatcher & disown")
+  ```
 
 ---
 
