@@ -1,0 +1,4 @@
+[tool.pyrefly]
+search_path = [
+    "/usr/lib/python3.14/site-packages"
+]

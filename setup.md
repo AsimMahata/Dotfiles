@@ -155,12 +155,17 @@ cp -r dotfiles-linux/hypr/.config/hypr/* setup/backup/hypr/
 ```
 
 ### Virtual Environment & Tool Installation
-Install `hyprconf2lua` inside a local virtual environment (ignored in `.gitignore`):
+Install `hyprconf2lua` and typing stubs inside a local virtual environment (ignored in `.gitignore`):
 
 ```bash
-python3 -m venv .venv
-.venv/bin/pip install hyprconf2lua
+python3 -m venv --system-site-packages .venv
+.venv/bin/pip install hyprconf2lua PyGObject-stubs
+# Symlink system PyGObject and cairo into venv site-packages for IDE language servers (Pyrefly / Pyright)
+ln -sf /usr/lib/python3.14/site-packages/gi .venv/lib/python3.14/site-packages/
+ln -sf /usr/lib/python3.14/site-packages/cairo .venv/lib/python3.14/site-packages/
 ```
+*(Note: `--system-site-packages`, `PyGObject-stubs`, and symlinking `gi`/`cairo` (along with `pyproject.toml`'s `tool.pyrefly.search_path`) allow IDE language servers to resolve `gi.repository` and Arch system packages like `python-gobject`)*
+
 
 ### Configuration Conversion
 Convert `.conf` files to `.lua`:
@@ -204,6 +209,14 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 - **Git Tracking:**
   - Removed dynamically generated Matugen color files (`colors.*`, `colors.theme`) from git cache and updated `.gitignore` with `**/.config/**/colors.*` so wallpaper theme updates do not pollute git status.
+
+---
+
+## 8. Wallpaper Switcher UI Fix
+
+- Updated `dotfiles-linux/hypr/.config/hypr/scripts/wallpaper-switcher.py`:
+  - Styled regular buttons (Cancel) with a dark theme background (`#313244`), clear text (`#cdd6f4`), rounded borders (`10px`), and hover effects (`#45475a`) to prevent GTK light theme fallback.
+  - Aligned the "Apply Selected" button styling with consistent borders, hover effects, and transitions.
 
 ---
 

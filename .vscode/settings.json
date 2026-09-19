@@ -1,3 +1,6 @@
 {
-  "css.validate": false
+  "css.validate": false,
+  "python.analysis.extraPaths": [
+    "/usr/lib/python3.14/site-packages"
+  ]
 }

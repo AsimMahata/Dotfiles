@@ -44,23 +44,36 @@ searchentry {
 }
 
 button {
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 8px 20px;
-    font-weight: bold;
+    font-weight: 600;
+    background-color: #313244;
+    color: #cdd6f4;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 150ms ease-in-out;
+}
+
+button:hover {
+    background-color: #45475a;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.16);
 }
 
 button.suggested-action {
     background-color: #89b4fa;
     color: #11111b;
+    border: 1px solid #89b4fa;
 }
 
 button.suggested-action:hover {
     background-color: #b4befe;
+    border-color: #b4befe;
 }
 
 button.suggested-action:disabled {
-    background-color: rgba(205, 214, 244, 0.1);
-    color: rgba(205, 214, 244, 0.4);
+    background-color: rgba(205, 214, 244, 0.08);
+    color: rgba(205, 214, 244, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 """
 
