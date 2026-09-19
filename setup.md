@@ -246,6 +246,24 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
+## 11. ActivityWatch Setup (App Usage Tracking)
+
+- **Installation:**
+  ```bash
+  yay -S activitywatch-bin
+  ```
+- **How to Launch:**
+  - Start the daemon & tray icon:
+    ```bash
+    aw-qt &
+    ```
+  - Open the web dashboard:
+    Navigate to [http://localhost:5600](http://localhost:5600) in any browser (or run `xdg-open http://localhost:5600`).
+- **Autostart in Hyprland:**
+  Add `hl.exec_cmd("aw-qt & disown")` to the autostart section in `hyprland.lua`.
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.
