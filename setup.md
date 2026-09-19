@@ -257,7 +257,7 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - Start the server and Hyprland watcher:
     ```bash
     aw-server &
-    awatcher &
+    aw-awatcher &
     ```
   - Open the web dashboard:
     Navigate to [http://localhost:5600](http://localhost:5600) in any browser (or run `xdg-open http://localhost:5600`).
@@ -265,7 +265,7 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   Configured in `hyprland.lua`:
   ```lua
   hl.exec_cmd("aw-server & disown")
-  hl.exec_cmd("awatcher & disown")
+  hl.exec_cmd("aw-awatcher & disown")
   ```
 
 ---
