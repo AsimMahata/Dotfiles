@@ -267,6 +267,17 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   hl.exec_cmd("aw-server & disown")
   hl.exec_cmd("aw-awatcher & disown")
   ```
+- **Unused Apps Audit Script:**
+  - Script located at [`scripts/unused-apps.py`](file:///home/asim/setup/Dotfiles/scripts/unused-apps.py).
+  - Usage:
+    ```bash
+    # Check past 30 days (default)
+    python3 scripts/unused-apps.py
+
+    # Check past N days
+    python3 scripts/unused-apps.py -d 14
+    ```
+  - Cross-references ActivityWatch recorded events against all installed desktop applications (`.desktop` files) and outputs a list of used apps with total active time and a list of apps never opened (0 hours).
 
 ---
 

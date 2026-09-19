@@ -75,3 +75,11 @@ This document maintains an inventory of all explicitly installed applications, t
 | :--- | :--- | :--- |
 | **`activitywatch-bin`** | AUR (`yay`) | Core ActivityWatch service: runs local `aw-server` and hosts web dashboard (`http://localhost:5600`). |
 | **`aw-awatcher`** | AUR (`yay`) | Native Wayland/Hyprland compiled Rust watcher. Replaces the X11-only default watchers to record active windows and idle time on Hyprland. |
+
+---
+
+## 7. Custom Dotfiles Utilities & Audit Scripts
+
+| Utility | Location | Description / Purpose |
+| :--- | :--- | :--- |
+| **`unused-apps.py`** | [`scripts/unused-apps.py`](file:///home/asim/setup/Dotfiles/scripts/unused-apps.py) | Audit script that queries ActivityWatch data for the past N days and cross-references against installed `.desktop` applications to identify apps with 0 usage. |
