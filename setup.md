@@ -225,6 +225,9 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 - **Waybar Workspace Switching in Hyprland Lua:**
   - Described in [`issue.md`](file:///home/asim/setup/Dotfiles/issue.md).
   - Clicking workspace buttons in `waybar 0.15.0` fails due to Hyprland's Lua IPC dispatch syntax change. Fixable via `waybar-git` or by reverting to `hyprland.conf`.
+- **Built-in Keyboard Double-Typing / Key Chatter [NOT FIXED]:**
+  - Described in [`issue.md`](file:///home/asim/setup/Dotfiles/issue.md).
+  - Single taps intermittently register twice (`a a`, double backspace) due to mechanical switch contact bounce and absence of a Linux software debounce filter. Fixable via compressed air or `keyd` debounce.
 
 ---
 
