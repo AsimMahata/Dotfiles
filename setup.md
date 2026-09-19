@@ -220,6 +220,29 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
+## 9. Known Issues
+
+- **Waybar Workspace Switching in Hyprland Lua:**
+  - Described in [`issue.md`](file:///home/asim/setup/Dotfiles/issue.md).
+  - Clicking workspace buttons in `waybar 0.15.0` fails due to Hyprland's Lua IPC dispatch syntax change. Fixable via `waybar-git` or by reverting to `hyprland.conf`.
+
+---
+
+## 10. Antigravity IDE Dropped Keystrokes Fix (Fcitx5 IME Incompatibility)
+
+- **The Issue:**
+  - Keystrokes were intermittently dropping or failing to register when typing in Antigravity IDE (VS Code / Electron), despite normal behavior in other applications.
+- **Root Cause:**
+  - `fcitx5` (Flexible Contextual Input Tool for X 5) was running in the background via autostart.
+  - **What Fcitx5 is:** An Input Method Editor (IME) daemon designed for typing complex, non-Latin scripts (such as Chinese, Japanese, Korean, Vietnamese) where multiple keystrokes compose a single character.
+  - **The Incompatibility:** On Wayland, Chromium/Electron applications route all keyboard input through Wayland's `text-input-v3` protocol when an IME daemon is detected. Due to an upstream Chromium race condition between `keydown` events and IME commit callbacks, keystrokes are frequently swallowed or dropped during normal/fast typing.
+- **The Fix:**
+  - Terminated the running daemon: `pkill fcitx5`.
+  - Removed/disabled `fcitx5` from Hyprland autostart in `hyprland.lua` since standard US/Latin keyboard layouts do not require an IME.
+  - Removed malformed `kb_variant = ",pes_keypad"` duplicate input block from `hyprland.lua`, which caused XKB layout group desyncs and missing symbols (such as colon `:`).
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.

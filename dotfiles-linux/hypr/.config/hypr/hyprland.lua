@@ -536,23 +536,11 @@ hl.layer_rule({
     },
     blur = true,
 })
-
--- Keyboard language
-
-
-hl.config({
-    input = {
-        kb_layout = "us",
-        kb_variant = ",pes_keypad",
-        --    kb_options = grp:win_space_toggle
-    },
-})
-
 -- Autostart
 hl.on("hyprland.start", function()
     hl.exec_cmd("awww-daemon & disown")
     hl.exec_cmd("waybar")
     hl.exec_cmd("swaync")
     hl.exec_cmd("hyprlauncher -d")
-    hl.exec_cmd("fcitx5")
+    -- hl.exec_cmd("fcitx5") -- disabled: causes dropped keystrokes in Electron/Antigravity on Wayland
 end)
