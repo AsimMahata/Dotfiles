@@ -9,13 +9,10 @@ set = true
 command = "awww img --transition-fps 90 --transition-step 200 --transition-type any {{ image }}"
 
 [templates.hyprland]
-input_path = '~/.config/matugen/templates/hyprland-colors.conf'
-output_path = '~/.config/hypr/colors.conf'
-
-[templates.hyprland_lua]
 input_path = '~/.config/matugen/templates/hyprland-colors.lua'
 output_path = '~/.config/hypr/colors.lua'
 post_hook = 'hyprctl reload 2>/dev/null || true'
+
 
 
 [templates.kitty]

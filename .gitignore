@@ -1,12 +1,20 @@
-*/.config/**/colors.conf
-*/.config/**/colors.css
-*/.config/**/colors.rasi
-*/.config/**/color.ini
+**/.config/**/colors.conf
+**/.config/**/colors.css
+**/.config/**/colors.rasi
+**/.config/**/colors.ini
+**/.config/**/colors.lua
+**/.config/**/colors.json
+**/.config/**/colors.toml
+**/.config/**/colors.xml
+**/.config/**/colors.yaml
+**/.config/**/colors.yml
+**/.config/**/colors.txt
+**/.config/**/colors.json5
+**/.config/**/colors.jsonc
+**/btop/themes/colors.theme
 
-*/btop/themes/colors.theme
+!**/matugen/**/templates/**
 
-!*/matugen/.config/matugen/templates/**
-!*/matugen/.config/matugen/templates/**.*
 
 *.log
 errors.log

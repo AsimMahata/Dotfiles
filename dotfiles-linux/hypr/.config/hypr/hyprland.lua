@@ -522,12 +522,28 @@ hl.window_rule({
     float = true,
 })
 
+-- Layer rules for wlogout blur
+hl.layer_rule({
+    match = {
+        namespace = "logout_dialog",
+    },
+    blur = true,
+})
+
+hl.layer_rule({
+    match = {
+        namespace = "wlogout",
+    },
+    blur = true,
+})
+
 -- Keyboard language
+
 
 hl.config({
     input = {
         kb_layout = "us",
-        kb_variant = { "", "pes_keypad" },
+        kb_variant = ",pes_keypad",
         --    kb_options = grp:win_space_toggle
     },
 })

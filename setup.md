@@ -182,9 +182,28 @@ stow -R -d dotfiles-linux -t ~ hypr
 ### Matugen Dynamic Theming for Hyprland Lua
 To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 1. Created template `dotfiles-linux/matugen/.config/matugen/templates/hyprland-colors.lua` to export color variables as a Lua table (and populate `_G`).
-2. Updated `dotfiles-linux/matugen/.config/matugen/config.toml` to add `[templates.hyprland_lua]` generating `~/.config/hypr/colors.lua`.
+2. Updated `dotfiles-linux/matugen/.config/matugen/config.toml` to point `[templates.hyprland]` directly to `hyprland-colors.lua` (outputting `~/.config/hypr/colors.lua`), and removed the legacy `hyprland-colors.conf` template.
 3. In `hyprland.lua`, imported colors via `local colors = require("colors")` and mapped window border colors to `colors.secondary` and `colors.outline_variant`.
+4. Removed `hyprland.conf` so Hyprland runs purely on `hyprland.lua`.
+5. Fixed `kb_variant = ",pes_keypad"` string type in `hyprland.lua`.
+6. Reloaded with `hyprctl reload full-reset` to switch compositor runtime to the Lua config manager.
 
+
+---
+
+## 7. Wlogout Styling & Blur Fix
+
+- **Style & Appearance:**
+  - Updated `dotfiles-linux/wlogout/.config/wlogout/style.css` with a translucent frosted background (`rgba(16, 20, 24, 0.55)`).
+  - Removed default GTK button borders (`border: none;`) and introduced subtle floating cards (`rgba(255, 255, 255, 0.05)`) with smooth Matugen accent glows (`@primary`) on hover.
+  - Centered icons cleanly above button text to eliminate visual overlap.
+- **Hyprland Blur Rules:**
+  - Added `blur = true` layer rules for `wlogout` and `logout_dialog` in `hyprland.lua` and `hyprland.conf`.
+- **CSS Diagnostic Fix:**
+  - Added `.vscode/settings.json` with `"css.validate": false` to prevent false-positive web CSS linter errors on GTK CSS variables (`@color`).
+
+- **Git Tracking:**
+  - Removed dynamically generated Matugen color files (`colors.*`, `colors.theme`) from git cache and updated `.gitignore` with `**/.config/**/colors.*` so wallpaper theme updates do not pollute git status.
 
 ---
 
@@ -192,4 +211,5 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.
 * Record configuration changes and fixes in this document as setup continues.
+
 
