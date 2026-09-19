@@ -1,0 +1,1757 @@
+{
+  "categories": [
+    {
+      "data": {},
+      "id": 0,
+      "name": [
+        "AURA",
+        "Programming",
+        "RAN"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "[^a-zA-Z0-9]RAN[^a-zA-Z0-9]|sctp",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>RAN",
+      "subname": "RAN",
+      "parent": [
+        "AURA",
+        "Programming"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "color": "#0C797D"
+      },
+      "id": 1,
+      "name": [
+        "Self-management",
+        "ActivityWatch"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "ActivityWatch|aw-|localhost:5600",
+        "type": "regex"
+      },
+      "name_pretty": "Self-management>ActivityWatch",
+      "subname": "ActivityWatch",
+      "parent": [
+        "Self-management"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 2,
+      "name": [
+        "Productivity",
+        "Multimedia",
+        "Video editing"
+      ],
+      "rule": {
+        "regex": "Kdenlive",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Multimedia>Video editing",
+      "subname": "Video editing",
+      "parent": [
+        "Productivity",
+        "Multimedia"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 3,
+      "name": [
+        "Productivity",
+        "Graphics",
+        "3D Modeling"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Blender|freecad|autocad",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Graphics>3D Modeling",
+      "subname": "3D Modeling",
+      "parent": [
+        "Productivity",
+        "Graphics"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 4,
+      "name": [
+        "Productivity",
+        "Multimedia",
+        "Audio"
+      ],
+      "rule": {
+        "regex": "Audacity",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Multimedia>Audio",
+      "subname": "Audio",
+      "parent": [
+        "Productivity",
+        "Multimedia"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 5,
+      "name": [
+        "Media",
+        "Games"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Minecraft|RimWorld|Factorio|Steam|MultiMC|geoguessr|cs(?:: ?)?go",
+        "type": "regex"
+      },
+      "name_pretty": "Media>Games",
+      "subname": "Games",
+      "parent": [
+        "Media"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 6,
+      "name": [
+        "Media",
+        "Cinema"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "plex|vlc|jellyfin|\\.mov|mpv|showtime|decibels",
+        "type": "regex"
+      },
+      "name_pretty": "Media>Cinema",
+      "subname": "Cinema",
+      "parent": [
+        "Media"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 7,
+      "name": [
+        "Media",
+        "Music"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Spotify|Deezer|YouTube Music|last\\.fm|soundcloud",
+        "type": "regex"
+      },
+      "name_pretty": "Media>Music",
+      "subname": "Music",
+      "parent": [
+        "Media"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {
+        "color": "#9FF",
+        "score": "3"
+      },
+      "id": 8,
+      "name": [
+        "Communication"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Communication",
+      "subname": "Communication",
+      "parent": null,
+      "depth": 0
+    },
+    {
+      "data": {},
+      "id": 9,
+      "name": [
+        "Communication",
+        "IM"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "telegram|org\\.telegram\\.desktop|messenger|signal|whatsapp|rambox|riot|discord|nheko|wire|slack|element",
+        "type": "regex"
+      },
+      "name_pretty": "Communication>IM",
+      "subname": "IM",
+      "parent": [
+        "Communication"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 10,
+      "name": [
+        "Communication",
+        "Email"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Gmail|Thunderbird|mutt|protonmail",
+        "type": "regex"
+      },
+      "name_pretty": "Communication>Email",
+      "subname": "Email",
+      "parent": [
+        "Communication"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {
+        "color": "#333333"
+      },
+      "id": 11,
+      "name": [
+        "Uncategorized"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Uncategorized",
+      "subname": "Uncategorized",
+      "parent": null,
+      "depth": 0
+    },
+    {
+      "data": {
+        "color": "#C45100",
+        "score": "-5"
+      },
+      "id": 12,
+      "name": [
+        "Media"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Media",
+      "subname": "Media",
+      "parent": null,
+      "depth": 0
+    },
+    {
+      "data": {
+        "color": "#68CCCA",
+        "score": "5"
+      },
+      "id": 13,
+      "name": [
+        "Self-management"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Self-management",
+      "subname": "Self-management",
+      "parent": null,
+      "depth": 0
+    },
+    {
+      "data": {
+        "color": "#0062B1",
+        "score": "7"
+      },
+      "id": 14,
+      "name": [
+        "Productivity"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Productivity",
+      "subname": "Productivity",
+      "parent": null,
+      "depth": 0
+    },
+    {
+      "data": {
+        "score": "-2"
+      },
+      "id": 15,
+      "name": [
+        "General",
+        "News"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "NRK|VG|CNN|BBC|NBC|e24|Reuters",
+        "type": "regex"
+      },
+      "name_pretty": "General>News",
+      "subname": "News",
+      "parent": [
+        "General"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 16,
+      "name": [
+        "Productivity",
+        "Git"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "GitHub|GitLab|Pull Request",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Git",
+      "subname": "Git",
+      "parent": [
+        "Productivity"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 17,
+      "name": [
+        "Productivity",
+        "Graphics",
+        "2D Graphics"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "krita|gimp|inkscape|photoshop",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Graphics>2D Graphics",
+      "subname": "2D Graphics",
+      "parent": [
+        "Productivity",
+        "Graphics"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "color": "#DBDF00"
+      },
+      "id": 18,
+      "name": [
+        "General"
+      ],
+      "rule": {
+        "regex": "Brave|Chrome|Chromium|Firefox|org\\.mozilla\\.firefox",
+        "type": "regex"
+      },
+      "name_pretty": "General",
+      "subname": "General",
+      "parent": null,
+      "depth": 0
+    },
+    {
+      "data": {
+        "color": "#FCC400"
+      },
+      "id": 19,
+      "name": [
+        "General",
+        "System"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "lockapp.exe|Windows Default Lock Screen|gnome",
+        "type": "regex"
+      },
+      "name_pretty": "General>System",
+      "subname": "System",
+      "parent": [
+        "General"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 20,
+      "name": [
+        "Self-management",
+        "Journaling"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "zim|joplin",
+        "type": "regex"
+      },
+      "name_pretty": "Self-management>Journaling",
+      "subname": "Journaling",
+      "parent": [
+        "Self-management"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {
+        "color": "#9F0500",
+        "score": "-10"
+      },
+      "id": 21,
+      "name": [
+        "Time sinks"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Time sinks",
+      "subname": "Time sinks",
+      "parent": null,
+      "depth": 0
+    },
+    {
+      "data": {
+        "score": "-2"
+      },
+      "id": 22,
+      "name": [
+        "General",
+        "Shopping"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "amazon|cdon|power.no|elkj[øo]p|netonnet|ebay|lensway",
+        "type": "regex"
+      },
+      "name_pretty": "General>Shopping",
+      "subname": "Shopping",
+      "parent": [
+        "General"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 23,
+      "name": [
+        "Time sinks",
+        "Social Media"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "twitter|facebook|instagram|reddit|\\sr\\/[a-zA-Z0-9]+|mastodon|bae(\\.)?st|x\\.com",
+        "type": "regex"
+      },
+      "name_pretty": "Time sinks>Social Media",
+      "subname": "Social Media",
+      "parent": [
+        "Time sinks"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 24,
+      "name": [
+        "Media",
+        "Comics"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "webtoons",
+        "type": "regex"
+      },
+      "name_pretty": "Media>Comics",
+      "subname": "Comics",
+      "parent": [
+        "Media"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 25,
+      "name": [
+        "General",
+        "System",
+        "Core apps"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "bitwarden|flameshot|calculator|gnome-control-center|gnome-text-editor",
+        "type": "regex"
+      },
+      "name_pretty": "General>System>Core apps",
+      "subname": "Core apps",
+      "parent": [
+        "General",
+        "System"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 26,
+      "name": [
+        "Communication",
+        "Video chatting"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "skype|zoom",
+        "type": "regex"
+      },
+      "name_pretty": "Communication>Video chatting",
+      "subname": "Video chatting",
+      "parent": [
+        "Communication"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {
+        "color": "#B0BC00"
+      },
+      "id": 27,
+      "name": [
+        "General",
+        "Browsing"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "brave|brave-browser|chrome|chromium|firefox|epiphany|zen",
+        "type": "regex"
+      },
+      "name_pretty": "General>Browsing",
+      "subname": "Browsing",
+      "parent": [
+        "General"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 28,
+      "name": [
+        "General",
+        "Browsing",
+        "Search"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "ecosia|duckduckgo|startpage|brave search|google search",
+        "type": "regex"
+      },
+      "name_pretty": "General>Browsing>Search",
+      "subname": "Search",
+      "parent": [
+        "General",
+        "Browsing"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 29,
+      "name": [
+        "Media",
+        "Art"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "deviantart",
+        "type": "regex"
+      },
+      "name_pretty": "Media>Art",
+      "subname": "Art",
+      "parent": [
+        "Media"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 30,
+      "name": [
+        "Time sinks",
+        "Memes"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "imgur|knowyourmeme",
+        "type": "regex"
+      },
+      "name_pretty": "Time sinks>Memes",
+      "subname": "Memes",
+      "parent": [
+        "Time sinks"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 31,
+      "name": [
+        "Time sinks",
+        "Videos"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "netflix|youtube|twitch|tiktok",
+        "type": "regex"
+      },
+      "name_pretty": "Time sinks>Videos",
+      "subname": "Videos",
+      "parent": [
+        "Time sinks"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {
+        "score": "6"
+      },
+      "id": 32,
+      "name": [
+        "AURA",
+        "Documentation",
+        "Jira"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "jira",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Documentation>Jira",
+      "subname": "Jira",
+      "parent": [
+        "AURA",
+        "Documentation"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "score": "6"
+      },
+      "id": 33,
+      "name": [
+        "AURA",
+        "Documentation"
+      ],
+      "rule": {
+        "ignore_case": false,
+        "regex": "auranetworksystems.atlassian.net|OneDrive",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Documentation",
+      "subname": "Documentation",
+      "parent": [
+        "AURA"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {
+        "score": "2"
+      },
+      "id": 34,
+      "name": [
+        "General",
+        "Browsing",
+        "Encyclopedia"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Wikipedia|manual",
+        "type": "regex"
+      },
+      "name_pretty": "General>Browsing>Encyclopedia",
+      "subname": "Encyclopedia",
+      "parent": [
+        "General",
+        "Browsing"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "score": "2"
+      },
+      "id": 35,
+      "name": [
+        "General",
+        "Browsing",
+        "Forums"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "forum|Issue #[0-9]+",
+        "type": "regex"
+      },
+      "name_pretty": "General>Browsing>Forums",
+      "subname": "Forums",
+      "parent": [
+        "General",
+        "Browsing"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "score": "4"
+      },
+      "id": 36,
+      "name": [
+        "General",
+        "Browsing",
+        "Stack Exchange"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "((math\\.)?stack\\s?(exchange|overflow)|super\\s?user|server\\s?fault|ask\\s?ubuntu)(\\.com)?",
+        "type": "regex"
+      },
+      "name_pretty": "General>Browsing>Stack Exchange",
+      "subname": "Stack Exchange",
+      "parent": [
+        "General",
+        "Browsing"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 37,
+      "name": [
+        "AURA",
+        "Communication",
+        "Email"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Outlook",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Communication>Email",
+      "subname": "Email",
+      "parent": [
+        "AURA",
+        "Communication"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 38,
+      "name": [
+        "AURA",
+        "Programming",
+        "RAN",
+        "CU-CP"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "cu-cp",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>RAN>CU-CP",
+      "subname": "CU-CP",
+      "parent": [
+        "AURA",
+        "Programming",
+        "RAN"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {},
+      "id": 39,
+      "name": [
+        "AURA",
+        "Communication",
+        "IM"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Slack",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Communication>IM",
+      "subname": "IM",
+      "parent": [
+        "AURA",
+        "Communication"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "color": "#68BC00",
+        "score": "10"
+      },
+      "id": 40,
+      "name": [
+        "AURA"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "AURA",
+      "subname": "AURA",
+      "parent": null,
+      "depth": 0
+    },
+    {
+      "data": {},
+      "id": 41,
+      "name": [
+        "AURA",
+        "Communication",
+        "Meetings"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "huddle|microsoft teams|teams\\.microsoft",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Communication>Meetings",
+      "subname": "Meetings",
+      "parent": [
+        "AURA",
+        "Communication"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "color": "#A4DD00",
+        "score": "4"
+      },
+      "id": 42,
+      "name": [
+        "AURA",
+        "Communication"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "AURA>Communication",
+      "subname": "Communication",
+      "parent": [
+        "AURA"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {
+        "color": "#194D33"
+      },
+      "id": 43,
+      "name": [
+        "AURA",
+        "Programming"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "AURA>Programming",
+      "subname": "Programming",
+      "parent": [
+        "AURA"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 44,
+      "name": [
+        "AURA",
+        "Programming",
+        "Infrastructure"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "y(a)?ml",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>Infrastructure",
+      "subname": "Infrastructure",
+      "parent": [
+        "AURA",
+        "Programming"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 45,
+      "name": [
+        "AURA",
+        "Operations / Troubleshooting",
+        "Packet Captures"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "wireshark|tshark",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Operations / Troubleshooting>Packet Captures",
+      "subname": "Packet Captures",
+      "parent": [
+        "AURA",
+        "Operations / Troubleshooting"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 46,
+      "name": [
+        "Productivity",
+        "Networking"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "winbox|Fast\\.com",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Networking",
+      "subname": "Networking",
+      "parent": [
+        "Productivity"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 47,
+      "name": [
+        "AURA",
+        "Programming",
+        "RAN",
+        "CU-UP"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "cu-up",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>RAN>CU-UP",
+      "subname": "CU-UP",
+      "parent": [
+        "AURA",
+        "Programming",
+        "RAN"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {},
+      "id": 48,
+      "name": [
+        "AURA",
+        "Programming",
+        "FRRC"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "frrc",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>FRRC",
+      "subname": "FRRC",
+      "parent": [
+        "AURA",
+        "Programming"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 49,
+      "name": [
+        "AURA",
+        "MATLAB"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "matlab",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>MATLAB",
+      "subname": "MATLAB",
+      "parent": [
+        "AURA"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 50,
+      "name": [
+        "AURA",
+        "Documentation",
+        "Confluence"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "confluence|auranetworksystems.atlassian.net\\/wiki",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Documentation>Confluence",
+      "subname": "Confluence",
+      "parent": [
+        "AURA",
+        "Documentation"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 51,
+      "name": [
+        "AURA",
+        "Documentation",
+        "Markdown"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "(README)?\\.md|markdown",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Documentation>Markdown",
+      "subname": "Markdown",
+      "parent": [
+        "AURA",
+        "Documentation"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 52,
+      "name": [
+        "AURA",
+        "Documentation",
+        "Miro"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "miro",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Documentation>Miro",
+      "subname": "Miro",
+      "parent": [
+        "AURA",
+        "Documentation"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 53,
+      "name": [
+        "AURA",
+        "Programming",
+        "Python Test Scripts"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "python",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>Python Test Scripts",
+      "subname": "Python Test Scripts",
+      "parent": [
+        "AURA",
+        "Programming"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 54,
+      "name": [
+        "AURA",
+        "Programming",
+        "Death Star"
+      ],
+      "rule": {
+        "regex": "integ-fos-testing-library|fos-data-testsuite",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>Death Star",
+      "subname": "Death Star",
+      "parent": [
+        "AURA",
+        "Programming"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "score": "2"
+      },
+      "id": 55,
+      "name": [
+        "AURA",
+        "Finance"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "bill\\.com|bill spend & expense",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Finance",
+      "subname": "Finance",
+      "parent": [
+        "AURA"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 56,
+      "name": [
+        "Productivity",
+        "Terminal"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "kitty|st|gnome-terminal|alacritty|foot|wezterm|xterm|konsole",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Terminal",
+      "subname": "Terminal",
+      "parent": [
+        "Productivity"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 57,
+      "name": [
+        "Productivity",
+        "Office",
+        "Spreadsheets"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Excel|LibreOffice Calc|\\.xls|libreoffice-calc",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Office>Spreadsheets",
+      "subname": "Spreadsheets",
+      "parent": [
+        "Productivity",
+        "Office"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {
+        "score": "6"
+      },
+      "id": 58,
+      "name": [
+        "General",
+        "Browsing",
+        "Large Language Models"
+      ],
+      "rule": {
+        "ignore_case": false,
+        "regex": "ChatGPT",
+        "type": "regex"
+      },
+      "name_pretty": "General>Browsing>Large Language Models",
+      "subname": "Large Language Models",
+      "parent": [
+        "General",
+        "Browsing"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 59,
+      "name": [
+        "AURA",
+        "Documentation",
+        "Vendor Specifications"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "AURA>Documentation>Vendor Specifications",
+      "subname": "Vendor Specifications",
+      "parent": [
+        "AURA",
+        "Documentation"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 60,
+      "name": [
+        "AURA",
+        "Documentation",
+        "Vendor Specifications",
+        "JFW"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "jfwindustries.com",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Documentation>Vendor Specifications>JFW",
+      "subname": "JFW",
+      "parent": [
+        "AURA",
+        "Documentation",
+        "Vendor Specifications"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {
+        "color": "#306015",
+        "score": "8"
+      },
+      "id": 61,
+      "name": [
+        "AURA",
+        "Operations / Troubleshooting"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "AURA>Operations / Troubleshooting",
+      "subname": "Operations / Troubleshooting",
+      "parent": [
+        "AURA"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 62,
+      "name": [
+        "AURA",
+        "Operations / Troubleshooting",
+        "Logging"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "aura_read_logs|\\.log|Datadog",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Operations / Troubleshooting>Logging",
+      "subname": "Logging",
+      "parent": [
+        "AURA",
+        "Operations / Troubleshooting"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 63,
+      "name": [
+        "AURA",
+        "Programming",
+        "RAN",
+        "ARS"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "[^a-zA-Z0-9]ARS[^a-zA-Z0-9]",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>RAN>ARS",
+      "subname": "ARS",
+      "parent": [
+        "AURA",
+        "Programming",
+        "RAN"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {},
+      "id": 64,
+      "name": [
+        "AURA",
+        "Programming",
+        "RAN",
+        "DU"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "[^a-zA-Z0-9]DU[^a-zA-Z0-9]",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>RAN>DU",
+      "subname": "DU",
+      "parent": [
+        "AURA",
+        "Programming",
+        "RAN"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {},
+      "id": 65,
+      "name": [
+        "Productivity",
+        "Office"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Productivity>Office",
+      "subname": "Office",
+      "parent": [
+        "Productivity"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 66,
+      "name": [
+        "Productivity",
+        "Graphics"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Productivity>Graphics",
+      "subname": "Graphics",
+      "parent": [
+        "Productivity"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 67,
+      "name": [
+        "Productivity",
+        "Multimedia"
+      ],
+      "rule": {
+        "type": "none"
+      },
+      "name_pretty": "Productivity>Multimedia",
+      "subname": "Multimedia",
+      "parent": [
+        "Productivity"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 68,
+      "name": [
+        "Productivity",
+        "Programming"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "antigravity|antigravity-ide|code|vscode|neovim|nvim|vim|nano|sublime|atom|jetbrains",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Programming",
+      "subname": "Programming",
+      "parent": [
+        "Productivity"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 69,
+      "name": [
+        "Productivity",
+        "Programming",
+        "Dotfiles"
+      ],
+      "rule": {
+        "ignore_case": false,
+        "regex": "~/src/miscellaneous",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Programming>Dotfiles",
+      "subname": "Dotfiles",
+      "parent": [
+        "Productivity",
+        "Programming"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 70,
+      "name": [
+        "General",
+        "System",
+        "Cloud Storage"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Nextcloud",
+        "type": "regex"
+      },
+      "name_pretty": "General>System>Cloud Storage",
+      "subname": "Cloud Storage",
+      "parent": [
+        "General",
+        "System"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 71,
+      "name": [
+        "General",
+        "Browsing",
+        "Search",
+        "Maps & Navigation"
+      ],
+      "rule": {
+        "regex": "Google Maps",
+        "type": "regex"
+      },
+      "name_pretty": "General>Browsing>Search>Maps & Navigation",
+      "subname": "Maps & Navigation",
+      "parent": [
+        "General",
+        "Browsing",
+        "Search"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {},
+      "id": 72,
+      "name": [
+        "General",
+        "System",
+        "VPN"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "NordVPN|OpenVPN",
+        "type": "regex"
+      },
+      "name_pretty": "General>System>VPN",
+      "subname": "VPN",
+      "parent": [
+        "General",
+        "System"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 73,
+      "name": [
+        "AURA",
+        "Programming",
+        "Infrastructure",
+        "Kubernetes / Helm / Talos"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "k8s|kubernetes|talos|helm|hc-",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>Infrastructure>Kubernetes / Helm / Talos",
+      "subname": "Kubernetes / Helm / Talos",
+      "parent": [
+        "AURA",
+        "Programming",
+        "Infrastructure"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {},
+      "id": 74,
+      "name": [
+        "AURA",
+        "Programming",
+        "Infrastructure",
+        "Ansible"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "ansible",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>Infrastructure>Ansible",
+      "subname": "Ansible",
+      "parent": [
+        "AURA",
+        "Programming",
+        "Infrastructure"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {},
+      "id": 75,
+      "name": [
+        "AURA",
+        "Programming",
+        "Infrastructure",
+        "Docker"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "docker(file)?",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>Infrastructure>Docker",
+      "subname": "Docker",
+      "parent": [
+        "AURA",
+        "Programming",
+        "Infrastructure"
+      ],
+      "depth": 3
+    },
+    {
+      "data": {},
+      "id": 76,
+      "name": [
+        "AURA",
+        "Programming",
+        "Coverage Reports"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "lcov|tarpaulin",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Programming>Coverage Reports",
+      "subname": "Coverage Reports",
+      "parent": [
+        "AURA",
+        "Programming"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 77,
+      "name": [
+        "General",
+        "System",
+        "File Management"
+      ],
+      "rule": {
+        "regex": "org\\.gnome\\.Nautilus|explorer.exe|ranger|Caja|Files|Nemo|PCManFM|Thunar|Downloads",
+        "type": "regex"
+      },
+      "name_pretty": "General>System>File Management",
+      "subname": "File Management",
+      "parent": [
+        "General",
+        "System"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 78,
+      "name": [
+        "Productivity",
+        "Office",
+        "Presentations"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Powerpoint|LibreOffice Impress|\\.pptx|libreoffice-impress",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Office>Presentations",
+      "subname": "Presentations",
+      "parent": [
+        "Productivity",
+        "Office"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 79,
+      "name": [
+        "Productivity",
+        "Office",
+        "Rich Text"
+      ],
+      "rule": {
+        "regex": "Microsoft Word|LibreOffice Writer|\\.docx|libreoffice-writer",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>Office>Rich Text",
+      "subname": "Rich Text",
+      "parent": [
+        "Productivity",
+        "Office"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 80,
+      "name": [
+        "Self-management",
+        "Health"
+      ],
+      "rule": {
+        "regex": "My IU Health",
+        "type": "regex"
+      },
+      "name_pretty": "Self-management>Health",
+      "subname": "Health",
+      "parent": [
+        "Self-management"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 81,
+      "name": [
+        "Productivity",
+        "PDFs"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "zathura|\\.pdf|Evince",
+        "type": "regex"
+      },
+      "name_pretty": "Productivity>PDFs",
+      "subname": "PDFs",
+      "parent": [
+        "Productivity"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 82,
+      "name": [
+        "Self-management",
+        "Banking"
+      ],
+      "rule": {
+        "regex": "Discover|Make a Transfer",
+        "type": "regex"
+      },
+      "name_pretty": "Self-management>Banking",
+      "subname": "Banking",
+      "parent": [
+        "Self-management"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 83,
+      "name": [
+        "AURA",
+        "Operations / Troubleshooting",
+        "Visualizations"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "Grafana",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Operations / Troubleshooting>Visualizations",
+      "subname": "Visualizations",
+      "parent": [
+        "AURA",
+        "Operations / Troubleshooting"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 84,
+      "name": [
+        "AURA",
+        "Communication",
+        "AHQP"
+      ],
+      "rule": {
+        "ignore_case": true,
+        "regex": "[^a-zA-Z0-9]AHQP[^a-zA-Z0-9]",
+        "type": "regex"
+      },
+      "name_pretty": "AURA>Communication>AHQP",
+      "subname": "AHQP",
+      "parent": [
+        "AURA",
+        "Communication"
+      ],
+      "depth": 2
+    },
+    {
+      "data": {},
+      "id": 85,
+      "name": [
+        "Self-management",
+        "Calendar"
+      ],
+      "rule": {
+        "ignore_case": false,
+        "regex": "Proton Calendar",
+        "type": "regex"
+      },
+      "name_pretty": "Self-management>Calendar",
+      "subname": "Calendar",
+      "parent": [
+        "Self-management"
+      ],
+      "depth": 1
+    },
+    {
+      "data": {},
+      "id": 86,
+      "name": [
+        "General",
+        "Browsing",
+        "Translation"
+      ],
+      "rule": {
+        "regex": "Google Translate",
+        "type": "regex"
+      },
+      "name_pretty": "General>Browsing>Translation",
+      "subname": "Translation",
+      "parent": [
+        "General",
+        "Browsing"
+      ],
+      "depth": 2
+    }
+  ]
+}
