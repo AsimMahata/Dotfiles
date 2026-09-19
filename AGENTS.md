@@ -1,14 +1,21 @@
 # Agent Guidelines & Rules
 
-## Maintenance of `setup.md`
+## Maintenance of System Documentation & Tracking
 
-Whenever you make any changes to the system or dotfiles:
-1. **Document Every Installation:**
-   - Whenever any new package, tool, font, daemon, utility, or dependency is installed (via `pacman`, `yay`, `pip`, cargo, etc.), add the exact installation commands, enabled services, and necessary launch/verification steps to [`setup.md`](file:///home/asim/setup/Dotfiles/setup.md).
-2. **Document Configuration Changes:**
-   - Whenever you modify existing configs, add new dotfiles, adjust themes, keybindings, or system behaviors, record what changed and any associated setup notes in [`setup.md`](file:///home/asim/setup/Dotfiles/setup.md).
-3. **Keep `setup.md` Up to Date:**
-   - `setup.md` must remain an accurate, self-contained, reproducible log of the entire system setup from post-installation onwards.
+Whenever any new package, application, tool, or dotfile is added, modified, or removed:
+
+1. **Document in [`setup.md`](file:///home/asim/setup/Dotfiles/setup.md):**
+   - Record exact installation commands (`pacman`, `yay`, `pip`, etc.), enabled systemd services, configuration adjustments, and launch/verification steps.
+   - Maintain `setup.md` as an accurate, self-contained, reproducible log of the system setup.
+
+2. **Update [`packages.md`](file:///home/asim/setup/Dotfiles/packages.md):**
+   - Add every newly installed package or custom script to the package inventory table with its package name, source (`pacman`, `yay`, or local script), and purpose.
+
+3. **Update ActivityWatch Categories ([`aw-category-export.json`](file:///home/asim/setup/Dotfiles/aw-category-export.json)):**
+   - Whenever a new user-facing application or GUI tool is added, add its process/binary name to the appropriate category regex rule in `aw-category-export.json` with an accurate, distinct brand color so screen time is automatically categorized.
+
+4. **Track Issues in [`issue.md`](file:///home/asim/setup/Dotfiles/issue.md):**
+   - Record any active, unresolved, or pending system bugs with their root causes and available fixes.
 
 ## No Trial-and-Error Fixes Without Permission
 
