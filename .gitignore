@@ -16,3 +16,11 @@ errors.log
 *.swp
 *.swo
 *~
+
+# Python Virtual Environments
+.venv/
+venv/
+
+# Backups
+setup/backup/
+backup/

@@ -1,32 +1,27 @@
+[config]
+source_color_index = 0
+
 [config.wallpaper]
 # Whether to set the wallpaper or not
 set = true
 
-# The base command to run for applying the wallpaper, shouldn't have spaces in it.
-command = "swww"
-
-# The arguments that will be provided to the command.
-# Keywords like {{ mode }} or anything that works inside of hooks doesn't work here.
-# The last argument will be the image path.
-arguments = [
-  "img",
-  "--transition-fps",
-  "90",
-  "--transition-step",
-  "200",
-  "--transition-type",
-  "any",
-]
+# The command to run for applying the wallpaper in Matugen 4.x
+command = "awww img --transition-fps 90 --transition-step 200 --transition-type any {{ image }}"
 
 [templates.hyprland]
 input_path = '~/.config/matugen/templates/hyprland-colors.conf'
 output_path = '~/.config/hypr/colors.conf'
-psot_hook = 'hyprctl reload'
+
+[templates.hyprland_lua]
+input_path = '~/.config/matugen/templates/hyprland-colors.lua'
+output_path = '~/.config/hypr/colors.lua'
+post_hook = 'hyprctl reload 2>/dev/null || true'
+
 
 [templates.kitty]
 input_path = '~/.config/matugen/templates/kitty-colors.conf'
 output_path = '~/.config/kitty/colors.conf'
-post_hook = 'kill -SIGUSR1 $(pgrep kitty)'
+post_hook = 'pkill -SIGUSR1 kitty 2>/dev/null || true'
 
 [templates.rofi]
 input_path = '~/.config/matugen/templates/rofi-colors.rasi'
@@ -35,18 +30,17 @@ output_path = '~/.config/rofi/shared/colors.rasi'
 [templates.waybar]
 input_path = '~/.config/matugen/templates/colors.css'
 output_path = '~/.config/waybar/colors.css'
-post_hook = 'pkill waybar; waybar & disown'
+post_hook = 'pkill waybar; (waybar >/dev/null 2>&1 &)'
 
 [templates.btop]
 input_path = '~/.config/matugen/templates/btop.theme'
 output_path = '~/.config/btop/themes/colors.theme'
-post_hook = 'kill -SIGUSR1 $(pgrep btop)'
+post_hook = 'pkill -SIGUSR1 btop 2>/dev/null || true'
 
 [templates.swaync]
 input_path = '~/.config/matugen/templates/colors.css'
 output_path = '~/.config/swaync/colors.css'
-post_hook = 'kill -SIGUSR1 $(pgrep swaync); swaync & disown'
-
+post_hook = 'swaync-client -R && swaync-client -rs 2>/dev/null || true'
 
 [templates.wlogout]
 input_path = '~/.config/matugen/templates/colors.css'
@@ -63,3 +57,4 @@ output_path = '~/.config/gtk-4.0/colors.css'
 [templates.starship]
 input_path = '~/.config/matugen/templates/starship-colors.toml'
 output_path = '~/.config/starship.toml'
+
