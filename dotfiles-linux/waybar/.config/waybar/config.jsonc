@@ -12,8 +12,7 @@
     "modules-right": [
         "tray",
         "privacy",
-        "cpu",
-        "memory",
+        "group/hardware",
         "group/connectivity",
         "pulseaudio",
         "group/power",
@@ -153,6 +152,13 @@
             "battery"
         ]
     },
+    "group/hardware": {
+        "orientation": "horizontal",
+        "modules": [
+            "cpu",
+            "memory"
+        ]
+    },
     "group/connectivity": {
         "orientation": "horizontal",
         "modules": [
@@ -211,11 +217,43 @@
         "show-passive-items": true
     },
     "cpu": {
-        "interval": 10,
-        "format": "{usage}% "
+        "interval": 3,
+        "format": "<span foreground='#80d5d0'>{icon}</span> {usage}%",
+        "format-medium": "<span foreground='#b0ccc9'>{icon}</span> {usage}%",
+        "format-high": "<span foreground='#f9e2af'>{icon}</span> {usage}%",
+        "format-critical": "<span foreground='#ffb4ab'>{icon}</span> {usage}%",
+        "format-alt": "<span foreground='#80d5d0'>{icon}</span> {avg_frequency}GHz",
+        "format-alt-medium": "<span foreground='#b0ccc9'>{icon}</span> {avg_frequency}GHz",
+        "format-alt-high": "<span foreground='#f9e2af'>{icon}</span> {avg_frequency}GHz",
+        "format-alt-critical": "<span foreground='#ffb4ab'>{icon}</span> {avg_frequency}GHz",
+        "format-icons": ["󰝦", "󰪞", "󰪟", "󰪠", "󰪡", "󰪢", "󰪣", "󰪤", "󰪥"],
+        "states": {
+            "medium": 40,
+            "high": 70,
+            "critical": 85
+        },
+        "tooltip": true,
+        "tooltip-format": "CPU: {usage}%\nLoad: {load}\nFreq: {avg_frequency} GHz\n\nLeft-click: toggle format\nRight-click: open resource modal",
+        "on-click-right": "~/.config/waybar/scripts/hardware-toggle.sh"
     },
     "memory": {
-        "interval": 30,
-        "format": "{used:0.1f}G/{total:0.1f}G "
+        "interval": 10,
+        "format": "<span foreground='#80d5d0'>{icon}</span> {used:0.1f}G/{total:0.1f}G",
+        "format-medium": "<span foreground='#b0ccc9'>{icon}</span> {used:0.1f}G/{total:0.1f}G",
+        "format-high": "<span foreground='#f9e2af'>{icon}</span> {used:0.1f}G/{total:0.1f}G",
+        "format-critical": "<span foreground='#ffb4ab'>{icon}</span> {used:0.1f}G/{total:0.1f}G",
+        "format-alt": "<span foreground='#80d5d0'>{icon}</span> {percentage}%",
+        "format-alt-medium": "<span foreground='#b0ccc9'>{icon}</span> {percentage}%",
+        "format-alt-high": "<span foreground='#f9e2af'>{icon}</span> {percentage}%",
+        "format-alt-critical": "<span foreground='#ffb4ab'>{icon}</span> {percentage}%",
+        "format-icons": ["󰝦", "󰪞", "󰪟", "󰪠", "󰪡", "󰪢", "󰪣", "󰪤", "󰪥"],
+        "states": {
+            "medium": 40,
+            "high": 70,
+            "critical": 85
+        },
+        "tooltip": true,
+        "tooltip-format": "RAM: {used:0.1f}G / {total:0.1f}G ({percentage}%)\nAvailable: {avail:0.1f}G\nSwap: {swapUsed:0.1f}G / {swapTotal:0.1f}G\n\nLeft-click: toggle % / GB\nRight-click: open resource modal",
+        "on-click-right": "~/.config/waybar/scripts/hardware-toggle.sh"
     }
 }

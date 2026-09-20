@@ -407,6 +407,49 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - [`power-profile-cycle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-cycle.sh): Cycles `powerprofilesctl` modes, sends `SIGRTMIN+8` to Waybar for an instant 0ms update, and triggers the OSD HUD.
   - [`power-profile-osd.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-osd.py): GTK Layer Shell overlay widget with `Gtk.Stack` slide-left transition (current profile slides left, new profile slides in from right) and 1.6s auto-dismiss.
 
+## 17. Waybar Unified Hardware Resources & Quick Modal (CPU & RAM — AAA UX)
+
+- **Feature:**
+  - Combined the previously separated `cpu` and `memory` pills into a single, unified `group/hardware` capsule matching the design of `group/connectivity` and `group/power`.
+  - **Dynamic Mini-Gauges:** Integrated JetBrains Mono Nerd Font circular progress rings (`format-icons`: `["󰝦", "󰪞", "󰪟", "󰪠", "󰪡", "󰪢", "󰪣", "󰪤", "󰪥"]`) that visually fill up as CPU and RAM utilization increases.
+  - **Clean Hover Tooltips:** Standardized GTK3 tooltips with crisp padding, clean lines, and zero rendering artifacts.
+  - **Interactive Actions & Modal:**
+    - **Left-Click (CPU or RAM):** Toggles display format (RAM switches between `4.8G/15.2G` and `31%`; CPU switches between usage and clock frequency).
+    - **Right-Click (CPU or RAM):** Opens the stateless GTK3 Layer Shell modal ([`quick-hardware.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-hardware.py)) with live CPU/RAM progress bars, load averages, swap details, top processes, and an action button to launch `btop`.
+  - **Dynamic Tiered Icon Coloring (Option B):**
+    - The circular gauge icons (`{icon}`) dynamically change color according to percentage utilization:
+      - **0% – 39% (Low):** Cyan / Teal (`#80d5d0`)
+      - **40% – 69% (Medium):** Mint / Soft Green (`#b0ccc9`)
+      - **70% – 84% (High):** Warm Amber (`#f9e2af`)
+      - **85% – 100% (Critical):** Coral Red (`#ffb4ab`)
+    - Numbers and metric text remain crisp white (`@on_surface`) for maximum contrast and readability.
+    - Inside the modal, the CPU and RAM progress bars dynamically mirror these active load tier colors.
+- **Scripts:**
+  - [`quick-hardware.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-hardware.py): Stateless GTK3 + `GtkLayerShell` modal with live CPU/RAM monitoring, top processes, and a BTOP launcher button.
+  - [`hardware-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/hardware-toggle.sh): Stateless bash toggle launcher.
+- **Files Modified:**
+  - [`dotfiles-linux/waybar/.config/waybar/config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): Replaced `"cpu", "memory"` with `"group/hardware"`, routed clicks to `hardware-toggle.sh`, and cleaned up tooltip formatting.
+  - [`dotfiles-linux/waybar/.config/waybar/style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css): Styled `#hardware`, `#hardware #cpu`, `#hardware #memory` with divider, hover color transitions, clean tooltip rules, and an exact 5px gap (`margin-left: 5px;`) separating `#hardware` from the center `#workspaces` pill.
+## 18. Hardware Acceleration & Thermal Throttling Diagnosis
+
+- **Issue:**
+  - Experienced desktop UI lag, stuttering, and micro-freezes on Hyprland, raising concerns that hardware acceleration might not be working.
+- **Investigation & Findings:**
+  - **Hardware Acceleration Confirmed Active:**
+    - Compositor (Hyprland 0.56) is actively rendering via Mesa Intel Iris Xe Graphics (ADL GT2) on `/dev/dri/renderD128` (DRM backend, OpenGL 3.2, high-priority EGL context).
+    - Monitor running at native `2880x1800@90Hz` (scale 2) with hardware cursors enabled.
+    - Native Wayland GPU processes confirmed running for Brave and Antigravity IDE (Electron).
+  - **Root Cause of Lag (Severe Thermal Throttling):**
+    - High CPU temperatures (84°C+ under moderate load) on the Intel Core i5-12500H.
+    - Recorded over **609,000 thermal throttling events** in `/sys/devices/system/cpu/cpu0/thermal_throttle/package_throttle_count` totaling nearly 50 minutes of cumulative throttling.
+    - System was actively hitting hardware thermal limits, repeatedly forcing CPU cores down to **400 MHz** (the lowest emergency frequency), causing severe frame drops, input latency, and UI stutter.
+  - **Contributing Causes:**
+    - `power-profiles-daemon` was locked in `performance` mode, pumping maximum wattage into the CPU inside a thin ASUS chassis.
+    - `thermald` (Intel Thermal Daemon) was not installed, so the system lacked DPTF proactive thermal management and had to rely on emergency hardware PROCHOT (400 MHz drops).
+- **Remediation:**
+  - Switch power profile to `balanced` (`powerprofilesctl set balanced`) to avoid excessive heat spikes and sustain smooth clock frequencies.
+  - Install and enable `thermald` (`sudo pacman -S thermald` and `sudo systemctl enable --now thermald`) to regulate thermal curves and prevent abrupt 400 MHz emergency throttling.
+
 ---
 
 ## Notes

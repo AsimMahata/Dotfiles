@@ -10,10 +10,14 @@
 tooltip {
   background: @background;
   border: 1px solid @outline_variant;
+  border-radius: 8px;
 }
 
 tooltip label {
   color: @on_surface;
+  font-family: "jetbrains mono nerd font";
+  font-size: 11px;
+  padding: 4px 8px;
 }
 
 window#waybar {
@@ -82,8 +86,7 @@ button {
 #pulseaudio,
 #clock,
 #power,
-#cpu,
-#memory,
+#hardware,
 #disk,
 #temperature,
 #backlight,
@@ -125,6 +128,30 @@ button {
   padding: 0 0 0 8px;
   margin: 0;
   border-left: 1px solid alpha(@on_surface, 0.2);
+}
+
+#hardware {
+  margin: 8px 8px 8px 5px;
+  padding-left: 14px;
+  padding-right: 14px;
+  transition: all 0.4s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+
+#hardware #cpu {
+  background: transparent;
+  color: @on_surface;
+  padding: 0 8px 0 0;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+#hardware #memory {
+  background: transparent;
+  color: @on_surface;
+  padding: 0 0 0 8px;
+  margin: 0;
+  border-left: 1px solid alpha(@outline, 0.4);
+  transition: color 0.3s ease;
 }
 
 #power {
