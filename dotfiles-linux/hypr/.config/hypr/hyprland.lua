@@ -552,7 +552,7 @@ hl.window_rule({
         fullscreen = 1,
     },
     rounding = 0,
-    border = false,
+    border_size = 0,
 })
 
 -- Layer rules for wlogout blur

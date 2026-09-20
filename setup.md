@@ -192,6 +192,7 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 4. Removed `hyprland.conf` so Hyprland runs purely on `hyprland.lua`.
 5. Fixed `kb_variant = ",pes_keypad"` string type in `hyprland.lua`.
 6. Reloaded with `hyprctl reload full-reset` to switch compositor runtime to the Lua config manager.
+7. Added `fullscreen-no-rounding` window rule in `hyprland.lua` (`rounding = 0`, `border_size = 0`) for edge-to-edge fullscreen windows.
 
 
 ---
