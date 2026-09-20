@@ -36,3 +36,4 @@ backup/
 
 # Island Companion runtime stats
 **/stats.json
+**/island-config.json

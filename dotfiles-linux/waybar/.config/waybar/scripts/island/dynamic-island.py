@@ -255,26 +255,50 @@ ANIMALS = [
 
 
 # ─── State & Persistence ───
-STATS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "stats.json")
-DECAY_INTERVAL = 1800.0  # 30 minutes per affection point decay
+CONFIG_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "island-config.json")
+LEGACY_STATS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "stats.json")
+
+DEFAULT_SETTINGS = {
+    "auto_cycle": True,
+    "default_mode": 0,
+    "sleep_enabled": True,
+    "sleep_timeout": 15,
+    "heat_alerts_enabled": True,
+    "temp_warm": 70,
+    "temp_hot": 80,
+    "temp_critical": 90,
+    "decay_enabled": True,
+    "decay_interval": 1800,
+    "music_dance_enabled": True,
+    "marquee_max_len": 13
+}
 
 current_animal_idx = 0
 animal_stats = {}
+island_settings = dict(DEFAULT_SETTINGS)
+last_config_mtime = 0.0
 
 def get_current_animal_name():
     return ANIMALS[current_animal_idx]["name"]
 
 def load_stats():
-    """Loads persistent companion stats for each animal and calculates offline affection decay."""
-    global current_animal_idx, animal_stats
+    """Loads persistent companion settings and stats, calculating offline affection decay."""
+    global current_animal_idx, animal_stats, island_settings, last_config_mtime
     now = time.time()
     animal_stats = {}
 
-    if os.path.exists(STATS_FILE):
+    target_file = CONFIG_FILE if os.path.exists(CONFIG_FILE) else LEGACY_STATS_FILE
+
+    if os.path.exists(target_file):
         try:
-            with open(STATS_FILE, "r", encoding="utf-8") as f:
+            with open(target_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
             current_animal_idx = int(data.get("current_animal_idx", 0)) % len(ANIMALS)
+
+            # Load settings
+            loaded_settings = data.get("settings", {})
+            if isinstance(loaded_settings, dict):
+                island_settings = {**DEFAULT_SETTINGS, **loaded_settings}
 
             # Migration support: if older flat schema existed
             if "animals" in data and isinstance(data["animals"], dict):
@@ -289,10 +313,14 @@ def load_stats():
                     "last_decay_time": old_decay,
                     "last_pet_time": old_pet
                 }
+            last_config_mtime = os.path.getmtime(target_file)
         except Exception:
             pass
 
     # Ensure every animal in ANIMALS exists and apply offline decay
+    decay_enabled = island_settings.get("decay_enabled", True)
+    decay_interval = float(island_settings.get("decay_interval", 1800.0))
+
     for a in ANIMALS:
         name = a["name"]
         if name not in animal_stats:
@@ -301,29 +329,67 @@ def load_stats():
                 "last_decay_time": now,
                 "last_pet_time": now
             }
-        else:
+        elif decay_enabled and decay_interval > 0:
             last_decay = float(animal_stats[name].get("last_decay_time", now))
             score = int(animal_stats[name].get("affection_score", 0))
             if now > last_decay:
-                decay_units = int((now - last_decay) // DECAY_INTERVAL)
+                decay_units = int((now - last_decay) // decay_interval)
                 if decay_units > 0:
                     animal_stats[name]["affection_score"] = max(0, score - decay_units)
-                    animal_stats[name]["last_decay_time"] = last_decay + decay_units * DECAY_INTERVAL
+                    animal_stats[name]["last_decay_time"] = last_decay + decay_units * decay_interval
 
     save_stats()
 
 def save_stats():
-    """Atomically persists all companion stats to stats.json."""
-    global current_animal_idx, animal_stats
+    """Atomically persists all companion stats and settings to island-config.json."""
+    global current_animal_idx, animal_stats, island_settings, last_config_mtime
+    # If the file was changed on disk, reload settings first to prevent overwriting user edits
+    if os.path.exists(CONFIG_FILE):
+        try:
+            mtime = os.path.getmtime(CONFIG_FILE)
+            if mtime > last_config_mtime:
+                with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+                    disk_data = json.load(f)
+                if "settings" in disk_data and isinstance(disk_data["settings"], dict):
+                    island_settings = {**DEFAULT_SETTINGS, **disk_data["settings"]}
+        except Exception:
+            pass
+
     data = {
         "current_animal_idx": current_animal_idx,
+        "settings": island_settings,
         "animals": animal_stats
     }
     try:
-        tmp_file = STATS_FILE + ".tmp"
+        tmp_file = CONFIG_FILE + ".tmp"
         with open(tmp_file, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
-        os.replace(tmp_file, STATS_FILE)
+        os.replace(tmp_file, CONFIG_FILE)
+        last_config_mtime = os.path.getmtime(CONFIG_FILE)
+    except Exception:
+        pass
+
+def check_reload_config():
+    """Reloads settings and companion state if island-config.json was modified on disk."""
+    global current_animal_idx, island_settings, last_config_mtime, awake_until, animal_stats
+    if not os.path.exists(CONFIG_FILE):
+        return
+    try:
+        mtime = os.path.getmtime(CONFIG_FILE)
+        if mtime > last_config_mtime:
+            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            new_idx = int(data.get("current_animal_idx", current_animal_idx)) % len(ANIMALS)
+            if new_idx != current_animal_idx:
+                current_animal_idx = new_idx
+                awake_until = time.time() + float(island_settings.get("sleep_timeout", 15.0))
+            if "settings" in data and isinstance(data["settings"], dict):
+                island_settings = {**DEFAULT_SETTINGS, **data["settings"]}
+            if "animals" in data and isinstance(data["animals"], dict):
+                for k, v in data["animals"].items():
+                    if k in animal_stats:
+                        animal_stats[k] = v
+            last_config_mtime = mtime
     except Exception:
         pass
 
@@ -401,6 +467,7 @@ def handle_pet(signum, frame):
     global petted_until, awake_until, wake_transition_start, last_heat_show_time
     global heat_showing_until, heat_alert_tier, user_active_until, animal_stats
     now = time.time()
+    sleep_to = float(island_settings.get("sleep_timeout", 15.0))
     if now > awake_until:
         wake_transition_start = now
     active_name = get_current_animal_name()
@@ -409,7 +476,7 @@ def handle_pet(signum, frame):
         animal_stats[active_name]["last_pet_time"] = now
     save_stats()
     petted_until = now + 3.0
-    awake_until = now + 15.0
+    awake_until = now + sleep_to
     user_active_until = now + 30.0
     # Reset heat throttle & dismiss any active warm/hot alert so interaction is uninterrupted
     last_heat_show_time = now
@@ -421,11 +488,12 @@ def handle_switch_animal(signum, frame):
     global current_animal_idx, awake_until, wake_transition_start, last_heat_show_time
     global heat_showing_until, heat_alert_tier, user_active_until
     now = time.time()
+    sleep_to = float(island_settings.get("sleep_timeout", 15.0))
     if now > awake_until:
         wake_transition_start = now
     current_animal_idx = (current_animal_idx + 1) % len(ANIMALS)
     save_stats()
-    awake_until = now + 15.0
+    awake_until = now + sleep_to
     user_active_until = now + 30.0
     last_heat_show_time = now
     heat_showing_until = 0.0
@@ -524,19 +592,23 @@ def main():
 
     while True:
         now = time.time()
+        check_reload_config()
 
-        # Online decay: 1 affection point lost every 30 minutes per animal
-        decay_happened = False
-        for a_name, a_data in animal_stats.items():
-            last_dec = float(a_data.get("last_decay_time", now))
-            if now - last_dec >= DECAY_INTERVAL:
-                decay_units = int((now - last_dec) // DECAY_INTERVAL)
-                if decay_units > 0:
-                    a_data["affection_score"] = max(0, int(a_data.get("affection_score", 0)) - decay_units)
-                    a_data["last_decay_time"] = last_dec + decay_units * DECAY_INTERVAL
-                    decay_happened = True
-        if decay_happened:
-            save_stats()
+        # Online decay: 1 affection point lost every decay_interval per animal
+        decay_enabled = island_settings.get("decay_enabled", True)
+        decay_interval = float(island_settings.get("decay_interval", 1800.0))
+        if decay_enabled and decay_interval > 0:
+            decay_happened = False
+            for a_name, a_data in animal_stats.items():
+                last_dec = float(a_data.get("last_decay_time", now))
+                if now - last_dec >= decay_interval:
+                    decay_units = int((now - last_dec) // decay_interval)
+                    if decay_units > 0:
+                        a_data["affection_score"] = max(0, int(a_data.get("affection_score", 0)) - decay_units)
+                        a_data["last_decay_time"] = last_dec + decay_units * decay_interval
+                        decay_happened = True
+            if decay_happened:
+                save_stats()
 
         # Update vitals & media every 7 ticks (~1.5s)
         if poll_counter % 7 == 0:
@@ -553,12 +625,17 @@ def main():
 
         # U5: Tiered heat detection
         current_heat_tier = None  # None, "warm", "hot", "critical"
-        if cpu_temp >= 90 or cpu_pct >= 95:
-            current_heat_tier = "critical"
-        elif cpu_temp >= 80 or cpu_pct >= 85:
-            current_heat_tier = "hot"
-        elif cpu_temp >= 70:
-            current_heat_tier = "warm"
+        heat_alerts_on = island_settings.get("heat_alerts_enabled", True)
+        if heat_alerts_on:
+            t_crit = island_settings.get("temp_critical", 90)
+            t_hot = island_settings.get("temp_hot", 80)
+            t_warm = island_settings.get("temp_warm", 70)
+            if cpu_temp >= t_crit or cpu_pct >= 95:
+                current_heat_tier = "critical"
+            elif cpu_temp >= t_hot or cpu_pct >= 85:
+                current_heat_tier = "hot"
+            elif cpu_temp >= t_warm:
+                current_heat_tier = "warm"
 
         # Check if user is actively interacting with the island
         is_user_active = (now < user_active_until) or (now < petted_until)
@@ -579,11 +656,18 @@ def main():
 
         is_showing_heat = (now < heat_showing_until) and (heat_alert_tier is not None)
 
+        # Sleep & Wake settings
+        sleep_enabled = island_settings.get("sleep_enabled", True)
+        sleep_timeout = float(island_settings.get("sleep_timeout", 15.0))
+
         # Keep awake while music is playing
         if is_playing:
-            awake_until = now + 15.0
+            awake_until = now + sleep_timeout
 
-        is_awake = is_playing or (now < awake_until) or (now < force_mode_until)
+        if not sleep_enabled:
+            is_awake = True
+        else:
+            is_awake = is_playing or (now < awake_until) or (now < force_mode_until)
 
         # U6: Track sleep/wake transitions
         if not is_awake and not was_asleep:
@@ -596,6 +680,8 @@ def main():
         # Determine active mode
         if now < force_mode_until and force_mode is not None:
             active_mode = force_mode
+        elif not island_settings.get("auto_cycle", True):
+            active_mode = int(island_settings.get("default_mode", 0))
         else:
             force_mode = None
             # Auto cycle when awake: 0..119 ticks (0-26s) -> PET
@@ -666,17 +752,23 @@ def main():
             mood = "Monitoring System"
         elif active_mode == 2 and is_playing:  # MUSIC
             # Marquee scrolling song title (left to right bounce paced at ~0.66s)
-            scrolled_title = marquee_scroll(media_meta, max_len=13, tick=music_tick // 3)
+            marquee_len = int(island_settings.get("marquee_max_len", 13))
+            scrolled_title = marquee_scroll(media_meta, max_len=marquee_len, tick=music_tick // 3)
             display_text = f"󰎆 {scrolled_title}"
             css_class = "music"
             mood = f"Vibing to {media_meta}"
         else:  # PET (Awake & chilling or dancing)
-            if is_playing:
+            if is_playing and island_settings.get("music_dance_enabled", True):
                 frames = animal['music_frames']
                 # Paced at ~0.66s (90 BPM) so GTK's 500ms tooltip timer completes reliably
                 display_text = frames[(frame_idx // 3) % len(frames)]
                 css_class = "playing"
                 mood = f"Dancing to {media_meta}"
+            elif is_playing:
+                frames = animal['idle_frames']
+                display_text = frames[(frame_idx // 5) % len(frames)]
+                css_class = "playing"
+                mood = f"Listening to {media_meta}"
             else:
                 frames = animal['idle_frames']
                 display_text = frames[(frame_idx // 5) % len(frames)]
@@ -697,8 +789,9 @@ def main():
         aff_title, aff_heart, aff_bar = get_affection_info(cur_score)
 
         decay_info = ""
-        if cur_score > 0:
-            mins_left = max(1, int((cur_decay_time + DECAY_INTERVAL - now) // 60))
+        if cur_score > 0 and island_settings.get("decay_enabled", True):
+            decay_interval = float(island_settings.get("decay_interval", 1800.0))
+            mins_left = max(1, int((cur_decay_time + decay_interval - now) // 60))
             decay_info = f" <small><span color='#90909a'>(-1 in {mins_left}m)</span></small>"
 
         # Tooltip with Rich Pango Markup (escaped so GTK never drops the tooltip on unescaped & or < >)
@@ -719,11 +812,11 @@ def main():
             f"󰍛 Memory:    <b>{ram_used}G / {ram_total}G ({ram_pct}%)</b>\n\n"
             f"<b><span color='#bcc3ff'>─── Media ───</span></b>\n"
             f"{esc_media}\n\n"
-            f"<small><span color='#90909a'>Left-click: Pet (+1 {aff_heart})\nRight-click: Switch Companion\nMiddle-click: Cycle View Mode</span></small>"
+            f"<small><span color='#90909a'>Left-click: Pet (+1 {aff_heart})\nRight-click: Switch Companion\nMiddle-click: Settings Modal</span></small>"
         )
 
         payload = {
-            "text": display_text,
+            "text": html.escape(display_text),
             "tooltip": tooltip,
             "class": css_class
         }

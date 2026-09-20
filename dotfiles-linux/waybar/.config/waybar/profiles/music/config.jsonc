@@ -45,7 +45,7 @@
         "restart-interval": 1,
         "on-click": "pkill -SIGUSR1 -f dynamic-island.py",
         "on-click-right": "pkill -SIGUSR2 -f dynamic-island.py",
-        "on-click-middle": "pkill -SIGRTMIN+1 -f dynamic-island.py",
+        "on-click-middle": "~/.config/waybar/scripts/island/island-settings-toggle.sh",
         "tooltip": true
     },
     "custom/cava": {

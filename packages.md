@@ -54,6 +54,9 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`cava.sh`** | Local Script (`waybar/profiles/music`) | Formats and streams CAVA audio visualizer sticks to Waybar `custom/cava`. |
 | **`cat.py`** | Local Script (`waybar/profiles/music`) | Animated walking/vibing cat companion widget for Waybar (`custom/cat`). |
 | **`dynamic-island.py`** | Local Script (`waybar/scripts/island`) | Cyber Dynamic Island & Desktop Companion engine for Waybar (multi-animal animations, system vitals, music peek, and heat alerts). |
+| **`island-settings.py`** | Local Script (`waybar/scripts/island`) | GTK3 + Layer Shell modal settings interface for configuring Dynamic Island parameters, thresholds, and companions. |
+| **`island-settings-toggle.sh`** | Local Script (`waybar/scripts/island`) | Stateless bash toggle launcher for `island-settings.py`. |
+| **`island-config.json`** | Local Config (`waybar/scripts/island`) | Unified configuration and companion state store for the Dynamic Island engine. |
 | **`quick-slider.py`** | Local Script (`waybar/scripts/sliders`) | Unified GTK Layer Shell modal slider daemon for Volume & Brightness. |
 | **`volume-toggle.sh`** | Local Script (`waybar/scripts/sliders`) | Ultra-fast (0ms) IPC toggle launcher for volume mode (SIGUSR1). |
 | **`brightness-toggle.sh`** | Local Script (`waybar/scripts/sliders`) | Ultra-fast (0ms) IPC toggle launcher for brightness mode (SIGUSR2). |
