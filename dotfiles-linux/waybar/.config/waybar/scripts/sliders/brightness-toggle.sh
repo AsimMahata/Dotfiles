@@ -8,4 +8,4 @@ fi
 
 # Close any other open slider (e.g. volume) and launch brightness
 pkill -f "quick-slider.py" 2>/dev/null
-python3 ~/.config/waybar/scripts/quick-slider.py --mode brightness &
+python3 ~/.config/waybar/scripts/sliders/quick-slider.py --mode brightness &

@@ -398,3 +398,53 @@ button {
 #mpris.paused {
   color: @outline;
 }
+
+#custom-island {
+  background: @on_primary_fixed;
+  color: @primary;
+  font-size: 13px;
+  font-weight: 800;
+  margin: 8px 8px 8px 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  min-width: 110px;
+  border-radius: 50px;
+  border: 1px solid alpha(@primary, 0.25);
+  box-shadow: 0 0 10px alpha(@primary, 0.12);
+  transition: all 0.4s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+}
+
+#custom-island:hover {
+  border-color: alpha(@primary, 0.5);
+  box-shadow: 0 0 16px alpha(@primary, 0.3);
+}
+
+#custom-island.idle {
+  color: @secondary;
+}
+
+#custom-island.playing {
+  color: @primary;
+  box-shadow: 0 0 14px alpha(@primary, 0.25);
+}
+
+#custom-island.petted {
+  color: @tertiary;
+  border-color: alpha(@tertiary, 0.5);
+  box-shadow: 0 0 16px alpha(@tertiary, 0.35);
+}
+
+#custom-island.vitals {
+  color: #80d5d0;
+  border-color: alpha(#80d5d0, 0.35);
+}
+
+#custom-island.music {
+  color: @primary_fixed_dim;
+}
+
+#custom-island.alert {
+  color: @error;
+  border-color: alpha(@error, 0.6);
+  box-shadow: 0 0 16px alpha(@error, 0.35);
+}

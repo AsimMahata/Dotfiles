@@ -4,7 +4,8 @@
     "modules-left": [
         "custom/app",
         "hyprland/language",
-        "hyprland/window"
+        "hyprland/window",
+        "custom/island"
     ],
     "modules-center": [
         "hyprland/workspaces"
@@ -26,6 +27,14 @@
         "format-icons": {
             "default": ""
         }
+    },
+    "custom/island": {
+        "exec": "python3 ~/.config/waybar/scripts/island/dynamic-island.py",
+        "return-type": "json",
+        "on-click": "pkill -SIGUSR1 -f dynamic-island.py",
+        "on-click-right": "pkill -SIGUSR2 -f dynamic-island.py",
+        "on-click-middle": "pkill -SIGRTMIN+1 -f dynamic-island.py",
+        "tooltip": true
     },
     "custom/mic": {
         "format": "",
@@ -128,14 +137,14 @@
             ""
         ],
         "tooltip-format": "{time}",
-        "on-click": "~/.config/waybar/scripts/brightness-toggle.sh"
+        "on-click": "~/.config/waybar/scripts/sliders/brightness-toggle.sh"
     },
     "custom/power-profile": {
         "format": "{icon}",
         "tooltip": true,
         "return-type": "json",
-        "exec": "~/.config/waybar/scripts/power-profile-status.sh",
-        "on-click": "~/.config/waybar/scripts/power-profile-cycle.sh",
+        "exec": "~/.config/waybar/scripts/power/power-profile-status.sh",
+        "on-click": "~/.config/waybar/scripts/power/power-profile-cycle.sh",
         "signal": 8,
         "interval": 5,
         "format-icons": {
@@ -177,7 +186,7 @@
         "tooltip-format-linked": "Proton VPN (IPv6 Leak Protection)\nInterface: {ifname}",
         "tooltip-format-disconnected": "Disconnected from network",
         "tooltip-format-disabled": "Wi-Fi is disabled",
-        "on-click": "~/.config/waybar/scripts/connectivity-toggle.sh"
+        "on-click": "~/.config/waybar/scripts/connectivity/connectivity-toggle.sh"
     },
     "bluetooth": {
         "format": "󰂯",
@@ -185,7 +194,7 @@
         "format-off": "󰂲",
         "format-connected": "󰂱 {device_alias}",
         "format-connected-battery": "󰂱 {device_battery_percentage}%",
-        "on-click": "~/.config/waybar/scripts/connectivity-toggle.sh",
+        "on-click": "~/.config/waybar/scripts/connectivity/connectivity-toggle.sh",
         "format-device-preference": [
             "device1",
             "device2"
@@ -209,7 +218,7 @@
                 "󰕾"
             ]
         },
-        "on-click": "~/.config/waybar/scripts/volume-toggle.sh",
+        "on-click": "~/.config/waybar/scripts/sliders/volume-toggle.sh",
         "on-click-right": "pavucontrol"
     },
     "tray": {
@@ -239,7 +248,7 @@
         },
         "tooltip": true,
         "tooltip-format": "CPU: {usage}%\nLoad: {load}\nFreq: {avg_frequency} GHz\n\nLeft-click: toggle format\nRight-click: open resource modal",
-        "on-click-right": "~/.config/waybar/scripts/hardware-toggle.sh"
+        "on-click-right": "~/.config/waybar/scripts/hardware/hardware-toggle.sh"
     },
     "memory": {
         "interval": 10,
@@ -263,6 +272,6 @@
         },
         "tooltip": true,
         "tooltip-format": "RAM: {used:0.1f}G / {total:0.1f}G ({percentage}%)\nAvailable: {avail:0.1f}G\nSwap: {swapUsed:0.1f}G / {swapTotal:0.1f}G\n\nLeft-click: toggle % / GB\nRight-click: open resource modal",
-        "on-click-right": "~/.config/waybar/scripts/hardware-toggle.sh"
+        "on-click-right": "~/.config/waybar/scripts/hardware/hardware-toggle.sh"
     }
 }

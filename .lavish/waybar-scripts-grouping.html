@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="luxury">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waybar Dynamic Island & Scripts Organization — Visual Design Lab</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :where(.grid, .flex, .layout-grid, .layout-flex) > * { min-width: 0; }
+    :where(p, h1, h2, h3, h4, h5, h6, li, dd, blockquote, figcaption, td, th, .badge, .label) { overflow-wrap: anywhere; }
+    
+    /* Waybar Bar Simulation */
+    .waybar-mock {
+      background: rgba(19, 19, 24, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(188, 195, 255, 0.15);
+      border-radius: 50px;
+      font-family: 'JetBrains Mono', monospace;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    .waybar-pill {
+      background: #0d154b;
+      color: #e4e1e9;
+      border-radius: 50px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .waybar-window {
+      background: #303036;
+      color: #e4e1e9;
+      border-radius: 50px;
+    }
+    .waybar-island {
+      background: #0d154b;
+      color: #bcc3ff;
+      border: 1px solid rgba(188, 195, 255, 0.3);
+      box-shadow: 0 0 14px rgba(188, 195, 255, 0.18);
+      border-radius: 50px;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+    }
+    .waybar-island:hover {
+      box-shadow: 0 0 20px rgba(188, 195, 255, 0.35);
+      border-color: rgba(188, 195, 255, 0.6);
+      transform: translateY(-1px);
+    }
+    .waybar-island.alert-heat {
+      border-color: #ffb4ab;
+      color: #ffb4ab;
+      box-shadow: 0 0 16px rgba(255, 180, 171, 0.3);
+      animation: pulse-heat 1.5s infinite;
+    }
+    @keyframes pulse-heat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .folder-tree {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body class="bg-base-300 text-base-content min-h-screen p-4 sm:p-8">
+  <div class="max-w-6xl mx-auto space-y-8">
+    
+    <!-- Header -->
+    <header class="text-center space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold uppercase tracking-wider">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        AAAAA Ricing Laboratory &amp; Architecture
+      </div>
+      <h1 class="text-4xl font-extrabold tracking-tight">Waybar Dynamic Island &amp; Architecture</h1>
+      <p class="text-base-content/70 max-w-2xl mx-auto text-sm sm:text-base">
+        Explore live interactive visual mockups of your new <strong>Dynamic Island &amp; Pet Companion</strong> in the bar's free portion, and choose your preferred scripts folder structure.
+      </p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div role="tablist" class="tabs tabs-box bg-base-200 p-1 rounded-box max-w-lg mx-auto flex justify-center">
+      <button role="tab" id="tab-btn-visual" class="tab tab-active font-bold gap-2 text-sm flex-1" onclick="switchTab('visual')">
+        <span>🎨</span> Frontend Visual Designs
+      </button>
+      <button role="tab" id="tab-btn-structure" class="tab font-bold gap-2 text-sm flex-1" onclick="switchTab('structure')">
+        <span>📁</span> Scripts Folder Structure
+      </button>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 1: FRONTEND VISUAL DESIGNS & LIVE SIMULATION                 -->
+    <!-- ================================================================= -->
+    <div id="tab-visual" class="space-y-8">
+      
+      <!-- Interactive Sandbox Controls -->
+      <div class="card bg-base-100 border border-base-content/10 shadow-xl">
+        <div class="card-body p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-base-content/10 pb-3">
+            <div>
+              <h2 class="text-lg font-bold flex items-center gap-2">
+                <span>🎮</span> Live Interactive Waybar Simulation
+              </h2>
+              <p class="text-xs text-base-content/60">
+                Test how the Dynamic Island behaves in real-time right in the empty slot from your screenshot!
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn btn-xs btn-primary gap-1" onclick="simulatePetClick()">
+                <span>❤️</span> Click Pet (Love)
+              </button>
+              <button class="btn btn-xs btn-outline gap-1" onclick="cycleAnimal()">
+                <span>🔄</span> Switch Animal (<span id="animal-name">Cat</span>)
+              </button>
+              <button id="music-toggle-btn" class="btn btn-xs btn-outline btn-secondary gap-1" onclick="toggleMusicState()">
+                <span id="music-icon">🎵</span> <span id="music-label">Simulate: Music Playing</span>
+              </button>
+              <button id="heat-toggle-btn" class="btn btn-xs btn-outline btn-error gap-1" onclick="toggleHeatState()">
+                <span id="heat-icon">🌡️</span> <span id="heat-label">Simulate: High CPU (82°C)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- THE WAYBAR LIVE PREVIEW -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-[11px] text-base-content/50 uppercase tracking-wider font-mono">
+              <span>hyprland/window (Left)</span>
+              <span class="text-primary font-bold">★ FREE SPACE: DYNAMIC ISLAND ★</span>
+              <span>hyprland/workspaces &amp; Right Modules</span>
+            </div>
+
+            <!-- Full Waybar Replica -->
+            <div class="waybar-mock p-2.5 flex items-center justify-between gap-3 overflow-x-auto text-xs">
+              
+              <!-- LEFT: App, Language, Window Title (From User Screenshot) -->
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="waybar-pill px-3 py-1 text-base-content/80 font-semibold flex items-center gap-1.5">
+                  <span class="text-primary font-bold"></span> App
+                </div>
+                <div class="bg-secondary/20 text-secondary px-2.5 py-1 rounded-full text-[11px] font-bold">
+                  US
+                </div>
+                <div class="waybar-window px-3 py-1 text-base-content/90 font-mono text-xs flex items-center gap-1.5">
+                  <span>Antigravity IDE</span>
+                </div>
+              </div>
+
+              <!-- CENTER-LEFT GAP: THE DYNAMIC ISLAND WIDGET -->
+              <div class="flex-1 flex justify-center px-2">
+                <div id="dynamic-island-preview" class="waybar-island px-4 py-1.5 flex items-center gap-2.5 select-none" onclick="simulatePetClick()" title="Left-click: Pet | Right-click: Switch | Middle-click: Mode">
+                  <span id="island-icon" class="text-sm font-mono font-extrabold tracking-wider transition-all">ᓚᘏᗢ ♪  </span>
+                  <span id="island-extra" class="text-[11px] opacity-80 border-l border-primary/30 pl-2 font-mono hidden sm:inline">Vibing</span>
+                  <span id="island-heart" class="text-xs text-error hidden animate-ping">❤️</span>
+                </div>
+              </div>
+
+              <!-- RIGHT: Workspaces (From User Screenshot) & Modules -->
+              <div class="flex items-center gap-2 shrink-0">
+                <!-- Workspace Pill -->
+                <div class="bg-[#131318] border border-white/10 px-2 py-1 rounded-full flex items-center gap-1.5">
+                  <span class="w-8 h-2.5 bg-base-content/50 rounded-full inline-block"></span>
+                  <span class="w-2 h-2 bg-base-content/20 rounded-full inline-block"></span>
+                  <span class="w-2 h-2 bg-base-content/20 rounded-full inline-block"></span>
+                  <span class="w-4 h-4 bg-primary/20 text-primary text-[10px] rounded-full inline-flex items-center justify-center font-bold">✈</span>
+                </div>
+                <!-- Hardware & Quick Stats -->
+                <div class="waybar-pill px-2.5 py-1 text-[11px] text-base-content/70 hidden md:flex items-center gap-2">
+                  <span>󰻠 18%</span>
+                  <span class="border-l border-white/10 pl-2">󰍛 4.2G</span>
+                </div>
+                <div class="waybar-pill px-2.5 py-1 text-[11px] text-base-content/70 flex items-center gap-1">
+                  <span>󰕾 96%</span>
+                </div>
+                <div class="waybar-pill px-2.5 py-1 text-[11px] text-base-content/70 flex items-center gap-1">
+                  <span> 20:30</span>
+                </div>
+                <div class="waybar-pill px-2.5 py-1 text-[11px] text-error">
+                  ⏻
+                </div>
+              </div>
+
+            </div>
+            <div class="text-[11px] text-center text-base-content/40 font-mono">
+              💡 Tip: Click directly on the Dynamic Island pill above to pet it and see the heart reaction!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 VISUAL DESIGN DIRECTIONS -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold">Choose Your Frontend Aesthetic</h2>
+          <span class="badge badge-primary badge-outline text-xs">3 Unique Concepts</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- DESIGN 1: Cyber Dynamic Island -->
+          <div class="card bg-base-100 border-2 border-primary shadow-xl hover:shadow-2xl transition-all">
+            <div class="card-body p-5 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-primary font-bold">Concept 1</span>
+                <span class="badge badge-soft badge-accent text-[10px] font-bold uppercase">Morphing Island</span>
+              </div>
+              <h3 class="text-xl font-bold">The Cyber Dynamic Island</h3>
+              <p class="text-xs text-base-content/70">
+                Smoothly morphs between <strong>Pet Companion</strong> (dancing/sleeping cat), <strong>System Vitals</strong> (CPU temp &amp; load), and <strong>Music Peek</strong> (song title marquee).
+              </p>
+
+              <!-- Live Card Preview -->
+              <div class="bg-base-200 p-4 rounded-box border border-base-content/5 space-y-3 font-mono text-xs">
+                <div class="text-[10px] uppercase text-base-content/50 font-sans font-bold">Visual States</div>
+                <div class="space-y-2">
+                  <div class="bg-[#0d154b] text-primary p-2 rounded-full flex items-center justify-between px-3 border border-primary/30">
+                    <span>🐾 ᓚᘏᗢ ♪  </span>
+                    <span class="text-[10px] text-base-content/60">Music Vibe</span>
+                  </div>
+                  <div class="bg-[#0d154b] text-[#80d5d0] p-2 rounded-full flex items-center justify-between px-3 border border-[#80d5d0]/30">
+                    <span>🌡️ 52°C • 󰻠 18%</span>
+                    <span class="text-[10px] text-base-content/60">System Glance</span>
+                  </div>
+                  <div class="bg-[#0d154b] text-secondary p-2 rounded-full flex items-center justify-between px-3 border border-secondary/30">
+                    <span>󰎆 Blinding Lights</span>
+                    <span class="text-[10px] text-base-content/60">Track Peek</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Highlights -->
+              <ul class="text-xs text-base-content/80 space-y-1.5 list-disc list-inside">
+                <li>Automatic rotation every 30–45 seconds.</li>
+                <li>Instant heat/overload reaction: <code class="text-error">ᓚᘏᗢ 💦 82°C</code>.</li>
+                <li>Middle-click forces instant state flip.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- DESIGN 2: Tamagotchi Companion -->
+          <div class="card bg-base-100 border border-base-content/10 shadow-xl hover:border-secondary/40 transition-all">
+            <div class="card-body p-5 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-secondary font-bold">Concept 2</span>
+                <span class="badge badge-soft badge-secondary text-[10px] font-bold uppercase">Pet Simulator</span>
+              </div>
+              <h3 class="text-xl font-bold">The Tamagotchi Desktop Pet</h3>
+              <p class="text-xs text-base-content/70">
+                A living desktop companion with moods, an affection counter, thought bubbles, and time-of-day awareness (drinking coffee in morning, sleeping at night).
+              </p>
+
+              <!-- Live Card Preview -->
+              <div class="bg-base-200 p-4 rounded-box border border-base-content/5 space-y-3 font-mono text-xs">
+                <div class="text-[10px] uppercase text-base-content/50 font-sans font-bold">Visual States</div>
+                <div class="space-y-2">
+                  <div class="bg-[#0d154b] text-primary p-2 rounded-full flex items-center justify-between px-3 border border-primary/30">
+                    <span>🐱 Luna [❤️ 14] ᓚᘏᗢ ~</span>
+                    <span class="text-[10px] text-base-content/60">Affection</span>
+                  </div>
+                  <div class="bg-[#0d154b] text-accent p-2 rounded-full flex items-center justify-between px-3 border border-accent/30">
+                    <span>☕ ᓚᘏᗢ (good morning)</span>
+                    <span class="text-[10px] text-base-content/60">Morning</span>
+                  </div>
+                  <div class="bg-[#0d154b] text-secondary p-2 rounded-full flex items-center justify-between px-3 border border-secondary/30">
+                    <span>🌙 ᓚᘏᗢ zZ (dreaming)</span>
+                    <span class="text-[10px] text-base-content/60">Night</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Highlights -->
+              <ul class="text-xs text-base-content/80 space-y-1.5 list-disc list-inside">
+                <li>Pet it to level up affection with hearts.</li>
+                <li>Displays cute thought bubbles in tooltip.</li>
+                <li>6 switchable animals (Cat, Bunny, Duck, Dog, Ghost, Crab).</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- DESIGN 3: Minimalist Micro-Capsule -->
+          <div class="card bg-base-100 border border-base-content/10 shadow-xl hover:border-accent/40 transition-all">
+            <div class="card-body p-5 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-accent font-bold">Concept 3</span>
+                <span class="badge badge-soft badge-accent text-[10px] font-bold uppercase">Stealth Capsule</span>
+              </div>
+              <h3 class="text-xl font-bold">The Stealth Micro-Capsule</h3>
+              <p class="text-xs text-base-content/70">
+                Ultra-compact by default (just the moving pet + glowing status dot). Smoothly expands to reveal full stats, music, and temp when hovered or clicked.
+              </p>
+
+              <!-- Live Card Preview -->
+              <div class="bg-base-200 p-4 rounded-box border border-base-content/5 space-y-3 font-mono text-xs">
+                <div class="text-[10px] uppercase text-base-content/50 font-sans font-bold">Visual States</div>
+                <div class="space-y-2">
+                  <div class="bg-[#0d154b] text-primary p-2 rounded-full flex items-center justify-between px-3 border border-primary/30">
+                    <span>ᓚᘏᗢ ✦</span>
+                    <span class="text-[10px] text-base-content/60">Collapsed (Default)</span>
+                  </div>
+                  <div class="bg-[#0d154b] text-primary p-2 rounded-full flex items-center justify-between px-3 border border-primary/30 text-[11px]">
+                    <span>[ ᓚᘏᗢ ♪ | 🌡️ 52°C | 󰎆 Starboy ]</span>
+                    <span class="text-[10px] text-base-content/60">Hovered</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Highlights -->
+              <ul class="text-xs text-base-content/80 space-y-1.5 list-disc list-inside">
+                <li>Zero visual clutter when working.</li>
+                <li>Expands dynamically into a full status bar.</li>
+                <li>Clean, minimalist aesthetic.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: SCRIPTS FOLDER STRUCTURE OPTIONS                          -->
+    <!-- ================================================================= -->
+    <div id="tab-structure" class="space-y-6 hidden">
+      
+      <div class="card bg-base-100 border border-base-content/10 shadow-lg p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-bold">Waybar Scripts Folder Grouping Options</h2>
+            <p class="text-xs text-base-content/70">
+              Clean up the flat 13 files in <code class="text-primary font-mono text-xs">~/.config/waybar/scripts/</code>.
+            </p>
+          </div>
+          <span class="badge badge-primary badge-outline text-xs">Architectural Decision</span>
+        </div>
+      </div>
+
+      <!-- Grouping Options Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- OPTION 1 -->
+        <div class="card bg-base-100 border-2 border-primary shadow-xl">
+          <div class="card-body p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="badge badge-primary font-bold">Option 1</span>
+              <span class="badge badge-soft badge-primary text-[10px] font-bold uppercase">Recommended</span>
+            </div>
+            <h3 class="text-lg font-bold">Role-Based Architecture</h3>
+            <p class="text-xs text-base-content/70">
+              Separated by role: <code class="text-primary font-mono text-[11px]">modals/</code> (UI), <code class="text-secondary font-mono text-[11px]">launchers/</code> (toggles), <code class="text-success font-mono text-[11px]">modules/</code> (feeds).
+            </p>
+            <div class="bg-base-200/80 p-3 rounded-box border border-base-content/5 folder-tree text-[11px] overflow-x-auto">
+scripts/
+├── launch.sh
+├── toggle.sh
+├── modals/
+│   ├── quick-slider.py
+│   ├── quick-connectivity.py
+│   ├── quick-hardware.py
+│   └── power-profile-osd.py
+├── launchers/
+│   ├── volume-toggle.sh
+│   ├── brightness-toggle.sh
+│   ├── connectivity-toggle.sh
+│   └── hardware-toggle.sh
+└── modules/
+    ├── dynamic-island.py
+    └── power-profile-status.sh
+            </div>
+            <div class="text-xs text-success font-semibold">✓ Cleanest root (only 2 commands)</div>
+          </div>
+        </div>
+
+        <!-- OPTION 2 -->
+        <div class="card bg-base-100 border border-base-content/10 shadow-xl">
+          <div class="card-body p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="badge badge-secondary font-bold">Option 2</span>
+              <span class="badge badge-soft badge-secondary text-[10px] font-bold uppercase">Feature Domain</span>
+            </div>
+            <h3 class="text-lg font-bold">Feature-Domain</h3>
+            <p class="text-xs text-base-content/70">
+              Colocated by feature: each domain has both its modal and launcher together.
+            </p>
+            <div class="bg-base-200/80 p-3 rounded-box border border-base-content/5 folder-tree text-[11px] overflow-x-auto">
+scripts/
+├── launch.sh
+├── toggle.sh
+├── hardware/
+│   ├── quick-hardware.py
+│   └── hardware-toggle.sh
+├── connectivity/
+│   ├── quick-connectivity.py
+│   └── connectivity-toggle.sh
+├── power/
+│   ├── power-profile-osd.py
+│   └── power-profile-cycle.sh
+└── island/
+    └── dynamic-island.py
+            </div>
+            <div class="text-xs text-info font-semibold">✓ All files for 1 feature in 1 folder</div>
+          </div>
+        </div>
+
+        <!-- OPTION 3 -->
+        <div class="card bg-base-100 border border-base-content/10 shadow-xl">
+          <div class="card-body p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="badge badge-accent font-bold">Option 3</span>
+              <span class="badge badge-soft badge-accent text-[10px] font-bold uppercase">Minimalist</span>
+            </div>
+            <h3 class="text-lg font-bold">Minimalist Hybrid</h3>
+            <p class="text-xs text-base-content/70">
+              Leave all <code class="font-mono text-[11px]">*.sh</code> in root, move only Python modals &amp; feeds.
+            </p>
+            <div class="bg-base-200/80 p-3 rounded-box border border-base-content/5 folder-tree text-[11px] overflow-x-auto">
+scripts/
+├── [all *.sh launchers stay here]
+├── modals/
+│   ├── quick-slider.py
+│   ├── quick-connectivity.py
+│   └── quick-hardware.py
+└── modules/
+    ├── dynamic-island.py
+    └── power-profile-status.sh
+            </div>
+            <div class="text-xs text-warning font-semibold">✓ Smallest path changes in config</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- UNIFIED SUBMIT FORM                                               -->
+    <!-- ================================================================= -->
+    <div class="card bg-base-200 border-2 border-primary/40 shadow-2xl p-6 space-y-5">
+      <form id="combined-decision-form" data-lavish-question="waybar_redesign" onsubmit="submitCombinedDecision(event)">
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-base-content/10 pb-3">
+            <div>
+              <h3 class="text-xl font-bold text-primary">Submit Your Choices to the Agent</h3>
+              <p class="text-xs text-base-content/70">
+                Choose your favorite frontend design and folder structure.
+              </p>
+            </div>
+            <button type="submit" class="btn btn-primary shadow-lg gap-2">
+              <span>Queue Decision to Agent</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Frontend Concept Selection -->
+            <fieldset class="fieldset bg-base-100 p-4 rounded-box border border-base-content/10">
+              <legend class="fieldset-legend font-bold text-xs text-primary">1. Frontend Design Direction</legend>
+              <div class="space-y-2 text-xs">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="design_choice" value="Concept 1: The Cyber Dynamic Island (Morphing Pill)" class="radio radio-primary radio-xs" checked>
+                  <span><strong>Concept 1:</strong> Cyber Dynamic Island (Morphing Pill)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="design_choice" value="Concept 2: The Tamagotchi Desktop Pet (Moods & Affection)" class="radio radio-primary radio-xs">
+                  <span><strong>Concept 2:</strong> Tamagotchi Desktop Pet (Moods &amp; Affection)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="design_choice" value="Concept 3: The Stealth Micro-Capsule (Expands on Hover)" class="radio radio-primary radio-xs">
+                  <span><strong>Concept 3:</strong> Stealth Micro-Capsule (Expands on Hover)</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Folder Structure Selection -->
+            <fieldset class="fieldset bg-base-100 p-4 rounded-box border border-base-content/10">
+              <legend class="fieldset-legend font-bold text-xs text-primary">2. Scripts Folder Structure</legend>
+              <div class="space-y-2 text-xs">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="folder_choice" value="Option 1: Role-Based (modals/, launchers/, modules/)" class="radio radio-secondary radio-xs" checked>
+                  <span><strong>Option 1:</strong> Role-Based (<code class="font-mono text-[10px]">modals/</code>, <code class="font-mono text-[10px]">launchers/</code>, <code class="font-mono text-[10px]">modules/</code>)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="folder_choice" value="Option 2: Feature-Domain (hardware/, connectivity/, power/, etc.)" class="radio radio-secondary radio-xs">
+                  <span><strong>Option 2:</strong> Feature-Domain (<code class="font-mono text-[10px]">hardware/</code>, <code class="font-mono text-[10px]">power/</code>, etc.)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="folder_choice" value="Option 3: Minimalist (modals/, modules/, root launchers)" class="radio radio-secondary radio-xs">
+                  <span><strong>Option 3:</strong> Minimalist (keep <code class="font-mono text-[10px]">*.sh</code> in root)</span>
+                </label>
+              </div>
+            </fieldset>
+
+          </div>
+
+          <!-- Custom Notes -->
+          <div class="form-control">
+            <label class="label py-1">
+              <span class="label-text text-xs text-base-content/70">Custom notes, tweaks, or specific requests (optional):</span>
+            </label>
+            <textarea id="combined-notes" name="notes" class="textarea textarea-bordered bg-base-100 text-xs h-16" placeholder="e.g. 'I want Concept 1 with Luna the cat, and Option 1 for folder structure.'"></textarea>
+          </div>
+
+          <div id="decision-alert" class="hidden alert alert-success text-xs py-2">
+            <span id="decision-alert-text">Decision queued!</span>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-base-content/40 pt-4 pb-8">
+      Designed with Lavish Editor for Waybar &amp; Hyprland Ricing Workspace
+    </footer>
+
+  </div>
+
+  <!-- LIVE ANIMATION & INTERACTION SCRIPT -->
+  <script>
+    // Tab switching
+    function switchTab(tab) {
+      const visualTab = document.getElementById('tab-visual');
+      const structureTab = document.getElementById('tab-structure');
+      const btnVisual = document.getElementById('tab-btn-visual');
+      const btnStructure = document.getElementById('tab-btn-structure');
+
+      if (tab === 'visual') {
+        visualTab.classList.remove('hidden');
+        structureTab.classList.add('hidden');
+        btnVisual.classList.add('tab-active');
+        btnStructure.classList.remove('tab-active');
+      } else {
+        visualTab.classList.add('hidden');
+        structureTab.classList.remove('hidden');
+        btnVisual.classList.remove('tab-active');
+        btnStructure.classList.add('tab-active');
+      }
+    }
+
+    // Interactive Animation State
+    const NBSP = "\u00a0";
+    const animals = [
+      {
+        name: "Cat",
+        musicFrames: ["ᓚᘏᗢ ♪" + NBSP*3, NBSP + "ᓚᘏᗢ ♫" + NBSP*2, NBSP*2 + "ᓚᘏᗢ ♬" + NBSP, NBSP*3 + "ᓚᘏᗢ ♪", NBSP*2 + "ᓚᘏᗢ ♬" + NBSP, NBSP + "ᓚᘏᗢ ♫" + NBSP*2],
+        idleFrames: ["ᓚᘏᗢ ~", "ᓚᘏᗢ ฅ", "(=^･ω･^=)", "ᓚᘏᗢ zZ"],
+        petted: "ᓚᘏᗢ ❤️",
+        heat: "ᓚᘏᗢ 💦"
+      },
+      {
+        name: "Bunny",
+        musicFrames: ["(\\_/) ♪" + NBSP*2, "(\\_/) ♫" + NBSP, "(\\_/) ♬", "(\\_/) ♫" + NBSP],
+        idleFrames: ["(\\_/) (• . •)", "(\\(\\ (•‿•)", "(\\_/) ( •_•)"],
+        petted: "(\\_/) />❤️",
+        heat: "(\\_/) 💦"
+      },
+      {
+        name: "Duck",
+        musicFrames: ["( •ө•) ♪" + NBSP*2, NBSP + "( •ө•) ♫" + NBSP, NBSP*2 + "( •ө•) ♬", NBSP + "( •ө•) ♫" + NBSP],
+        idleFrames: ["( •ө•) ~", "( •ө•) quack", "( •ө•)"],
+        petted: "( •ө•) ❤️",
+        heat: "( >ө<) 💨"
+      },
+      {
+        name: "Ghost",
+        musicFrames: ["👻 ♪" + NBSP*3, NBSP + "👻 ♫" + NBSP*2, NBSP*2 + "👻 ♬" + NBSP, NBSP*3 + "👻 ♪"],
+        idleFrames: ["(っ'-')╮ 👻", "(つ•̀ᴥ•́)つ", "👻 booo~"],
+        petted: "👻 ❤️",
+        heat: "👻 🔥"
+      },
+      {
+        name: "Crab",
+        musicFrames: ["(V)(°,,,,°)(V) ♪", "🦀 rave ♫", "(V)(°,,,,°)(V) ♬", "🦀 ♫"],
+        idleFrames: ["🦀 ~", "(V)(°,,,,°)(V)", "🦀 *snip*"],
+        petted: "🦀 ❤️",
+        heat: "🦀 ♨️"
+      }
+    ];
+
+    let currentAnimalIdx = 0;
+    let isMusicPlaying = true;
+    let isHighHeat = false;
+    let frameIndex = 0;
+    let pettedTimer = null;
+    let isPetted = false;
+
+    function cycleAnimal() {
+      currentAnimalIdx = (currentAnimalIdx + 1) % animals.length;
+      document.getElementById('animal-name').textContent = animals[currentAnimalIdx].name;
+    }
+
+    function toggleMusicState() {
+      isMusicPlaying = !isMusicPlaying;
+      const btn = document.getElementById('music-toggle-btn');
+      const label = document.getElementById('music-label');
+      const extra = document.getElementById('island-extra');
+
+      if (isMusicPlaying) {
+        label.textContent = "Simulate: Music Playing";
+        btn.classList.add('btn-secondary');
+        extra.textContent = "Vibing";
+      } else {
+        label.textContent = "Simulate: Music Idle";
+        btn.classList.remove('btn-secondary');
+        extra.textContent = "Chilling";
+      }
+    }
+
+    function toggleHeatState() {
+      isHighHeat = !isHighHeat;
+      const btn = document.getElementById('heat-toggle-btn');
+      const label = document.getElementById('heat-label');
+      const island = document.getElementById('dynamic-island-preview');
+      const extra = document.getElementById('island-extra');
+
+      if (isHighHeat) {
+        label.textContent = "High CPU Active (82°C)";
+        btn.classList.add('btn-active');
+        island.classList.add('alert-heat');
+        extra.textContent = "82°C 🔥";
+      } else {
+        label.textContent = "Simulate: High CPU (82°C)";
+        btn.classList.remove('btn-active');
+        island.classList.remove('alert-heat');
+        extra.textContent = isMusicPlaying ? "Vibing" : "Chilling";
+      }
+    }
+
+    function simulatePetClick() {
+      isPetted = true;
+      const heartEl = document.getElementById('island-heart');
+      heartEl.classList.remove('hidden');
+
+      if (pettedTimer) clearTimeout(pettedTimer);
+      pettedTimer = setTimeout(() => {
+        isPetted = false;
+        heartEl.classList.add('hidden');
+      }, 2500);
+    }
+
+    // Animation Loop
+    setInterval(() => {
+      const animal = animals[currentAnimalIdx];
+      const iconEl = document.getElementById('island-icon');
+
+      if (isPetted) {
+        iconEl.textContent = animal.petted;
+        return;
+      }
+
+      if (isHighHeat) {
+        iconEl.textContent = animal.heat;
+        return;
+      }
+
+      if (isMusicPlaying) {
+        const frames = animal.musicFrames;
+        iconEl.textContent = frames[frameIndex % frames.length];
+      } else {
+        const frames = animal.idleFrames;
+        // Idle updates slower
+        if (frameIndex % 3 === 0) {
+          iconEl.textContent = frames[Math.floor(frameIndex / 3) % frames.length];
+        }
+      }
+      frameIndex++;
+    }, 220);
+
+    // Form Submission
+    function submitCombinedDecision(e) {
+      e.preventDefault();
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      const designChoice = formData.get('design_choice');
+      const folderChoice = formData.get('folder_choice');
+      const notes = formData.get('notes') || '';
+
+      const promptMsg = `Decision:\n- Frontend Design: ${designChoice}\n- Scripts Organization: ${folderChoice}${notes ? '\n- Notes: ' + notes : ''}`;
+
+      if (window.lavish && typeof window.lavish.queuePrompt === 'function') {
+        window.lavish.queuePrompt(promptMsg, {
+          tag: 'decision',
+          text: `Selected: ${designChoice} & ${folderChoice}`,
+          element: form,
+          data: {
+            design: designChoice,
+            folder: folderChoice,
+            notes: notes
+          }
+        });
+
+        const alertEl = document.getElementById('decision-alert');
+        const alertText = document.getElementById('decision-alert-text');
+        alertText.textContent = `Queued: ${designChoice} + ${folderChoice}. Click "Send to Agent" in the Lavish panel!`;
+        alertEl.classList.remove('hidden');
+      } else {
+        alert(promptMsg);
+      }
+    }
+  </script>
+</body>
+</html>

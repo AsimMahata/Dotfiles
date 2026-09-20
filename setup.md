@@ -365,13 +365,13 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - Seamless mode switching: clicking Volume while Brightness is open (or vice versa) switches instantly in 0ms without backdrop collision or process deadlocks.
   - Supports live volume (`wpctl`) and brightness (`brightnessctl`) sliding at 60fps non-blocking, mouse scroll adjustments, Escape key dismiss, and toggle on repeated clicks.
 - **Scripts & Architecture Guide:**
-  - [`quick-slider.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-slider.py): Unified GTK3 + `GtkLayerShell` application managing both volume and brightness modes with dynamic Matugen theming.
-  - [`volume-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/volume-toggle.sh): Stateless bash toggle launcher.
-  - [`brightness-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/brightness-toggle.sh): Stateless bash toggle launcher.
-  - [`gtk.md`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/gtk.md): Comprehensive architectural guide and pitfalls/best practices reference for building Wayland GTK Layer Shell modals.
+  - [`quick-slider.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/sliders/quick-slider.py): Unified GTK3 + `GtkLayerShell` application managing both volume and brightness modes with dynamic Matugen theming.
+  - [`volume-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/sliders/volume-toggle.sh): Stateless bash toggle launcher.
+  - [`brightness-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/sliders/brightness-toggle.sh): Stateless bash toggle launcher.
+  - [`gtk.md`](file:///home/asim/setup/Dotfiles/gtk.md): Comprehensive architectural guide and pitfalls/best practices reference for building Wayland GTK Layer Shell modals.
 - **Changes in [`dotfiles-linux/waybar/.config/waybar/config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc):**
-  - Set `pulseaudio` `"on-click": "~/.config/waybar/scripts/volume-toggle.sh"`.
-  - Set `battery` `"on-click": "~/.config/waybar/scripts/brightness-toggle.sh"`.
+  - Set `pulseaudio` `"on-click": "~/.config/waybar/scripts/sliders/volume-toggle.sh"`.
+  - Set `battery` `"on-click": "~/.config/waybar/scripts/sliders/brightness-toggle.sh"`.
   - Retained `"on-click-right": "pavucontrol"` on `pulseaudio` for full audio mixer access.
 
 ---
@@ -385,10 +385,10 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - Includes real-time status display (Wi-Fi SSID, Ethernet Wired status, IP address, Bluetooth device & battery %), non-blocking toggle switches for Wi-Fi and Bluetooth radios, and quick-launch buttons for full system settings (`nm-connection-editor` and `blueman-manager`).
   - Integrated an interactive Wi-Fi network scanner with a scrollable list of nearby networks, signal strength indicators, security lock badges, and click-to-connect support.
 - **Scripts:**
-  - [`quick-connectivity.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-connectivity.py): GTK3 + `GtkLayerShell` quick-settings modal application with dynamic Matugen theming, Wi-Fi scanner, and Bluetooth manager.
-  - [`connectivity-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/connectivity-toggle.sh): Stateless bash toggle launcher with 0ms toggle response.
+  - [`quick-connectivity.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/connectivity/quick-connectivity.py): GTK3 + `GtkLayerShell` quick-settings modal application with dynamic Matugen theming, Wi-Fi scanner, and Bluetooth manager.
+  - [`connectivity-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/connectivity/connectivity-toggle.sh): Stateless bash toggle launcher with 0ms toggle response.
 - **Waybar Changes:**
-  - In [`config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): replaced `"network", "bluetooth"` in `modules-right` with `"group/connectivity"`, fixed `format-ethernet` wired icon/text, configured `format-linked` with Proton VPN shield icon (`󰖂 Proton`) in brand purple (`#6d4aff`) for `ipv6leakintrf0`, and routed clicks to `connectivity-toggle.sh`.
+  - In [`config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): replaced `"network", "bluetooth"` in `modules-right` with `"group/connectivity"`, fixed `format-ethernet` wired icon/text, configured `format-linked` with Proton VPN shield icon (`󰖂 Proton`) in brand purple (`#6d4aff`) for `ipv6leakintrf0`, and routed clicks to `~/.config/waybar/scripts/connectivity/connectivity-toggle.sh`.
   - In [`style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css): styled `#connectivity` as the pill surface with transparent inner modules, divider, `#connectivity #network.linked` brand purple state (`#6d4aff`), and proper color palette.
 
 ---
@@ -404,9 +404,9 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
     - **Balanced (``):** Blue highlight — `Fans: Dynamic / Standard 󰌪 • Balanced Performance & Battery`
     - **Quiet (``):** Emerald/Green highlight — `Fans: Silent / Low 󰌪 • Power Throttled • Lowest Heat`
 - **Scripts:**
-  - [`power-profile-status.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-status.sh): Outputs JSON status (`text`, `alt`, `tooltip`, `class`) for Waybar.
-  - [`power-profile-cycle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-cycle.sh): Cycles `powerprofilesctl` modes, sends `SIGRTMIN+8` to Waybar for an instant 0ms update, and triggers the OSD HUD.
-  - [`power-profile-osd.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-osd.py): GTK Layer Shell overlay widget with `Gtk.Stack` slide-left transition (current profile slides left, new profile slides in from right) and 1.6s auto-dismiss.
+  - [`power-profile-status.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power/power-profile-status.sh): Outputs JSON status (`text`, `alt`, `tooltip`, `class`) for Waybar.
+  - [`power-profile-cycle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power/power-profile-cycle.sh): Cycles `powerprofilesctl` modes, sends `SIGRTMIN+8` to Waybar for an instant 0ms update, and triggers the OSD HUD.
+  - [`power-profile-osd.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power/power-profile-osd.py): GTK Layer Shell overlay widget with `Gtk.Stack` slide-left transition (current profile slides left, new profile slides in from right) and 1.6s auto-dismiss.
 
 ## 17. Waybar Unified Hardware Resources & Quick Modal (CPU & RAM — AAA UX)
 
@@ -426,10 +426,10 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
     - Numbers and metric text remain crisp white (`@on_surface`) for maximum contrast and readability.
     - Inside the modal, the CPU and RAM progress bars dynamically mirror these active load tier colors.
 - **Scripts:**
-  - [`quick-hardware.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-hardware.py): Stateless GTK3 + `GtkLayerShell` modal with live CPU/RAM monitoring, top processes, and a BTOP launcher button.
-  - [`hardware-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/hardware-toggle.sh): Stateless bash toggle launcher.
+  - [`quick-hardware.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/hardware/quick-hardware.py): Stateless GTK3 + `GtkLayerShell` modal with live CPU/RAM monitoring, top processes, and a BTOP launcher button.
+  - [`hardware-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/hardware/hardware-toggle.sh): Stateless bash toggle launcher.
 - **Files Modified:**
-  - [`dotfiles-linux/waybar/.config/waybar/config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): Replaced `"cpu", "memory"` with `"group/hardware"`, routed clicks to `hardware-toggle.sh`, and cleaned up tooltip formatting.
+  - [`dotfiles-linux/waybar/.config/waybar/config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): Replaced `"cpu", "memory"` with `"group/hardware"`, routed clicks to `~/.config/waybar/scripts/hardware/hardware-toggle.sh`, and cleaned up tooltip formatting.
   - [`dotfiles-linux/waybar/.config/waybar/style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css): Styled `#hardware`, `#hardware #cpu`, `#hardware #memory` with divider, hover color transitions, clean tooltip rules, and an exact 5px gap (`margin-left: 5px;`) separating `#hardware` from the center `#workspaces` pill.
 ## 18. Hardware Acceleration & Thermal Throttling Diagnosis
 
@@ -447,9 +447,20 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - **Contributing Causes:**
     - `power-profiles-daemon` was locked in `performance` mode, pumping maximum wattage into the CPU inside a thin ASUS chassis.
     - `thermald` (Intel Thermal Daemon) was not installed, so the system lacked DPTF proactive thermal management and had to rely on emergency hardware PROCHOT (400 MHz drops).
-- **Remediation:**
-  - Switch power profile to `balanced` (`powerprofilesctl set balanced`) to avoid excessive heat spikes and sustain smooth clock frequencies.
-  - Install and enable `thermald` (`sudo pacman -S thermald` and `sudo systemctl enable --now thermald`) to regulate thermal curves and prevent abrupt 400 MHz emergency throttling.
+- **Remediation & Installation:**
+  - Switch power profile to `balanced` to avoid excessive heat spikes and sustain smooth clock frequencies:
+    ```bash
+    powerprofilesctl set balanced
+    ```
+  - Install and enable `thermald` (Intel Thermal Daemon) to regulate thermal curves via DPTF and prevent abrupt 400 MHz emergency throttling:
+    ```bash
+    sudo pacman -S thermald
+    sudo systemctl enable --now thermald
+    ```
+  - Verify service status:
+    ```bash
+    systemctl status thermald
+    ```
 
 ## 19. Waybar Dual-Profile Architecture & Toggleable Music Bar (CAVA, MPRIS & Animated Cat)
 
@@ -464,6 +475,7 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
       - `custom/cava`: Super-wide 42-bar Monstercat wave visualizer streaming real-time audio frequencies with organic wave physics and 8-level Unicode bar heights (` ▂▃▄▅▆▇█`).
     - **Right:** Volume (`pulseaudio`), power profile/battery (`group/power`), clock, and power menu (`custom/power`).
   - `~/.config/waybar/config.jsonc`: A relative symlink pointing to the active profile (`profiles/default/config.jsonc` or `profiles/music/config.jsonc`).
+  - **Git Tracking Note:** To prevent Git from flagging `config.jsonc` as modified when toggling profiles, run `git update-index --skip-worktree dotfiles-linux/waybar/.config/waybar/config.jsonc`.
 - **Scripts & Helpers:**
   - [`toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/toggle.sh): Stateless bash launcher that checks the active symlink target, atomically updates the symlink with `ln -sfn`, terminates old Waybar/CAVA/cat instances (`killall -9 waybar cava; pkill -f cat.py`), launches Waybar, and sends desktop notification via `notify-send`.
   - [`cat.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/profiles/music/cat.py): Animated walking cat widget streaming JSON status and tooltips to Waybar.
@@ -471,6 +483,32 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - [`cava.conf`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/profiles/music/cava.conf): Dedicated 60fps raw ASCII CAVA configuration with Monstercat smoothing and wave physics configured for PipeWire/PulseAudio.
 - **Hyprland Shortcut:**
   - Bound `SUPER + SHIFT + M` in [`hyprland.lua`](file:///home/asim/setup/Dotfiles/dotfiles-linux/hypr/.config/hypr/hyprland.lua) to execute `~/.config/waybar/scripts/toggle.sh`.
+
+---
+
+## 20. Waybar Dynamic Island & Scripts Folder Reorganization (Feature-Domain / Module-Wise Architecture)
+
+- **Feature & Architecture:**
+  - **Reorganized `~/.config/waybar/scripts/` into Feature-Domain (Module-Wise) Subdirectories:**
+    - `scripts/sliders/`: All slider modal & launcher files ([`quick-slider.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/sliders/quick-slider.py), [`volume-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/sliders/volume-toggle.sh), [`brightness-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/sliders/brightness-toggle.sh)).
+    - `scripts/connectivity/`: All network & bluetooth modal & launcher files ([`quick-connectivity.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/connectivity/quick-connectivity.py), [`connectivity-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/connectivity/connectivity-toggle.sh)).
+    - `scripts/hardware/`: All CPU & RAM monitor modal & launcher files ([`quick-hardware.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/hardware/quick-hardware.py), [`hardware-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/hardware/hardware-toggle.sh)).
+    - `scripts/power/`: All power profile OSD, cycle, and status feed files ([`power-profile-osd.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power/power-profile-osd.py), [`power-profile-cycle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power/power-profile-cycle.sh), [`power-profile-status.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power/power-profile-status.sh)).
+    - `scripts/island/`: Dynamic Island & Desktop Companion engine ([`dynamic-island.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/island/dynamic-island.py)).
+    - `scripts/`: Clean root containing only bar lifecycle scripts ([`launch.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/launch.sh), [`toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/toggle.sh)).
+  - **Cyber Dynamic Island Widget (`custom/island`):**
+    - Placed in the free portion of the default bar (`modules-left`, right after `hyprland/window`).
+    - **Multi-Animal Companions:** Features animated Cat (`ᓚᘏᗢ`), Bunny (`(\_/)`), Duck (`( •ө•)`), Ghost (`👻`), Crab (`🦀`), and Doggo (`(U・x・U)`).
+    - **Dynamic State Morphing:**
+      - **Pet Mode:** Lively animated companion (paces/dances when music plays; stretches, grooms, or sleeps when idle).
+      - **Vitals Mode:** Auto-morphs to display live CPU temperature (`🌡️ 52°C`) and load (`󰻠 18%`).
+      - **Music Peek Mode:** Shows currently playing song title and artist marquee (`󰎆 Song - Artist`).
+      - **Heat/Overload Alert:** Instantly triggers an alert state (`(；•̀д•́) 82°C 🔥`) with coral red styling if CPU temp > 80°C or CPU > 85%.
+    - **Instant Interactive Controls:**
+      - **Left-Click:** Pet the companion (`pkill -SIGUSR1 -f dynamic-island.py`) — triggers a happy purr animation with floating hearts (`❤️`) and increments affection counter.
+      - **Right-Click:** Switch companion animal (`pkill -SIGUSR2 -f dynamic-island.py`).
+      - **Middle-Click:** Force cycle view mode (`pkill -SIGRTMIN+1 -f dynamic-island.py`).
+    - **Styling:** Matugen-themed pill in `style.css` with `@on_primary_fixed` background, glowing `@primary` borders, and responsive `.playing`, `.idle`, `.petted`, `.vitals`, `.music`, and `.alert` state classes.
 
 ---
 

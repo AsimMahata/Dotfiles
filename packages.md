@@ -50,16 +50,21 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`playerctl`** | Official (`pacman`) | Command-line media player controller (play/pause/next for Spotify, browsers, VLC). |
 | **`cava`** | Official (`pacman`) | Console-based audio visualizer with PipeWire/PulseAudio backend. |
 | **`toggle.sh`** | Local Script (`waybar/scripts`) | Toggles Waybar between Default and Music profiles using atomic symlink swapping. |
+| **`launch.sh`** | Local Script (`waybar/scripts`) | Restarts and reloads Waybar smoothly with clean process termination. |
 | **`cava.sh`** | Local Script (`waybar/profiles/music`) | Formats and streams CAVA audio visualizer sticks to Waybar `custom/cava`. |
 | **`cat.py`** | Local Script (`waybar/profiles/music`) | Animated walking/vibing cat companion widget for Waybar (`custom/cat`). |
-| **`quick-slider.py`** | Local Script (`waybar/scripts`) | Unified GTK Layer Shell modal slider daemon for Volume & Brightness. |
-| **`volume-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for volume mode (SIGUSR1). |
-| **`brightness-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for brightness mode (SIGUSR2). |
-| **`quick-connectivity.py`** | Local Script (`waybar/scripts`) | Unified GTK Layer Shell modal quick-settings popup for Network & Bluetooth (AAA UX). |
-| **`connectivity-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) toggle launcher for quick-connectivity.py. |
-| **`power-profile-status.sh`** | Local Script (`waybar/scripts`) | Generates JSON status for Waybar's `custom/power-profile` module with icons and tooltips. |
-| **`power-profile-cycle.sh`** | Local Script (`waybar/scripts`) | Cycles `powerprofilesctl` modes, signals Waybar (SIGRTMIN+8), and spawns the OSD HUD. |
-| **`power-profile-osd.py`** | Local Script (`waybar/scripts`) | GTK Layer Shell OSD HUD showing power profile changes with 1.5s auto-dismiss. |
+| **`dynamic-island.py`** | Local Script (`waybar/scripts/island`) | Cyber Dynamic Island & Desktop Companion engine for Waybar (multi-animal animations, system vitals, music peek, and heat alerts). |
+| **`quick-slider.py`** | Local Script (`waybar/scripts/sliders`) | Unified GTK Layer Shell modal slider daemon for Volume & Brightness. |
+| **`volume-toggle.sh`** | Local Script (`waybar/scripts/sliders`) | Ultra-fast (0ms) IPC toggle launcher for volume mode (SIGUSR1). |
+| **`brightness-toggle.sh`** | Local Script (`waybar/scripts/sliders`) | Ultra-fast (0ms) IPC toggle launcher for brightness mode (SIGUSR2). |
+| **`quick-connectivity.py`** | Local Script (`waybar/scripts/connectivity`) | Unified GTK Layer Shell modal quick-settings popup for Network & Bluetooth (AAA UX). |
+| **`connectivity-toggle.sh`** | Local Script (`waybar/scripts/connectivity`) | Ultra-fast (0ms) toggle launcher for quick-connectivity.py. |
+| **`quick-hardware.py`** | Local Script (`waybar/scripts/hardware`) | Stateless GTK3 + Layer Shell modal with live CPU/RAM monitoring, top processes, and BTOP launcher. |
+| **`hardware-toggle.sh`** | Local Script (`waybar/scripts/hardware`) | Ultra-fast (0ms) toggle launcher for quick-hardware.py. |
+| **`power-profile-status.sh`** | Local Script (`waybar/scripts/power`) | Generates JSON status for Waybar's `custom/power-profile` module with icons and tooltips. |
+| **`power-profile-cycle.sh`** | Local Script (`waybar/scripts/power`) | Cycles `powerprofilesctl` modes, signals Waybar (SIGRTMIN+8), and spawns the OSD HUD. |
+| **`power-profile-osd.py`** | Local Script (`waybar/scripts/power`) | GTK Layer Shell OSD HUD showing power profile changes with 1.5s auto-dismiss. |
+| **`thermald`** | Official (`pacman`) | Linux Thermal Daemon for Intel processors (monitors thermal zones, regulates DPTF cooling curves, and prevents CPU throttling). |
 
 ---
 

@@ -17,7 +17,7 @@ esac
 
 # Trigger OSD overlay HUD asynchronously immediately for instant visual feedback
 pkill -f power-profile-osd.py 2>/dev/null
-~/.config/waybar/scripts/power-profile-osd.py "$NEXT" "$CURRENT" &
+~/.config/waybar/scripts/power/power-profile-osd.py "$NEXT" "$CURRENT" &
 
 # Set power profile in background and signal Waybar
 powerprofilesctl set "$NEXT"

@@ -65,15 +65,15 @@
                 "󰕾"
             ]
         },
-        "on-click": "~/.config/waybar/scripts/volume-toggle.sh",
+        "on-click": "~/.config/waybar/scripts/sliders/volume-toggle.sh",
         "on-click-right": "pavucontrol"
     },
     "custom/power-profile": {
         "format": "{icon}",
         "tooltip": true,
         "return-type": "json",
-        "exec": "~/.config/waybar/scripts/power-profile-status.sh",
-        "on-click": "~/.config/waybar/scripts/power-profile-cycle.sh",
+        "exec": "~/.config/waybar/scripts/power/power-profile-status.sh",
+        "on-click": "~/.config/waybar/scripts/power/power-profile-cycle.sh",
         "signal": 8,
         "interval": 5,
         "format-icons": {
@@ -103,7 +103,7 @@
             ""
         ],
         "tooltip-format": "{time}",
-        "on-click": "~/.config/waybar/scripts/brightness-toggle.sh"
+        "on-click": "~/.config/waybar/scripts/sliders/brightness-toggle.sh"
     },
     "group/power": {
         "orientation": "horizontal",
