@@ -105,6 +105,14 @@ hl.env("XCURSOR_SIZE", 20)
 
 hl.env("HYPRCURSOR_SIZE", 20)
 
+-- Hardware video acceleration & Wayland backends
+hl.env("LIBVA_DRIVER_NAME", "iHD")
+hl.env("VDPAU_DRIVER", "va_gl")
+hl.env("MOZ_ENABLE_WAYLAND", "1")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+hl.env("GDK_BACKEND", "wayland,x11,*")
+hl.env("QT_QPA_PLATFORM", "wayland;xcb")
+
 --##################
 
 --## PERMISSIONS ###
@@ -270,6 +278,21 @@ hl.config({
         -- Set to 0 or 1 to disable the anime mascot wallpapers
         disable_hyprland_logo = false,
         -- If true disables the random hyprland logo / anime girl background. :(
+    },
+})
+
+-- Direct scanout for video and fullscreen surfaces
+hl.config({
+    render = {
+        direct_scanout = 1,
+    },
+})
+
+-- XWayland HiDPI & scaling
+hl.config({
+    xwayland = {
+        force_zero_scaling = true,
+        use_nearest_neighbor = false,
     },
 })
 
@@ -520,6 +543,16 @@ hl.window_rule({
     },
     move = { 20, "monitor_h-120" },
     float = true,
+})
+
+-- Disable rounding & borders on fullscreen windows (crisp edge-to-edge video playback)
+hl.window_rule({
+    name  = "fullscreen-no-rounding",
+    match = {
+        fullscreen = 1,
+    },
+    rounding = 0,
+    border = false,
 })
 
 -- Layer rules for wlogout blur

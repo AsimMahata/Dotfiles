@@ -305,9 +305,60 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
+## 13. Video Playback Quality & Scaling Optimization (Hyprland)
+
+- **The Issue:**
+  - On high-DPI displays (such as 2880×1800 @ 2× scale), video playback and text/subtitles appeared pixelated and suffered from edge aliasing/jaggies in Hyprland compared to GNOME.
+- **Root Causes:**
+  1. Missing VA-API driver and Wayland platform environment variables, causing video players (Firefox/Zen, Chromium, VLC) to fall back to software (CPU) decoding.
+  2. Direct scanout disabled by default, routing fullscreen video through Hyprland's GLES2 compositor shaders instead of direct GPU hardware scanout.
+  3. Default XWayland nearest-neighbor upscaling (`xwayland:use_nearest_neighbor = true`), stretching 1440×900 surfaces to 2880×1800 with jagged pixels.
+  4. Window rounding (`rounding = 10`) clipping video subsurfaces and fullscreen windows with shader aliasing.
+- **Configuration Adjustments (`hyprland.lua`):**
+  - Added hardware acceleration and Wayland environment variables:
+    ```lua
+    hl.env("LIBVA_DRIVER_NAME", "iHD")
+    hl.env("VDPAU_DRIVER", "va_gl")
+    hl.env("MOZ_ENABLE_WAYLAND", "1")
+    hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+    hl.env("GDK_BACKEND", "wayland,x11,*")
+    hl.env("QT_QPA_PLATFORM", "wayland;xcb")
+    ```
+  - Enabled direct scanout for fullscreen surfaces:
+    ```lua
+    hl.config({
+        render = {
+            direct_scanout = 1,
+        },
+    })
+    ```
+  - Enabled crisp XWayland HiDPI scaling:
+    ```lua
+    hl.config({
+        xwayland = {
+            force_zero_scaling = true,
+            use_nearest_neighbor = false,
+        },
+    })
+    ```
+  - Disabled rounding and borders on fullscreen windows:
+    ```lua
+    hl.window_rule({
+        name  = "fullscreen-no-rounding",
+        match = {
+            fullscreen = 1,
+        },
+        rounding = 0,
+        border = false,
+    })
+    ```
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.
 * Record configuration changes and fixes in this document as setup continues.
+
 
 
