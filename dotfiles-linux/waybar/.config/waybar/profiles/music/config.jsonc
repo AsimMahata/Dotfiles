@@ -1,0 +1,117 @@
+{
+    "position": "top",
+    "height": 2,
+    "modules-left": [
+        "custom/app",
+        "mpris"
+    ],
+    "modules-center": [
+        "custom/cava"
+    ],
+    "modules-right": [
+        "pulseaudio",
+        "group/power",
+        "clock",
+        "custom/power"
+    ],
+    "custom/app": {
+        "on-click": "pkill rofi || .config/rofi/launchers/launcher.sh",
+        "format": "{icon}   App",
+        "format-icons": {
+            "default": ""
+        }
+    },
+    "mpris": {
+        "format": "{player_icon}  {title} - {artist}",
+        "format-paused": "{status_icon}  <i>{title} - {artist}</i>",
+        "format-stopped": "󰝚  Idle",
+        "player-icons": {
+            "default": "󰎆",
+            "spotify": "",
+            "firefox": "󰈹",
+            "brave": "󰦝",
+            "mpv": ""
+        },
+        "status-icons": {
+            "paused": "󰏤"
+        },
+        "max-length": 45,
+        "tooltip-format": "{player}: {title} - {artist} ({album})"
+    },
+    "custom/cava": {
+        "exec": "~/.config/waybar/profiles/music/cava.sh",
+        "format": "{}",
+        "tooltip": false
+    },
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": " ",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "󰋎",
+            "headset": "󰋎",
+            "hdmi": "󰡁",
+            "default": [
+                "󰕿",
+                "󰖀",
+                "󰕾"
+            ]
+        },
+        "on-click": "~/.config/waybar/scripts/volume-toggle.sh",
+        "on-click-right": "pavucontrol"
+    },
+    "custom/power-profile": {
+        "format": "{icon}",
+        "tooltip": true,
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/power-profile-status.sh",
+        "on-click": "~/.config/waybar/scripts/power-profile-cycle.sh",
+        "signal": 8,
+        "interval": 5,
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "<span size='13000' foreground='#a6e3a1'>{icon} </span> {capacity}%",
+        "format-warning": "<span size='13000' foreground='#B1E3AD'>{icon} </span> {capacity}%",
+        "format-critical": "<span size='13000' foreground='#E38C8F'>{icon} </span> {capacity}%",
+        "format-charging": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+        "format-plugged": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+        "format-alt": "<span size='13000' foreground='#B1E3AD'>{icon} </span> {time}",
+        "format-full": "<span size='13000' foreground='#B1E3AD'> </span>{capacity}%",
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "tooltip-format": "{time}",
+        "on-click": "~/.config/waybar/scripts/brightness-toggle.sh"
+    },
+    "group/power": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/power-profile",
+            "battery"
+        ]
+    },
+    "clock": {
+        "format": "<span>   </span>{:%a %d %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+    "custom/power": {
+        "format": "⏻",
+        "tooltip": "Power menu",
+        "on-click": "wlogout",
+        "on-click-right": "pkill wlogout"
+    }
+}

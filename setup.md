@@ -451,6 +451,24 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - Switch power profile to `balanced` (`powerprofilesctl set balanced`) to avoid excessive heat spikes and sustain smooth clock frequencies.
   - Install and enable `thermald` (`sudo pacman -S thermald` and `sudo systemctl enable --now thermald`) to regulate thermal curves and prevent abrupt 400 MHz emergency throttling.
 
+## 19. Waybar Dual-Profile Architecture & Toggleable Music Bar (CAVA & MPRIS)
+
+- **Overview:**
+  - Implemented a dual-profile Waybar architecture supporting instant switching between the standard productivity bar and a dedicated music/visualizer bar with persistent state across restarts, reboots, and Hyprland reloads.
+- **Profiles Architecture:**
+  - `~/.config/waybar/profiles/default/config.jsonc`: Full productivity bar (workspaces, hardware stats, connectivity, volume, battery, notifications, clock).
+  - `~/.config/waybar/profiles/music/config.jsonc`: Focused music/visualizer bar featuring:
+    - **Left:** App launcher (`custom/app`) and player status (`mpris` with playback icons, song title, and artist).
+    - **Center:** Real-time audio visualizer (`custom/cava`) with 20 responsive Unicode bars (` ▂▃▄▅▆▇█`) streaming from CAVA over PipeWire/PulseAudio.
+    - **Right:** Volume (`pulseaudio`), power profile/battery (`group/power`), clock, and power menu (`custom/power`).
+  - `~/.config/waybar/config.jsonc`: A relative symlink pointing to the active profile (`profiles/default/config.jsonc` or `profiles/music/config.jsonc`).
+- **Scripts & Helpers:**
+  - [`toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/toggle.sh): Stateless bash launcher that checks the active symlink target, atomically updates the symlink with `ln -sfn`, terminates old Waybar/CAVA instances (`killall -9 waybar cava`), launches Waybar, and sends desktop notification via `notify-send`.
+  - [`cava.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/profiles/music/cava.sh): Streams real-time frequency data from `cava.conf` formatted via `sed` to Unicode bar characters.
+  - [`cava.conf`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/profiles/music/cava.conf): Dedicated 60fps raw ASCII CAVA configuration configured for PipeWire/PulseAudio.
+- **Hyprland Shortcut:**
+  - Bound `SUPER + SHIFT + M` in [`hyprland.lua`](file:///home/asim/setup/Dotfiles/dotfiles-linux/hypr/.config/hypr/hyprland.lua) to execute `~/.config/waybar/scripts/toggle.sh`.
+
 ---
 
 ## Notes

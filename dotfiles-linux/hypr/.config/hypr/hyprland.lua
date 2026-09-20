@@ -375,6 +375,8 @@ hl.bind(mainMod .. " + " .. "J", hl.dsp.layout("togglesplit"))
 
 hl.bind(mainMod .. " + " .. "R", hl.dsp.exec_cmd("~/.config/waybar/scripts/launch.sh"))
 
+hl.bind(mainMod .. " + ".. "W", hl.dsp.exec_cmd("~/.config/waybar/scripts/toggle.sh"))
+
 hl.bind(mainMod .. " + " .. "N", hl.dsp.exec_cmd("swaync-client -t"))
 
 --bind = $mainMod, M , exec, lollypop
@@ -389,7 +391,7 @@ hl.bind(mainMod .. " + " .. "SHIFT" .. " + " .. "S", hl.dsp.exec_cmd("hyprshot -
 
 hl.bind(mainMod .. " + " .. "L", hl.dsp.exec_cmd("hyprlock"))
 
-hl.bind(mainMod .. " + " .. "W", hl.dsp.exec_cmd("zen || ~/SOF/zen/zen"))
+-- hl.bind(mainMod .. " + " .. "W", hl.dsp.exec_cmd("zen || ~/SOF/zen/zen"))
 
 hl.bind(mainMod .. " + " .. "I", hl.dsp.exec_cmd("hyprsysteminfo"))
 

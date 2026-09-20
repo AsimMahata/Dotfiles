@@ -328,3 +328,32 @@ button {
   padding-left: 6px;
   padding-right: 6px;
 }
+
+#mpris,
+#cava,
+#custom-cava {
+  background: @on_primary_fixed;
+  color: @on_surface;
+  margin: 8px 8px 8px 0;
+  padding-left: 18px;
+  padding-right: 18px;
+  border-radius: 50px;
+}
+
+#cava,
+#custom-cava {
+  color: @primary;
+  font-size: 14px;
+  letter-spacing: 2px;
+  border: 1px solid alpha(@primary, 0.25);
+  box-shadow: 0 0 10px alpha(@primary, 0.12);
+}
+
+#mpris {
+  color: @on_surface;
+  border: 1px solid alpha(@outline_variant, 0.3);
+}
+
+#mpris.paused {
+  color: @outline;
+}
