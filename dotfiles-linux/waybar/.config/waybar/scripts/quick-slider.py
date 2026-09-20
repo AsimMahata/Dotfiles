@@ -159,6 +159,7 @@ class QuickSlider(Gtk.Window):
         wrapper.add(self.card_event_box)
 
         # Card Container
+        # Card Container
         self.card_container = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL, spacing=12
         )
@@ -323,9 +324,9 @@ def apply_styles():
     {colors_css}
 
     * {{
-        font-family: "JetBrains Mono Nerd Font", "JetBrainsMono Nerd Font", monospace;
-        font-size: 13px;
-        font-weight: bold;
+        font-family: "Adwaita Sans", "Inter", "DejaVu Sans", "JetBrainsMono Nerd Font", sans-serif;
+        font-size: 12px;
+        font-weight: 500;
     }}
 
     window#waybar-quick-slider,
@@ -339,12 +340,12 @@ def apply_styles():
     }}
 
     #modal-container {{
-        background: alpha(@background, 0.92);
+        background: alpha(@background, 0.94);
         color: @on_surface;
         border: 1px solid alpha(@outline_variant, 0.5);
         border-radius: 20px;
-        padding: 10px 18px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        padding: 12px 18px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
     }}
 
     #icon-btn {{
@@ -400,7 +401,7 @@ def apply_styles():
     #percent-label {{
         color: @on_surface;
         font-weight: bold;
-        font-size: 13px;
+        font-size: 12px;
         min-width: 44px;
     }}
     """

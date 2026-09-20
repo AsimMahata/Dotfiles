@@ -81,7 +81,7 @@ button {
 
 #pulseaudio,
 #clock,
-#battery,
+#power,
 #cpu,
 #memory,
 #disk,
@@ -114,9 +114,46 @@ button {
   margin: 0;
 }
 
+#connectivity #network.disconnected,
+#connectivity #network.disabled {
+  color: @error;
+}
+
 #connectivity #bluetooth {
   background: transparent;
   color: @on_surface;
+  padding: 0 0 0 8px;
+  margin: 0;
+  border-left: 1px solid alpha(@on_surface, 0.2);
+}
+
+#power {
+  padding-left: 10px;
+  padding-right: 14px;
+}
+
+#power #power-profiles-daemon {
+  background: transparent;
+  min-width: 16px;
+  padding: 0 12px 0 0;
+  margin: 0;
+}
+
+#power #power-profiles-daemon.performance {
+  color: @error;
+}
+
+#power #power-profiles-daemon.balanced {
+  color: @secondary;
+}
+
+#power #power-profiles-daemon.power-saver {
+  color: @tertiary;
+}
+
+#power #battery {
+  background: transparent;
+  color: @secondary;
   padding: 0 0 0 8px;
   margin: 0;
   border-left: 1px solid alpha(@on_surface, 0.2);
@@ -220,9 +257,7 @@ button {
   color: @error;
 }
 
-#battery {
-  color: @secondary;
-}
+
 
 /* If workspaces is the leftmost module, omit left margin */
 .modules-left>widget:first-child>#workspaces {

@@ -97,6 +97,62 @@ def get_network_info():
     return info
 
 
+def scan_wifi_networks(rescan=False):
+    cmd = ["nmcli", "-t", "-f", "IN-USE,SSID,SIGNAL,SECURITY", "dev", "wifi", "list"]
+    if rescan:
+        cmd.extend(["--rescan", "yes"])
+    try:
+        out = (
+            subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
+            .decode()
+            .strip()
+            .splitlines()
+        )
+        networks = {}
+        for line in out:
+            parts = line.split(":")
+            if len(parts) >= 4:
+                in_use = parts[0].strip() == "*"
+                ssid = parts[1].strip()
+                if not ssid:
+                    continue
+                try:
+                    signal = int(parts[2].strip())
+                except ValueError:
+                    signal = 0
+                security = parts[3].strip()
+                is_secured = bool(security and security != "--")
+
+                # Deduplicate by SSID, preferring in-use or highest signal
+                if ssid not in networks or in_use or signal > networks[ssid]["signal"]:
+                    networks[ssid] = {
+                        "in_use": in_use,
+                        "ssid": ssid,
+                        "signal": signal,
+                        "security": security,
+                        "is_secured": is_secured,
+                    }
+        # Sort: in-use first, then by signal descending
+        return sorted(
+            networks.values(),
+            key=lambda x: (1 if x["in_use"] else 0, x["signal"]),
+            reverse=True,
+        )
+    except Exception:
+        return []
+
+
+def get_wifi_signal_icon(signal):
+    if signal >= 75:
+        return "󰤨"
+    elif signal >= 50:
+        return "󰤥"
+    elif signal >= 25:
+        return "󰤢"
+    else:
+        return "󰤟"
+
+
 def get_bluetooth_info():
     info = {
         "powered": False,
@@ -178,6 +234,9 @@ class QuickConnectivity(Gtk.Window):
         self.card_box.set_name("modal-container")
         self.card_event_box.add(self.card_box)
 
+        # State tracking
+        self._is_scanning = False
+
         # Build UI Sections
         self._updating_ui = True
         self.build_header()
@@ -245,14 +304,61 @@ class QuickConnectivity(Gtk.Window):
         net_text_box.pack_start(self.net_sub, False, False, 0)
 
         top_row.pack_start(net_text_box, True, True, 0)
+        net_card.pack_start(top_row, False, False, 0)
+
+        # Available Networks Section
+        self.wifi_networks_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+        self.wifi_networks_box.set_name("wifi-networks-box")
+
+        wifi_header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        wifi_header.set_name("wifi-header-box")
+
+        wifi_hdr_icon = Gtk.Label(label="󰤨")
+        wifi_hdr_icon.set_name("wifi-header-icon")
+        wifi_header.pack_start(wifi_hdr_icon, False, False, 0)
+
+        wifi_hdr_lbl = Gtk.Label(label="Wi-Fi")
+        wifi_hdr_lbl.set_name("wifi-header-title")
+        wifi_hdr_lbl.set_xalign(0.0)
+        wifi_header.pack_start(wifi_hdr_lbl, True, True, 0)
+
+        self.scan_btn = Gtk.Button()
+        self.scan_btn.set_name("scan-btn")
+        self.scan_btn.set_relief(Gtk.ReliefStyle.NONE)
+        self.scan_btn.set_tooltip_text("Scan for Wi-Fi networks")
+        self.scan_icon = Gtk.Label(label="󰑐")
+        self.scan_icon.set_name("scan-icon")
+        self.scan_btn.add(self.scan_icon)
+        self.scan_btn.connect("clicked", lambda b: self.start_wifi_scan(rescan=True))
+        wifi_header.pack_end(self.scan_btn, False, False, 0)
 
         self.wifi_switch = Gtk.Switch()
         self.wifi_switch.set_name("toggle-switch")
         self.wifi_switch.set_valign(Gtk.Align.CENTER)
         self.wifi_switch.connect("state-set", self.on_wifi_toggled)
-        top_row.pack_end(self.wifi_switch, False, False, 0)
+        wifi_header.pack_end(self.wifi_switch, False, False, 0)
 
-        net_card.pack_start(top_row, False, False, 0)
+        self.wifi_networks_box.pack_start(wifi_header, False, False, 0)
+
+        self.wifi_off_lbl = Gtk.Label(label="Wi-Fi is turned off")
+        self.wifi_off_lbl.set_name("wifi-status-lbl")
+        self.wifi_off_lbl.set_xalign(0.0)
+        self.wifi_networks_box.pack_start(self.wifi_off_lbl, False, False, 0)
+
+        # Scrolled list of networks
+        self.scrolled_nets = Gtk.ScrolledWindow()
+        self.scrolled_nets.set_name("wifi-scrolled-window")
+        self.scrolled_nets.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.scrolled_nets.set_min_content_height(70)
+        self.scrolled_nets.set_max_content_height(150)
+        self.scrolled_nets.set_propagate_natural_height(True)
+
+        self.wifi_list_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        self.wifi_list_box.set_name("wifi-list-box")
+        self.scrolled_nets.add(self.wifi_list_box)
+
+        self.wifi_networks_box.pack_start(self.scrolled_nets, False, False, 0)
+        net_card.pack_start(self.wifi_networks_box, False, False, 0)
 
         # Action row: settings button
         net_btn = Gtk.Button(label="󰖩  Network Settings")
@@ -333,6 +439,18 @@ class QuickConnectivity(Gtk.Window):
             self.net_sub.set_text("Wi-Fi is on" if net["wifi_enabled"] else "Wi-Fi is disabled")
 
         self.wifi_switch.set_active(net["wifi_enabled"])
+
+        # Update Wi-Fi networks box visibility & initial scan
+        if net["wifi_enabled"]:
+            self.scrolled_nets.set_visible(True)
+            self.scan_btn.set_visible(True)
+            self.wifi_off_lbl.set_visible(False)
+            if not self.wifi_list_box.get_children() and not self._is_scanning:
+                self.start_wifi_scan(rescan=False)
+        else:
+            self.scrolled_nets.set_visible(False)
+            self.scan_btn.set_visible(False)
+            self.wifi_off_lbl.set_visible(True)
 
         # Update Bluetooth UI
         if bt["powered"]:
@@ -428,6 +546,106 @@ class QuickConnectivity(Gtk.Window):
             stderr=subprocess.DEVNULL,
         )
         Gtk.main_quit()
+
+    # ---------------------------------------------------------
+    # Wi-Fi Scanning & Connection
+    # ---------------------------------------------------------
+    def start_wifi_scan(self, rescan=False):
+        if self._is_scanning:
+            return
+        self._is_scanning = True
+        self.scan_btn.set_sensitive(False)
+        self.scan_icon.set_text("󰑮")
+
+        def _scan():
+            nets = scan_wifi_networks(rescan=rescan)
+            GLib.idle_add(self._populate_wifi_list, nets)
+
+        import threading
+
+        threading.Thread(target=_scan, daemon=True).start()
+
+    def _populate_wifi_list(self, networks):
+        for child in self.wifi_list_box.get_children():
+            self.wifi_list_box.remove(child)
+
+        if not networks:
+            no_nets = Gtk.Label(label="No networks found")
+            no_nets.set_name("wifi-status-lbl")
+            self.wifi_list_box.pack_start(no_nets, False, False, 4)
+        else:
+            for net in networks:
+                row_btn = Gtk.Button()
+                row_btn.set_name("wifi-row-btn")
+                row_btn.set_relief(Gtk.ReliefStyle.NONE)
+                if net["in_use"]:
+                    row_btn.get_style_context().add_class("active")
+
+                row_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+
+                sig_lbl = Gtk.Label(label=get_wifi_signal_icon(net["signal"]))
+                sig_lbl.set_name("wifi-row-signal")
+                row_box.pack_start(sig_lbl, False, False, 0)
+
+                ssid_lbl = Gtk.Label(label=net["ssid"])
+                ssid_lbl.set_name("wifi-row-ssid")
+                ssid_lbl.set_xalign(0.0)
+                ssid_lbl.set_ellipsize(Pango.EllipsizeMode.END)
+                ssid_lbl.set_max_width_chars(18)
+                row_box.pack_start(ssid_lbl, True, True, 0)
+
+                if net["is_secured"]:
+                    lock_lbl = Gtk.Label(label="󰌾")
+                    lock_lbl.set_name("wifi-row-lock")
+                    row_box.pack_start(lock_lbl, False, False, 0)
+
+                if net["in_use"]:
+                    check_lbl = Gtk.Label(label="󰄬")
+                    check_lbl.set_name("wifi-row-check")
+                    row_box.pack_end(check_lbl, False, False, 0)
+
+                row_btn.add(row_box)
+                ssid = net["ssid"]
+                is_secured = net["is_secured"]
+                in_use = net["in_use"]
+                row_btn.connect(
+                    "clicked",
+                    lambda b, s=ssid, sec=is_secured, u=in_use: self.on_wifi_row_clicked(
+                        s, sec, u
+                    ),
+                )
+                self.wifi_list_box.pack_start(row_btn, False, False, 0)
+
+        self.wifi_list_box.show_all()
+        self.scan_icon.set_text("󰑐")
+        self.scan_btn.set_sensitive(True)
+        self._is_scanning = False
+        return False
+
+    def on_wifi_row_clicked(self, ssid, is_secured, in_use):
+        if in_use:
+            return
+
+        def _connect():
+            res = subprocess.run(
+                ["nmcli", "dev", "wifi", "connect", ssid],
+                capture_output=True,
+                text=True,
+            )
+            if res.returncode != 0 and "Secrets were required" in res.stderr:
+                # Open network manager to prompt for password
+                subprocess.Popen(
+                    ["nm-connection-editor"],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+                GLib.idle_add(Gtk.main_quit)
+            else:
+                GLib.idle_add(self._delayed_refresh)
+
+        import threading
+
+        threading.Thread(target=_connect, daemon=True).start()
 
 
 # ---------------------------------------------------------
@@ -552,6 +770,100 @@ def apply_styles():
         background: alpha(@primary, 0.18);
         color: @primary;
         border-color: @primary;
+    }}
+
+    #wifi-networks-box {{
+        margin-top: 4px;
+        background: alpha(@on_surface, 0.03);
+        border: 1px solid alpha(@outline_variant, 0.2);
+        border-radius: 12px;
+        padding: 8px 10px;
+    }}
+
+    #wifi-header-box {{
+        margin-bottom: 4px;
+    }}
+
+    #wifi-header-icon {{
+        color: @primary;
+        font-size: 15px;
+        min-width: 18px;
+    }}
+
+    #wifi-header-title {{
+        color: @on_surface;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.1px;
+    }}
+
+    #scan-btn {{
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 2px 6px;
+        border-radius: 50px;
+        transition: background-color 0.2s ease;
+    }}
+
+    #scan-btn:hover {{
+        background: alpha(@on_surface, 0.1);
+    }}
+
+    #scan-icon {{
+        color: @primary;
+        font-size: 14px;
+    }}
+
+    #wifi-scrolled-window {{
+        background: transparent;
+    }}
+
+    #wifi-row-btn {{
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        border-radius: 8px;
+        padding: 5px 8px;
+        transition: background-color 0.15s ease;
+    }}
+
+    #wifi-row-btn:hover {{
+        background: alpha(@on_surface, 0.08);
+    }}
+
+    #wifi-row-btn.active {{
+        background: alpha(@primary, 0.15);
+    }}
+
+    #wifi-row-signal {{
+        color: @primary;
+        font-size: 15px;
+        min-width: 20px;
+    }}
+
+    #wifi-row-ssid {{
+        color: @on_surface;
+        font-size: 12px;
+        font-weight: 500;
+    }}
+
+    #wifi-row-lock {{
+        color: @on_surface_variant;
+        font-size: 12px;
+    }}
+
+    #wifi-row-check {{
+        color: @primary;
+        font-size: 14px;
+        font-weight: bold;
+    }}
+
+    #wifi-status-lbl {{
+        color: @on_surface_variant;
+        font-size: 11px;
+        font-style: italic;
+        padding: 8px;
     }}
     """
 

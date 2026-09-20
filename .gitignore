@@ -14,7 +14,7 @@
 **/btop/themes/colors.theme
 
 !**/matugen/**/templates/**
-
+**/__pycache__/
 
 *.log
 errors.log

@@ -16,7 +16,7 @@
         "memory",
         "group/connectivity",
         "pulseaudio",
-        "battery",
+        "group/power",
         "custom/notifications",
         "clock",
         "custom/power"
@@ -131,6 +131,25 @@
         "tooltip-format": "{time}",
         "on-click": "~/.config/waybar/scripts/brightness-toggle.sh"
     },
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+        "tooltip": true,
+        "on-click": "~/.config/waybar/scripts/power-profile-cycle.sh",
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
+    },
+    "group/power": {
+        "orientation": "horizontal",
+        "modules": [
+            "power-profiles-daemon",
+            "battery"
+        ]
+    },
     "group/connectivity": {
         "orientation": "horizontal",
         "modules": [
@@ -140,12 +159,14 @@
     },
     "network": {
         "format-wifi": "<span size='13000'>󰛳 </span>{essid}",
-        "format-ethernet": "<span size='13000'>󰈀 </span>Wired",
+        "format-ethernet": "<span size='13000'>󰈀 </span>Lan",
         "format-linked": "{ifname} (No IP) 󰈀",
-        "format-disconnected": "<span size='13000'>󰅛 </span>Disconnected",
+        "format-disconnected": "󰤮",
+        "format-disabled": "󰤮",
         "tooltip-format-wifi": "Signal Strength: {signalStrength}%\nIP: {ipaddr}",
         "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}",
-        "tooltip-format-disconnected": "Disconnected",
+        "tooltip-format-disconnected": "Disconnected from network",
+        "tooltip-format-disabled": "Wi-Fi is disabled",
         "on-click": "~/.config/waybar/scripts/connectivity-toggle.sh"
     },
     "bluetooth": {
@@ -166,12 +187,16 @@
     },
     "pulseaudio": {
         "format": "{icon}  {volume}%",
-        "format-muted": "",
+        "format-muted": " ",
         "format-icons": {
+            "headphone": "",
+            "hands-free": "󰋎",
+            "headset": "󰋎",
+            "hdmi": "󰡁",
             "default": [
-                "",
-                "",
-                " "
+                "󰕿",
+                "󰖀",
+                "󰕾"
             ]
         },
         "on-click": "~/.config/waybar/scripts/volume-toggle.sh",

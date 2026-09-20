@@ -382,12 +382,28 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - Implemented an interactive, Matugen-themed GTK Layer Shell quick-settings modal for Network and Bluetooth controls.
   - Follows SwayNC's `layer-shell-cover-screen` fullscreen click-catcher pattern: clicking outside or pressing <kbd>Esc</kbd> cleanly destroys the surface with zero ghost windows.
   - Includes real-time status display (Wi-Fi SSID, Ethernet Wired status, IP address, Bluetooth device & battery %), non-blocking toggle switches for Wi-Fi and Bluetooth radios, and quick-launch buttons for full system settings (`nm-connection-editor` and `blueman-manager`).
+  - Integrated an interactive Wi-Fi network scanner with a scrollable list of nearby networks, signal strength indicators, security lock badges, and click-to-connect support.
 - **Scripts:**
-  - [`quick-connectivity.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-connectivity.py): GTK3 + `GtkLayerShell` quick-settings modal application with dynamic Matugen theming.
+  - [`quick-connectivity.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-connectivity.py): GTK3 + `GtkLayerShell` quick-settings modal application with dynamic Matugen theming, Wi-Fi scanner, and Bluetooth manager.
   - [`connectivity-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/connectivity-toggle.sh): Stateless bash toggle launcher with 0ms toggle response.
 - **Waybar Changes:**
   - In [`config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): replaced `"network", "bluetooth"` in `modules-right` with `"group/connectivity"`, fixed `format-ethernet` wired icon/text, and routed clicks to `connectivity-toggle.sh`.
-  - In [`style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css): styled `#group-connectivity` as the pill surface with transparent inner modules.
+  - In [`style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css): styled `#connectivity` as the pill surface with transparent inner modules, divider, and proper color palette.
+
+---
+
+## 16. Waybar Power Profiles & GNOME-Style On-Screen Display (OSD)
+
+- **Feature:**
+  - Integrated Waybar's native `power-profiles-daemon` module into the bar with profile-specific styling and icons.
+  - Implemented a lightweight, GNOME-style glassmorphic On-Screen Display (OSD HUD) that overlays briefly on the top of the display when cycling power profiles (without sending notification spam to SwayNC).
+  - Mode-specific colors and hardware effect summaries:
+    - **Performance (``):** Coral/Red highlight — `Fans: High / Overboost 󰈐 • Max CPU Clock • Higher Heat`
+    - **Balanced (``):** Blue highlight — `Fans: Dynamic / Standard 󰌪 • Balanced Performance & Battery`
+    - **Quiet (``):** Emerald/Green highlight — `Fans: Silent / Low 󰌪 • Power Throttled • Lowest Heat`
+- **Scripts:**
+  - [`power-profile-osd.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-osd.py): GTK Layer Shell overlay widget automatically dismissing after 1.5 seconds.
+  - [`power-profile-cycle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-cycle.sh): Cycles `powerprofilesctl` and triggers the OSD HUD without desktop notification dependencies.
 
 ---
 
