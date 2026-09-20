@@ -356,6 +356,24 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
+## 14. Waybar Quick Sliders (Volume & Brightness Modals — AAA UX)
+
+- **Feature:**
+  - Implemented unified, interactive modal sliders for Volume and Brightness triggered by clicking the Waybar `pulseaudio` and `battery` modules.
+  - Inspired by SwayNC's `layer-shell-cover-screen` architecture: uses an invisible, transparent fullscreen click-catcher so clicking anywhere outside the popup dismisses it immediately.
+  - Seamless mode switching: clicking Volume while Brightness is open (or vice versa) switches instantly in 0ms without backdrop collision or process deadlocks.
+  - Supports live volume (`wpctl`) and brightness (`brightnessctl`) sliding at 60fps non-blocking, mouse scroll adjustments, Escape key dismiss, and toggle on repeated clicks.
+- **Scripts:**
+  - [`quick-slider.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-slider.py): Unified GTK3 + `GtkLayerShell` daemon managing both volume and brightness modes with dynamic Matugen theming.
+  - [`volume-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/volume-toggle.sh): Ultra-fast bash toggle launcher using `kill -SIGUSR1`.
+  - [`brightness-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/brightness-toggle.sh): Ultra-fast bash toggle launcher using `kill -SIGUSR2`.
+- **Changes in [`dotfiles-linux/waybar/.config/waybar/config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc):**
+  - Set `pulseaudio` `"on-click": "~/.config/waybar/scripts/volume-toggle.sh"`.
+  - Set `battery` `"on-click": "~/.config/waybar/scripts/brightness-toggle.sh"`.
+  - Retained `"on-click-right": "pavucontrol"` on `pulseaudio` for full audio mixer access.
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.

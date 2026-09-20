@@ -129,7 +129,8 @@
             "",
             ""
         ],
-        "tooltip-format": "{time}"
+        "tooltip-format": "{time}",
+        "on-click": "~/.config/waybar/scripts/brightness-toggle.sh"
     },
     "network": {
         "format-wifi": "<span size='13000'>󰛳 </span>{essid}",
@@ -164,7 +165,8 @@
                 " "
             ]
         },
-        "on-click": "pavucontrol"
+        "on-click": "~/.config/waybar/scripts/volume-toggle.sh",
+        "on-click-right": "pavucontrol"
     },
     "tray": {
         "icon-size": 15,

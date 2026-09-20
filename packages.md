@@ -48,6 +48,9 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`network-manager-applet`** | Official (`pacman`) | System tray applet for NetworkManager (`nm-applet`). |
 | **`brightnessctl`** | Official (`pacman`) | Device backlight and brightness controller. |
 | **`playerctl`** | Official (`pacman`) | Command-line media player controller (play/pause/next for Spotify, browsers, VLC). |
+| **`quick-slider.py`** | Local Script (`waybar/scripts`) | Unified GTK Layer Shell modal slider daemon for Volume & Brightness. |
+| **`volume-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for volume mode (SIGUSR1). |
+| **`brightness-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for brightness mode (SIGUSR2). |
 
 ---
 
