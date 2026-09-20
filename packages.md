@@ -51,6 +51,8 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`quick-slider.py`** | Local Script (`waybar/scripts`) | Unified GTK Layer Shell modal slider daemon for Volume & Brightness. |
 | **`volume-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for volume mode (SIGUSR1). |
 | **`brightness-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for brightness mode (SIGUSR2). |
+| **`quick-connectivity.py`** | Local Script (`waybar/scripts`) | Unified GTK Layer Shell modal quick-settings popup for Network & Bluetooth (AAA UX). |
+| **`connectivity-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) toggle launcher for quick-connectivity.py. |
 
 ---
 

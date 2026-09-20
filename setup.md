@@ -375,6 +375,22 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
+## 15. Waybar Unified Connectivity & Quick Modal (Network & Bluetooth — AAA UX)
+
+- **Feature:**
+  - Combined the previously separated `network` and `bluetooth` Waybar modules into a single unified pill (`group/connectivity`).
+  - Implemented an interactive, Matugen-themed GTK Layer Shell quick-settings modal for Network and Bluetooth controls.
+  - Follows SwayNC's `layer-shell-cover-screen` fullscreen click-catcher pattern: clicking outside or pressing <kbd>Esc</kbd> cleanly destroys the surface with zero ghost windows.
+  - Includes real-time status display (Wi-Fi SSID, Ethernet Wired status, IP address, Bluetooth device & battery %), non-blocking toggle switches for Wi-Fi and Bluetooth radios, and quick-launch buttons for full system settings (`nm-connection-editor` and `blueman-manager`).
+- **Scripts:**
+  - [`quick-connectivity.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-connectivity.py): GTK3 + `GtkLayerShell` quick-settings modal application with dynamic Matugen theming.
+  - [`connectivity-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/connectivity-toggle.sh): Stateless bash toggle launcher with 0ms toggle response.
+- **Waybar Changes:**
+  - In [`config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): replaced `"network", "bluetooth"` in `modules-right` with `"group/connectivity"`, fixed `format-ethernet` wired icon/text, and routed clicks to `connectivity-toggle.sh`.
+  - In [`style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css): styled `#group-connectivity` as the pill surface with transparent inner modules.
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.

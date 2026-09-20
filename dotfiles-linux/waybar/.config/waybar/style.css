@@ -83,14 +83,13 @@ button {
 #clock,
 #battery,
 #cpu,
-#bluetooth,
 #memory,
 #disk,
 #temperature,
 #backlight,
 #wireplumber,
 #tray,
-#network,
+#connectivity,
 #mode,
 #privacy,
 #scratchpad,
@@ -101,6 +100,26 @@ button {
   padding-left: 15px;
   padding-right: 15px;
   border-radius: 50px;
+}
+
+#connectivity {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+#connectivity #network {
+  background: transparent;
+  color: @on_surface;
+  padding: 0 8px 0 0;
+  margin: 0;
+}
+
+#connectivity #bluetooth {
+  background: transparent;
+  color: @on_surface;
+  padding: 0 0 0 8px;
+  margin: 0;
+  border-left: 1px solid alpha(@on_surface, 0.2);
 }
 
 #language {
@@ -167,11 +186,16 @@ button {
 }
 
 #bluetooth.on {
-  color: @error_container;
+  color: @on_surface;
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+  color: @on_surface_variant;
 }
 
 #bluetooth.connected {
-  color: @secondary;
+  color: @primary;
 }
 
 #network.disabled,
@@ -180,11 +204,11 @@ button {
 }
 
 #network {
-  color: @secondary;
+  color: @on_surface;
 }
 
 #network.ethernet {
-  color: @error;
+  color: @on_surface;
 }
 
 #idle_inhibitor {

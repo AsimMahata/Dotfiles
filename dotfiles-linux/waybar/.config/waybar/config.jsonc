@@ -14,8 +14,7 @@
         "privacy",
         "cpu",
         "memory",
-        "network",
-        "bluetooth",
+        "group/connectivity",
         "pulseaudio",
         "battery",
         "custom/notifications",
@@ -65,11 +64,11 @@
                 "tooltip": true,
                 "tooltip-icon-size": 24
             },
-            {
-                "type": "audio-out",
-                "tooltip": true,
-                "tooltip-icon-size": 24
-            },
+            // {
+            //     "type": "audio-out",
+            //     "tooltip": true,
+            //     "tooltip-icon-size": 24
+            // },
             {
                 "type": "audio-in",
                 "tooltip": true,
@@ -132,20 +131,30 @@
         "tooltip-format": "{time}",
         "on-click": "~/.config/waybar/scripts/brightness-toggle.sh"
     },
+    "group/connectivity": {
+        "orientation": "horizontal",
+        "modules": [
+            "network",
+            "bluetooth"
+        ]
+    },
     "network": {
         "format-wifi": "<span size='13000'>󰛳 </span>{essid}",
-        "format-ethernet": "<span size='13000'>󰅛 </span> Disconnected",
-        "format-linked": "{ifname} (No IP) ",
+        "format-ethernet": "<span size='13000'>󰈀 </span>Wired",
+        "format-linked": "{ifname} (No IP) 󰈀",
         "format-disconnected": "<span size='13000'>󰅛 </span>Disconnected",
-        "tooltip-format-wifi": "Signal Strenght: {signalStrength}%",
-        "on-click": " ~/.local/bin/hyprltm-net"
+        "tooltip-format-wifi": "Signal Strength: {signalStrength}%\nIP: {ipaddr}",
+        "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}",
+        "tooltip-format-disconnected": "Disconnected",
+        "on-click": "~/.config/waybar/scripts/connectivity-toggle.sh"
     },
     "bluetooth": {
-        "format": "󰂯 {status}",
-        "format-disabled": "󰂲 {status}",
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-off": "󰂲",
         "format-connected": "󰂱 {device_alias}",
-        "format-connected-battery": "󰂱 {device_alias} {device_battery_percentage}%",
-        "on-click": "blueman-manager",
+        "format-connected-battery": "󰂱 {device_battery_percentage}%",
+        "on-click": "~/.config/waybar/scripts/connectivity-toggle.sh",
         "format-device-preference": [
             "device1",
             "device2"
