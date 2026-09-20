@@ -74,6 +74,8 @@ This document maintains an inventory of all explicitly installed applications, t
 | :--- | :--- | :--- |
 | **`ttf-jetbrains-mono-nerd`** | Official (`pacman`) | Primary monospace coding font with icons/glyphs for terminals and Waybar. |
 | **`ttf-font-awesome`** | Official (`pacman`) | Iconic font and CSS framework used by status bar icons. |
+| **`noto-fonts`** | Official (`pacman`) / Local | Google Noto TTF fonts for broad international Unicode script coverage. |
+| **`noto-fonts-cjk` / `otf-ipafont`** | Official (`pacman`) / Local | Japanese & CJK glyph coverage for terminal, IDE, and Waybar Kaomoji characters. |
 | **`matugen`** | AUR (`yay`) | Material You dynamic color palette generator based on the active wallpaper. |
 
 ---

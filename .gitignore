@@ -32,3 +32,6 @@ venv/
 # Backups
 setup/backup/
 backup/
+
+# Island Companion runtime stats
+**/stats.json

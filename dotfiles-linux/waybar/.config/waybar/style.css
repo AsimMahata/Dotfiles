@@ -401,6 +401,8 @@ button {
   color: @outline;
 }
 
+/* ─── Dynamic Island ─── */
+
 #custom-island {
   background: @on_primary_fixed;
   color: @primary;
@@ -413,7 +415,7 @@ button {
   border-radius: 50px;
   border: 1px solid alpha(@primary, 0.25);
   box-shadow: 0 0 10px alpha(@primary, 0.12);
-  transition: all 0.4s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+  transition: all 0.25s ease-in-out;
 }
 
 #custom-island:hover {
@@ -427,19 +429,21 @@ button {
 
 #custom-island.sleeping {
   color: @outline;
-  border-color: alpha(@outline, 0.25);
+  border-color: alpha(@outline, 0.15);
   box-shadow: none;
+  opacity: 0.65;
 }
 
 #custom-island.playing {
   color: @primary;
-  box-shadow: 0 0 14px alpha(@primary, 0.25);
+  box-shadow: 0 0 18px alpha(@primary, 0.35);
+  border-color: alpha(@primary, 0.45);
 }
 
 #custom-island.petted {
   color: @tertiary;
-  border-color: alpha(@tertiary, 0.5);
-  box-shadow: 0 0 16px alpha(@tertiary, 0.35);
+  border-color: alpha(@tertiary, 0.55);
+  box-shadow: 0 0 20px alpha(@tertiary, 0.45);
 }
 
 #custom-island.vitals {
@@ -449,10 +453,30 @@ button {
 
 #custom-island.music {
   color: @primary_fixed_dim;
+  box-shadow: 0 0 12px alpha(@primary_fixed_dim, 0.2);
+}
+
+#custom-island.warm {
+  color: @tertiary;
+  border-color: alpha(@tertiary, 0.35);
+  box-shadow: 0 0 10px alpha(@tertiary, 0.2);
 }
 
 #custom-island.alert {
   color: @error;
   border-color: alpha(@error, 0.6);
-  box-shadow: 0 0 16px alpha(@error, 0.35);
+  box-shadow: 0 0 20px alpha(@error, 0.4);
+}
+
+#custom-island.critical {
+  color: @error;
+  border-color: alpha(@error, 0.75);
+  box-shadow: 0 0 28px alpha(@error, 0.55);
+}
+
+#custom-island.waking {
+  color: @primary;
+  border-color: alpha(@primary, 0.45);
+  box-shadow: 0 0 16px alpha(@primary, 0.3);
+  opacity: 0.9;
 }
