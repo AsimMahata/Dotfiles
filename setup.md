@@ -244,6 +244,7 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - Terminated the running daemon: `pkill fcitx5`.
   - Removed/disabled `fcitx5` from Hyprland autostart in `hyprland.lua` since standard US/Latin keyboard layouts do not require an IME.
   - Removed malformed `kb_variant = ",pes_keypad"` duplicate input block from `hyprland.lua`, which caused XKB layout group desyncs and missing symbols (such as colon `:`).
+  - Explicitly configured `kb_layout = "us"` with empty `kb_variant`, `kb_model`, `kb_options`, and `kb_rules` in `hyprland.lua` to enforce a single US keyboard layout without secondary variants.
 
 ---
 
