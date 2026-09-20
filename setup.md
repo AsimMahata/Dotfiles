@@ -281,6 +281,30 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
+## 12. Limine Bootloader & Entry Management (`limine-entry-tool`)
+
+- **Installation:**
+  ```bash
+  yay -S limine-entry-tool
+  ```
+  *(Note: `limine-entry-tool` automates boot entry generation, kernel tracking, and EFI deployment for the Limine bootloader via ALPM libalpm hooks and CLI utilities).*
+- **Key CLI Utilities:**
+  - `limine-entry-tool`: Generates or updates Limine boot entries according to `/etc/limine-entry-tool.conf`.
+  - `limine-list`: Lists active bootloader entries.
+  - `limine-enroll-config` / `limine-reset-enroll`: Enrolls or resets Limine configurations.
+  - `limine-install` / `limine-remove-entry` / `limine-scan`: Helper tools for inspecting and manipulating boot entries.
+- **Verification / Usage:**
+  - View current boot entries:
+    ```bash
+    limine-list
+    ```
+  - Generate/update entries:
+    ```bash
+    sudo limine-entry-tool
+    ```
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.

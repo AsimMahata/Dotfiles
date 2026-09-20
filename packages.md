@@ -31,6 +31,7 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`stow`** | Official (`pacman`) | Symlink farm manager used to manage dotfiles in `~/.config`. |
 | **`fastfetch`** | Official (`pacman`) | Fast, lightweight system information tool (neofetch alternative). |
 | **`btop`** | Official (`pacman`) | Resource monitor showing CPU, memory, disks, network, and process usage. |
+| **`limine-entry-tool`** | AUR (`yay`) | CLI tool and ALPM hooks to automate boot entry management and EFI deployment for the Limine bootloader. |
 
 ---
 
