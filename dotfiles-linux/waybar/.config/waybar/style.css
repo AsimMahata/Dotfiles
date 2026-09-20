@@ -122,6 +122,10 @@ button {
   color: @error;
 }
 
+#connectivity #network.linked {
+  color: #6d4aff;
+}
+
 #connectivity #bluetooth {
   background: transparent;
   color: @on_surface;

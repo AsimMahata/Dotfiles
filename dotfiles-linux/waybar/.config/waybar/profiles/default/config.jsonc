@@ -169,11 +169,12 @@
     "network": {
         "format-wifi": "<span size='13000'>󰛳 </span>{essid}",
         "format-ethernet": "<span size='13000'>󰈀 </span>Lan",
-        "format-linked": "{ifname} (No IP) 󰈀",
+        "format-linked": "<span foreground='#6d4aff'><span size='13000'>󰖂 </span>Proton</span>",
         "format-disconnected": "󰤮",
         "format-disabled": "󰤮",
         "tooltip-format-wifi": "Signal Strength: {signalStrength}%\nIP: {ipaddr}",
         "tooltip-format-ethernet": "Interface: {ifname}\nIP: {ipaddr}",
+        "tooltip-format-linked": "Proton VPN (IPv6 Leak Protection)\nInterface: {ifname}",
         "tooltip-format-disconnected": "Disconnected from network",
         "tooltip-format-disabled": "Wi-Fi is disabled",
         "on-click": "~/.config/waybar/scripts/connectivity-toggle.sh"

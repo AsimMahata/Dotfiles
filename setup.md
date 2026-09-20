@@ -388,8 +388,8 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - [`quick-connectivity.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/quick-connectivity.py): GTK3 + `GtkLayerShell` quick-settings modal application with dynamic Matugen theming, Wi-Fi scanner, and Bluetooth manager.
   - [`connectivity-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/connectivity-toggle.sh): Stateless bash toggle launcher with 0ms toggle response.
 - **Waybar Changes:**
-  - In [`config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): replaced `"network", "bluetooth"` in `modules-right` with `"group/connectivity"`, fixed `format-ethernet` wired icon/text, and routed clicks to `connectivity-toggle.sh`.
-  - In [`style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css): styled `#connectivity` as the pill surface with transparent inner modules, divider, and proper color palette.
+  - In [`config.jsonc`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/config.jsonc): replaced `"network", "bluetooth"` in `modules-right` with `"group/connectivity"`, fixed `format-ethernet` wired icon/text, configured `format-linked` with Proton VPN shield icon (`󰖂 Proton`) in brand purple (`#6d4aff`) for `ipv6leakintrf0`, and routed clicks to `connectivity-toggle.sh`.
+  - In [`style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css): styled `#connectivity` as the pill surface with transparent inner modules, divider, `#connectivity #network.linked` brand purple state (`#6d4aff`), and proper color palette.
 
 ---
 
