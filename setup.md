@@ -553,6 +553,12 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
     post_hook = 'jq -s ".[0] * {\"workbench.colorCustomizations\": .[1]}" "$HOME/.config/Antigravity IDE/User/settings.json" "$HOME/.config/matugen/antigravity-colors.json" > /tmp/ag_settings.json && cp /tmp/ag_settings.json "$HOME/.config/Antigravity IDE/User/settings.json"'
     ```
   - Using `cp` rather than `mv` writes into the file target directly, ensuring the GNU Stow symlink pointing into `dotfiles-linux/antigravity/` is preserved and not replaced with a regular file.
+- **Git Tracking & Status Cleanliness:**
+  - To prevent Git from flagging `settings.json` as dirty whenever wallpaper colors are updated, tell Git to ignore local modifications:
+    ```bash
+    git update-index --skip-worktree "dotfiles-linux/antigravity/.config/Antigravity IDE/User/settings.json"
+    ```
+  - The runtime-generated color file `antigravity-colors.json` is ignored via `**/.config/**/antigravity-colors.json` in [`.gitignore`](file:///home/asim/setup/Dotfiles/.gitignore).
 
 ---
 

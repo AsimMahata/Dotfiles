@@ -4,6 +4,7 @@
 **/.config/**/colors.ini
 **/.config/**/colors.lua
 **/.config/**/colors.json
+**/.config/**/antigravity-colors.json
 **/.config/**/colors.toml
 **/.config/**/colors.xml
 **/.config/**/colors.yaml
