@@ -256,51 +256,68 @@ ANIMALS = [
 
 # ─── State & Persistence ───
 STATS_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), "stats.json")
-DECAY_INTERVAL = 7200.0  # 2 hours per affection point decay
+DECAY_INTERVAL = 1800.0  # 30 minutes per affection point decay
 
 current_animal_idx = 0
-affection_score = 0
-last_decay_time = time.time()
-last_pet_time = time.time()
+animal_stats = {}
+
+def get_current_animal_name():
+    return ANIMALS[current_animal_idx]["name"]
 
 def load_stats():
-    """Loads persistent companion state and calculates offline affection decay."""
-    global affection_score, current_animal_idx, last_decay_time, last_pet_time
+    """Loads persistent companion stats for each animal and calculates offline affection decay."""
+    global current_animal_idx, animal_stats
     now = time.time()
+    animal_stats = {}
+
     if os.path.exists(STATS_FILE):
         try:
             with open(STATS_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
-            affection_score = int(data.get("affection_score", 0))
             current_animal_idx = int(data.get("current_animal_idx", 0)) % len(ANIMALS)
-            last_decay_time = float(data.get("last_decay_time", now))
-            last_pet_time = float(data.get("last_pet_time", now))
 
-            # Offline decay calculation: 1 heart lost per 2 hours
-            if now > last_decay_time:
-                decay_units = int((now - last_decay_time) // DECAY_INTERVAL)
-                if decay_units > 0:
-                    affection_score = max(0, affection_score - decay_units)
-                    last_decay_time += decay_units * DECAY_INTERVAL
-                    save_stats()
-            return
+            # Migration support: if older flat schema existed
+            if "animals" in data and isinstance(data["animals"], dict):
+                animal_stats = data["animals"]
+            elif "affection_score" in data:
+                # Migrate old flat stats to the previously active animal
+                old_score = int(data.get("affection_score", 0))
+                old_decay = float(data.get("last_decay_time", now))
+                old_pet = float(data.get("last_pet_time", now))
+                animal_stats[ANIMALS[current_animal_idx]["name"]] = {
+                    "affection_score": old_score,
+                    "last_decay_time": old_decay,
+                    "last_pet_time": old_pet
+                }
         except Exception:
             pass
 
-    affection_score = 0
-    current_animal_idx = 0
-    last_decay_time = now
-    last_pet_time = now
+    # Ensure every animal in ANIMALS exists and apply offline decay
+    for a in ANIMALS:
+        name = a["name"]
+        if name not in animal_stats:
+            animal_stats[name] = {
+                "affection_score": 0,
+                "last_decay_time": now,
+                "last_pet_time": now
+            }
+        else:
+            last_decay = float(animal_stats[name].get("last_decay_time", now))
+            score = int(animal_stats[name].get("affection_score", 0))
+            if now > last_decay:
+                decay_units = int((now - last_decay) // DECAY_INTERVAL)
+                if decay_units > 0:
+                    animal_stats[name]["affection_score"] = max(0, score - decay_units)
+                    animal_stats[name]["last_decay_time"] = last_decay + decay_units * DECAY_INTERVAL
+
     save_stats()
 
 def save_stats():
-    """Atomically persists companion state to stats.json."""
-    global affection_score, current_animal_idx, last_decay_time, last_pet_time
+    """Atomically persists all companion stats to stats.json."""
+    global current_animal_idx, animal_stats
     data = {
-        "affection_score": affection_score,
         "current_animal_idx": current_animal_idx,
-        "last_decay_time": last_decay_time,
-        "last_pet_time": last_pet_time
+        "animals": animal_stats
     }
     try:
         tmp_file = STATS_FILE + ".tmp"
@@ -336,7 +353,7 @@ def marquee_scroll(text: str, max_len: int = 13, tick: int = 0) -> str:
         return clean
 
     max_shift = len(clean) - max_len
-    hold_ticks = 8  # ~1.75s pause at start and end
+    hold_ticks = 3  # ~2.0s pause at start and end (at 0.66s per tick)
     total_cycle = (max_shift + hold_ticks) * 2
     pos = tick % total_cycle
 
@@ -381,13 +398,15 @@ def handle_sigterm(signum, frame):
 
 def handle_pet(signum, frame):
     """SIGUSR1: Pet the companion (Left-click) - wakes up & grants immunity from non-critical alerts!"""
-    global affection_score, petted_until, awake_until, wake_transition_start, last_heat_show_time
-    global heat_showing_until, heat_alert_tier, user_active_until, last_pet_time
+    global petted_until, awake_until, wake_transition_start, last_heat_show_time
+    global heat_showing_until, heat_alert_tier, user_active_until, animal_stats
     now = time.time()
     if now > awake_until:
         wake_transition_start = now
-    affection_score += 1
-    last_pet_time = now
+    active_name = get_current_animal_name()
+    if active_name in animal_stats:
+        animal_stats[active_name]["affection_score"] = animal_stats[active_name].get("affection_score", 0) + 1
+        animal_stats[active_name]["last_pet_time"] = now
     save_stats()
     petted_until = now + 3.0
     awake_until = now + 15.0
@@ -494,7 +513,6 @@ def get_media_status():
 def main():
     global force_mode, force_mode_until, last_media_meta, music_tick, awake_until
     global last_heat_show_time, sleep_transition_start, wake_transition_start, was_asleep
-    global affection_score, last_decay_time
     load_stats()
     frame_idx = 0
     poll_counter = 0
@@ -507,13 +525,18 @@ def main():
     while True:
         now = time.time()
 
-        # Online decay: 1 affection point lost every 2 hours
-        if now - last_decay_time >= DECAY_INTERVAL:
-            decay_units = int((now - last_decay_time) // DECAY_INTERVAL)
-            if decay_units > 0:
-                affection_score = max(0, affection_score - decay_units)
-                last_decay_time += decay_units * DECAY_INTERVAL
-                save_stats()
+        # Online decay: 1 affection point lost every 30 minutes per animal
+        decay_happened = False
+        for a_name, a_data in animal_stats.items():
+            last_dec = float(a_data.get("last_decay_time", now))
+            if now - last_dec >= DECAY_INTERVAL:
+                decay_units = int((now - last_dec) // DECAY_INTERVAL)
+                if decay_units > 0:
+                    a_data["affection_score"] = max(0, int(a_data.get("affection_score", 0)) - decay_units)
+                    a_data["last_decay_time"] = last_dec + decay_units * DECAY_INTERVAL
+                    decay_happened = True
+        if decay_happened:
+            save_stats()
 
         # Update vitals & media every 7 ticks (~1.5s)
         if poll_counter % 7 == 0:
@@ -642,15 +665,16 @@ def main():
             css_class = "vitals"
             mood = "Monitoring System"
         elif active_mode == 2 and is_playing:  # MUSIC
-            # Marquee scrolling song title (left to right bounce) so it never expands the bar
-            scrolled_title = marquee_scroll(media_meta, max_len=13, tick=music_tick)
+            # Marquee scrolling song title (left to right bounce paced at ~0.66s)
+            scrolled_title = marquee_scroll(media_meta, max_len=13, tick=music_tick // 3)
             display_text = f"󰎆 {scrolled_title}"
             css_class = "music"
             mood = f"Vibing to {media_meta}"
         else:  # PET (Awake & chilling or dancing)
             if is_playing:
                 frames = animal['music_frames']
-                display_text = frames[frame_idx % len(frames)]
+                # Paced at ~0.66s (90 BPM) so GTK's 500ms tooltip timer completes reliably
+                display_text = frames[(frame_idx // 3) % len(frames)]
                 css_class = "playing"
                 mood = f"Dancing to {media_meta}"
             else:
@@ -661,16 +685,20 @@ def main():
 
         # Safeguard: if any mode's text exceeds 16 chars, smoothly marquee it
         if len(display_text) > 16:
-            display_text = marquee_scroll(display_text, max_len=16, tick=frame_idx)
+            display_text = marquee_scroll(display_text, max_len=16, tick=frame_idx // 3)
 
         frame_idx += 1
 
-        # U7: Affection info for tooltip
-        aff_title, aff_heart, aff_bar = get_affection_info(affection_score)
+        # U7: Affection info for active companion (Option A - Focused)
+        cur_stats = animal_stats.get(animal['name'], {"affection_score": 0, "last_decay_time": now, "last_pet_time": now})
+        cur_score = int(cur_stats.get("affection_score", 0))
+        cur_decay_time = float(cur_stats.get("last_decay_time", now))
+
+        aff_title, aff_heart, aff_bar = get_affection_info(cur_score)
 
         decay_info = ""
-        if affection_score > 0:
-            mins_left = max(1, int((last_decay_time + DECAY_INTERVAL - now) // 60))
+        if cur_score > 0:
+            mins_left = max(1, int((cur_decay_time + DECAY_INTERVAL - now) // 60))
             decay_info = f" <small><span color='#90909a'>(-1 in {mins_left}m)</span></small>"
 
         # Tooltip with Rich Pango Markup (escaped so GTK never drops the tooltip on unescaped & or < >)
@@ -683,7 +711,7 @@ def main():
         tooltip = (
             f"<b><span color='#bcc3ff'>🐾 Dynamic Island</span></b>\n"
             f"<span color='#c4c5dd'>Companion:</span> <b>{esc_animal}</b> ({esc_mood})\n"
-            f"<span color='#c4c5dd'>Affection:</span> <b>{esc_title}</b> {aff_heart} ({affection_score}){decay_info}\n"
+            f"<span color='#c4c5dd'>Affection:</span> <b>{esc_title}</b> {aff_heart} ({cur_score}){decay_info}\n"
             f"<span color='#c4c5dd'>Progress:</span>  {aff_bar}\n\n"
             f"<b><span color='#bcc3ff'>─── System Vitals ───</span></b>\n"
             f"🌡️ CPU Temp:  <b>{cpu_temp}°C</b>\n"
