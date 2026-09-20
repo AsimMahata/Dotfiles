@@ -132,22 +132,37 @@ button {
   padding-right: 14px;
 }
 
-#power #power-profiles-daemon {
+#power #power-profiles-daemon,
+#power #custom-power-profile {
   background: transparent;
   min-width: 16px;
   padding: 0 12px 0 0;
   margin: 0;
+  transition: color 0.3s ease, opacity 0.2s ease;
 }
 
-#power #power-profiles-daemon.performance {
+#power #power-profiles-daemon:hover,
+#power #custom-power-profile:hover {
+  opacity: 0.75;
+}
+
+#power #power-profiles-daemon:active,
+#power #custom-power-profile:active {
+  opacity: 0.35;
+}
+
+#power #power-profiles-daemon.performance,
+#power #custom-power-profile.performance {
   color: @error;
 }
 
-#power #power-profiles-daemon.balanced {
+#power #power-profiles-daemon.balanced,
+#power #custom-power-profile.balanced {
   color: @secondary;
 }
 
-#power #power-profiles-daemon.power-saver {
+#power #power-profiles-daemon.power-saver,
+#power #custom-power-profile.power-saver {
   color: @tertiary;
 }
 

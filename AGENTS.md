@@ -22,6 +22,12 @@ Whenever any new package, application, tool, or dotfile is added, modified, or r
 - **Definite Fixes Only:** Only apply fixes directly if the exact root cause and verified solution are known with certainty.
 - **Ask Before Speculative Changes:** If a solution requires trial-and-error, experimental workarounds, or uncertain troubleshooting, you must explain the situation and ask for user permission before executing commands or modifying files, to avoid breaking working system components.
 
+## Research & Suggest Before Executing (Avoid Overengineering)
+
+- **Research First, Present Options:** When asked to implement, fix, or change something, thoroughly research how it can be done and suggest the options/approach to the user before modifying any files or running mutating commands.
+- **Avoid Overengineering:** Always favor the simplest, most direct solution. Do not introduce extra scripts, daemons, signals, or background mechanisms unless strictly necessary and explicitly requested by the user.
+- **Confirm Before Acting:** Ensure the user approves the proposed approach and scope before proceeding with implementation.
+
 ## Building Wayland Desktop Modals & Widgets
 
 Whenever creating, modifying, or troubleshooting any desktop popup, modal, slider, or overlay widget (for Waybar, Hyprland, or custom scripts):

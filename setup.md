@@ -395,15 +395,17 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 ## 16. Waybar Power Profiles & GNOME-Style On-Screen Display (OSD)
 
 - **Feature:**
-  - Integrated Waybar's native `power-profiles-daemon` module into the bar with profile-specific styling and icons.
+  - Integrated custom Waybar module `custom/power-profile` inside `group/power` with profile-specific styling and icons.
+  - Waybar's native `power-profiles-daemon` module hardcodes click events and ignores `"on-click"`, so `custom/power-profile` is used with `power-profile-status.sh` (JSON return-type, signal 8) and `power-profile-cycle.sh` on click.
   - Implemented a lightweight, GNOME-style glassmorphic On-Screen Display (OSD HUD) that overlays briefly on the top of the display when cycling power profiles (without sending notification spam to SwayNC).
   - Mode-specific colors and hardware effect summaries:
     - **Performance (``):** Coral/Red highlight — `Fans: High / Overboost 󰈐 • Max CPU Clock • Higher Heat`
     - **Balanced (``):** Blue highlight — `Fans: Dynamic / Standard 󰌪 • Balanced Performance & Battery`
     - **Quiet (``):** Emerald/Green highlight — `Fans: Silent / Low 󰌪 • Power Throttled • Lowest Heat`
 - **Scripts:**
-  - [`power-profile-osd.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-osd.py): GTK Layer Shell overlay widget automatically dismissing after 1.5 seconds.
-  - [`power-profile-cycle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-cycle.sh): Cycles `powerprofilesctl` and triggers the OSD HUD without desktop notification dependencies.
+  - [`power-profile-status.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-status.sh): Outputs JSON status (`text`, `alt`, `tooltip`, `class`) for Waybar.
+  - [`power-profile-cycle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-cycle.sh): Cycles `powerprofilesctl` modes, sends `SIGRTMIN+8` to Waybar for an instant 0ms update, and triggers the OSD HUD.
+  - [`power-profile-osd.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/power-profile-osd.py): GTK Layer Shell overlay widget with `Gtk.Stack` slide-left transition (current profile slides left, new profile slides in from right) and 1.6s auto-dismiss.
 
 ---
 

@@ -53,6 +53,9 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`brightness-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for brightness mode (SIGUSR2). |
 | **`quick-connectivity.py`** | Local Script (`waybar/scripts`) | Unified GTK Layer Shell modal quick-settings popup for Network & Bluetooth (AAA UX). |
 | **`connectivity-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) toggle launcher for quick-connectivity.py. |
+| **`power-profile-status.sh`** | Local Script (`waybar/scripts`) | Generates JSON status for Waybar's `custom/power-profile` module with icons and tooltips. |
+| **`power-profile-cycle.sh`** | Local Script (`waybar/scripts`) | Cycles `powerprofilesctl` modes, signals Waybar (SIGRTMIN+8), and spawns the OSD HUD. |
+| **`power-profile-osd.py`** | Local Script (`waybar/scripts`) | GTK Layer Shell OSD HUD showing power profile changes with 1.5s auto-dismiss. |
 
 ---
 

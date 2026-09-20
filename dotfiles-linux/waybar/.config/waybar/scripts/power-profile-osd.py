@@ -36,12 +36,13 @@ PROFILE_CONFIGS = {
 
 
 class PowerProfileOSD(Gtk.Window):
-    def __init__(self, profile_name):
+    def __init__(self, next_profile, prev_profile=None):
         super().__init__(type=Gtk.WindowType.TOPLEVEL)
         self.set_title("PowerProfileOSD")
         self.set_name("power-profile-osd")
 
-        cfg = PROFILE_CONFIGS.get(profile_name, PROFILE_CONFIGS["balanced"])
+        self.next_profile = next_profile if next_profile in PROFILE_CONFIGS else "balanced"
+        self.prev_profile = prev_profile if prev_profile in PROFILE_CONFIGS else None
 
         # Layer Shell Configuration
         GtkLayerShell.init_for_window(self)
@@ -50,53 +51,84 @@ class PowerProfileOSD(Gtk.Window):
         GtkLayerShell.set_exclusive_zone(self, -1)
         GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.NONE)
 
-        # Position at the top center of the screen, right below Waybar
+        # Position at top center of screen, right below Waybar
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.TOP, True)
         GtkLayerShell.set_margin(self, GtkLayerShell.Edge.TOP, 54)
 
         # Main Card Box
-        card = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
+        card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         card.set_name("osd-card")
         self.add(card)
+
+        # Smooth Slide Stack
+        self.stack = Gtk.Stack()
+        self.stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT)
+        self.stack.set_transition_duration(260)
+        card.pack_start(self.stack, True, True, 0)
+
+        # Populate rows
+        if self.prev_profile and self.prev_profile != self.next_profile:
+            prev_row = self.create_profile_row(self.prev_profile)
+            self.stack.add_named(prev_row, self.prev_profile)
+
+            next_row = self.create_profile_row(self.next_profile)
+            self.stack.add_named(next_row, self.next_profile)
+
+            self.stack.set_visible_child_name(self.prev_profile)
+            # Trigger slide animation right after mapping
+            GLib.timeout_add(35, self._trigger_slide)
+        else:
+            next_row = self.create_profile_row(self.next_profile)
+            self.stack.add_named(next_row, self.next_profile)
+            self.stack.set_visible_child_name(self.next_profile)
+
+        # Load Styles
+        self.apply_styles()
+
+        # Auto-dismiss after 1600ms
+        GLib.timeout_add(1600, self.on_timeout)
+
+    def create_profile_row(self, profile_name):
+        cfg = PROFILE_CONFIGS.get(profile_name, PROFILE_CONFIGS["balanced"])
+        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
+        row.set_name(f"osd-row-{profile_name}")
 
         # Icon
         lbl_icon = Gtk.Label(label=cfg["icon"])
         lbl_icon.set_name("osd-icon")
-        card.pack_start(lbl_icon, False, False, 0)
+        lbl_icon.get_style_context().add_class(f"icon-{profile_name}")
+        row.pack_start(lbl_icon, False, False, 0)
 
-        # Content Text Box (Vertical)
+        # Content Box
         content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-        card.pack_start(content_box, True, True, 0)
+        row.pack_start(content_box, True, True, 0)
 
-        # Title Label
+        # Title
         lbl_title = Gtk.Label(label=cfg["title"])
         lbl_title.set_name("osd-title")
+        lbl_title.get_style_context().add_class(f"title-{profile_name}")
         lbl_title.set_xalign(0.0)
         content_box.pack_start(lbl_title, False, False, 0)
 
-        # Subtitle / Effects Label
-        fan_str = cfg["fan_text"]
-        cpu_str = cfg["cpu_text"]
-        effects = f"{fan_str}  •  {cpu_str}"
+        # Effects
+        effects = f"{cfg['fan_text']}  •  {cfg['cpu_text']}"
         lbl_effects = Gtk.Label(label=effects)
         lbl_effects.set_name("osd-effects")
         lbl_effects.set_xalign(0.0)
         content_box.pack_start(lbl_effects, False, False, 0)
 
-        # Load Styles
-        self.apply_styles(cfg)
+        return row
 
-        # Auto-dismiss after 1500ms (1.5 seconds)
-        GLib.timeout_add(1500, self.on_timeout)
+    def _trigger_slide(self):
+        self.stack.set_visible_child_name(self.next_profile)
+        return False
 
-    def apply_styles(self, cfg):
+    def apply_styles(self):
         colors_file = os.path.expanduser("~/.config/waybar/colors.css")
         colors_css = ""
         if os.path.exists(colors_file):
             with open(colors_file, "r") as f:
                 colors_css = f.read()
-
-        accent_color = cfg["color_var"] if "@" in cfg["color_var"] else cfg["fallback_color"]
 
         css = f"""
         {colors_css}
@@ -120,20 +152,30 @@ class PowerProfileOSD(Gtk.Window):
 
         #osd-icon {{
             font-size: 24px;
-            color: {accent_color};
             margin-right: 2px;
         }}
 
         #osd-title {{
             font-size: 13px;
             font-weight: 700;
-            color: {accent_color};
         }}
 
         #osd-effects {{
             font-size: 11px;
             font-weight: 500;
             color: @on_surface_variant;
+        }}
+
+        .icon-performance, .title-performance {{
+            color: @error;
+        }}
+
+        .icon-balanced, .title-balanced {{
+            color: @primary;
+        }}
+
+        .icon-power-saver, .title-power-saver {{
+            color: #a6e3a1;
         }}
         """
 
@@ -153,8 +195,9 @@ class PowerProfileOSD(Gtk.Window):
 
 
 def main():
-    profile = sys.argv[1] if len(sys.argv) > 1 else "balanced"
-    win = PowerProfileOSD(profile)
+    next_profile = sys.argv[1] if len(sys.argv) > 1 else "balanced"
+    prev_profile = sys.argv[2] if len(sys.argv) > 2 else None
+    win = PowerProfileOSD(next_profile, prev_profile)
     win.show_all()
     Gtk.main()
 

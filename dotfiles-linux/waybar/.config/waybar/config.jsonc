@@ -131,11 +131,14 @@
         "tooltip-format": "{time}",
         "on-click": "~/.config/waybar/scripts/brightness-toggle.sh"
     },
-    "power-profiles-daemon": {
+    "custom/power-profile": {
         "format": "{icon}",
-        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
         "tooltip": true,
+        "return-type": "json",
+        "exec": "~/.config/waybar/scripts/power-profile-status.sh",
         "on-click": "~/.config/waybar/scripts/power-profile-cycle.sh",
+        "signal": 8,
+        "interval": 5,
         "format-icons": {
             "default": "",
             "performance": "",
@@ -146,7 +149,7 @@
     "group/power": {
         "orientation": "horizontal",
         "modules": [
-            "power-profiles-daemon",
+            "custom/power-profile",
             "battery"
         ]
     },
