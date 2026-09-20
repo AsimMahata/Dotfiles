@@ -213,11 +213,13 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
-## 8. Wallpaper Switcher UI Fix
+## 8. Wallpaper Switcher Redesign (Curved 3D Cover-Flow Dock)
 
-- Updated `dotfiles-linux/hypr/.config/hypr/scripts/wallpaper-switcher.py`:
-  - Styled regular buttons (Cancel) with a dark theme background (`#313244`), clear text (`#cdd6f4`), rounded borders (`10px`), and hover effects (`#45475a`) to prevent GTK light theme fallback.
-  - Aligned the "Apply Selected" button styling with consistent borders, hover effects, and transitions.
+- Redesigned `dotfiles-linux/hypr/.config/hypr/scripts/wallpaper-switcher.py`:
+  - **Architecture:** Transitioned from a standard dialog window to a fullscreen transparent `GtkLayerShell` modal (`Layer.TOP`) following the SwayNC click-catcher pattern in `gtk.md`. Clicking outside or pressing <kbd>Escape</kbd> immediately destroys the Wayland surface.
+  - **Parabolic Cover-Flow:** Implemented a 5-card curved cover-flow arch where the active center wallpaper is largest (`260x162px`), and flanking cards decrease in size (`190x118px`, `135x84px`) with lower opacity (`0.85`, `0.55`) to create a smooth 3D rounded arch feeling.
+  - **Input & Navigation:** Added 60fps coalesced mouse-wheel scrolling (`GLib.timeout_add(16, ...)`), keyboard navigation (<kbd>←</kbd> / <kbd>→</kbd> / <kbd>h</kbd> / <kbd>l</kbd>), shuffle (<kbd>Space</kbd>), instant apply (<kbd>Enter</kbd>), and instant toggle support (pressing <kbd>SUPER</kbd> + <kbd>B</kbd> while open dismisses the modal).
+  - **Theming & Metadata:** Dynamic Matugen color chip extraction preview (`@primary`, `@surface`, `@tertiary`, `@secondary`), smart title cleaning (removing raw numbers, extensions, and underscores), and usage count tracking.
 
 ---
 

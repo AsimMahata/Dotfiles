@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="luxury">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curved 3D Ambient Dock — Wallpaper Switcher Implementation Plan</title>
+
+  <!-- Lavish Recommended Tailwind + DaisyUI CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+
+  <!-- Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :where(.grid, .flex, .layout-grid, .layout-flex) > *,
+    :where([style*="display: grid"], [style*="display:grid"], [style*="display: flex"], [style*="display:flex"]) > * {
+      min-width: 0;
+    }
+    :where(p, h1, h2, h3, h4, h5, h6, li, dd, blockquote, figcaption, td, th, .badge, .label) {
+      overflow-wrap: anywhere;
+    }
+    :where(img, svg, video, canvas, iframe) {
+      max-width: 100%;
+      height: auto;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 10%, #1a102f 0%, #0a0814 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .glass-card {
+      background: rgba(22, 22, 34, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .dock-floating-container {
+      perspective: 1200px;
+    }
+    /* 3D Rounding Cover-Flow Animation */
+    .flow-item {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: center bottom;
+      will-change: transform, opacity, filter;
+    }
+    .flow-item-center {
+      transform: scale(1.15) translateY(-14px);
+      z-index: 30;
+      filter: drop-shadow(0 15px 30px rgba(168, 85, 247, 0.5));
+    }
+    .flow-item-near {
+      transform: scale(0.92) translateY(0px) rotateY(var(--rot, 0deg));
+      z-index: 20;
+      opacity: 0.85;
+      filter: brightness(0.85);
+    }
+    .flow-item-far {
+      transform: scale(0.76) translateY(12px) rotateY(var(--rot, 0deg));
+      z-index: 10;
+      opacity: 0.5;
+      filter: brightness(0.6);
+    }
+    .flow-item-edge {
+      transform: scale(0.62) translateY(24px) rotateY(var(--rot, 0deg));
+      z-index: 5;
+      opacity: 0.25;
+      filter: brightness(0.4);
+    }
+  </style>
+</head>
+<body class="p-4 sm:p-8 lg:p-12 selection:bg-purple-500/30 selection:text-purple-200">
+
+  <main class="max-w-7xl mx-auto space-y-12">
+
+    <!-- Header Section -->
+    <header class="text-center space-y-4 pt-4 pb-2">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-pink-500/10 text-pink-400 border border-pink-500/20">
+        <span class="w-2 h-2 rounded-full bg-pink-400 animate-pulse"></span>
+        Approved Direction: Ambient Floating Dock
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-pink-200 via-purple-100 to-indigo-200 bg-clip-text text-transparent">
+        The Curved 3D Cover-Flow Dock
+      </h1>
+      <p class="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
+        Transparent floating cards with smooth mouse-wheel scrolling, parabolic height arching (middle is tallest), live Matugen palette preview, and instant <kbd class="kbd kbd-xs">Enter</kbd> apply.
+      </p>
+    </header>
+
+    <!-- LIVE INTERACTIVE SIMULATOR (Playbook: comparison & diagram) -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <svg class="w-6 h-6 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Interactive Prototype (Scroll Wheel & Keyboard Enabled)
+          </h2>
+          <p class="text-sm text-slate-400">
+            <strong>Try it:</strong> Use your <strong class="text-white">Mouse Scroll Wheel</strong> or <kbd class="kbd kbd-xs">←</kbd> <kbd class="kbd kbd-xs">→</kbd> arrow keys over the dock below!
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 font-mono text-xs text-slate-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+          <span class="text-pink-400 font-bold">Wheel:</span> Rotate
+          <span class="text-slate-500">•</span>
+          <span class="text-purple-400 font-bold">Space:</span> Shuffle
+          <span class="text-slate-500">•</span>
+          <span class="text-emerald-400 font-bold">Enter:</span> Apply
+        </div>
+      </div>
+
+      <!-- Desktop Viewport Simulation -->
+      <div id="desktop-viewport" class="relative w-full aspect-[16/9] rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col justify-between p-6 bg-cover bg-center transition-all duration-700"
+           style="background-image: url('https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1600&auto=format&fit=crop');">
+
+        <!-- Ambient Backdrop Overlay (transparent as requested) -->
+        <div class="absolute inset-0 bg-black/35 backdrop-blur-[3px] pointer-events-none"></div>
+
+        <!-- Simulated Waybar Top Bar -->
+        <div class="relative z-10 flex items-center justify-between w-full pointer-events-none">
+          <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-[11px] text-slate-300 font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span> 1 2 3 4 5
+          </div>
+          <div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-pink-500/30 text-xs text-white font-medium shadow-lg">
+            <span class="text-pink-400">󰎈</span>
+            <span id="active-music-title">Guts' Theme — Susumu Hirasawa</span>
+          </div>
+          <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-[11px] text-slate-300 font-mono">
+            <span>󰤨 100%</span>
+            <span>󰁹 92%</span>
+            <span class="text-white font-semibold">22:50</span>
+          </div>
+        </div>
+
+        <!-- Centered Floating Curved Cover-Flow Dock -->
+        <div class="relative z-20 mx-auto max-w-4xl w-full flex flex-col items-center space-y-4">
+
+          <!-- Active Wallpaper Metadata Card (Floats subtly above the center item) -->
+          <div class="flex items-center gap-4 px-5 py-2.5 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 shadow-2xl">
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="active-title" class="text-base font-bold text-white tracking-wide">Berserk — Black Swordsman</span>
+                <span id="active-res" class="badge badge-xs badge-accent font-mono">3840×2160 UHD</span>
+                <span id="active-tag" class="badge badge-xs badge-neutral">Dark Fantasy</span>
+              </div>
+              <p class="text-[11px] text-slate-400 font-mono mt-0.5">
+                Index <span id="active-index">1</span> of <span id="total-count">7</span> • Matugen auto-theme ready
+              </p>
+            </div>
+
+            <div class="h-6 w-px bg-white/10"></div>
+
+            <!-- Live Matugen Swatches -->
+            <div class="flex items-center gap-1.5" id="active-swatches">
+              <div class="w-5 h-5 rounded-md bg-red-600 border border-white/20 tooltip tooltip-top" data-tip="Primary"></div>
+              <div class="w-5 h-5 rounded-md bg-zinc-900 border border-white/20 tooltip tooltip-top" data-tip="Surface"></div>
+              <div class="w-5 h-5 rounded-md bg-red-400 border border-white/20 tooltip tooltip-top" data-tip="Accent"></div>
+              <div class="w-5 h-5 rounded-md bg-amber-500 border border-white/20 tooltip tooltip-top" data-tip="Tertiary"></div>
+            </div>
+          </div>
+
+          <!-- Parabolic Curved Coverflow Cards Container -->
+          <div id="flow-track"
+               class="dock-floating-container flex items-end justify-center gap-3 sm:gap-5 w-full py-4 px-2 select-none cursor-ew-resize">
+            <!-- Dynamically populated by JavaScript below -->
+          </div>
+
+          <!-- Dock Controls Bar (Transparent & Centered as requested) -->
+          <div class="flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/50 backdrop-blur-md border border-white/10 shadow-xl">
+            <button onclick="navigateFlow(-1)" class="btn btn-xs btn-circle btn-ghost text-slate-300 hover:text-white" title="Previous Wallpaper">
+              ❮
+            </button>
+
+            <button onclick="shuffleFlow()" class="btn btn-xs btn-ghost gap-1 text-slate-300 hover:text-white">
+              <span>🎲 Shuffle</span>
+            </button>
+
+            <button onclick="toggleFavorite()" id="btn-fav" class="btn btn-xs btn-ghost gap-1 text-amber-400 hover:scale-105">
+              <span>★ Favorite</span>
+            </button>
+
+            <div class="h-4 w-px bg-white/10"></div>
+
+            <button onclick="applyWallpaper()" class="btn btn-xs btn-primary gap-1.5 shadow-lg shadow-pink-500/30 font-semibold px-4">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Apply Wallpaper & Recolor
+            </button>
+
+            <button onclick="navigateFlow(1)" class="btn btn-xs btn-circle btn-ghost text-slate-300 hover:text-white" title="Next Wallpaper">
+              ❯
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Implementation Architecture & Code Blueprint (Playbook: plan & code) -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+            <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+            Technical Implementation Architecture
+          </h2>
+          <p class="text-sm text-slate-400">
+            How this will be engineered in Python 3 + GTK 3 + GtkLayerShell adhering strictly to <code class="text-xs">gtk.md</code>.
+          </p>
+        </div>
+        <span class="badge badge-soft badge-primary">Playbook: Plan</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Pillar 1: LayerShell & Wayland Click-Catcher -->
+        <div class="glass-card rounded-2xl p-6 space-y-3 border-purple-500/20">
+          <div class="flex items-center gap-2 text-purple-400 font-bold text-sm">
+            <span>01. SwayNC Click-Catcher</span>
+          </div>
+          <h3 class="text-base font-bold text-white">100% Transparent Layer</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            The window anchors to all 4 screen edges on <code class="text-xs font-mono text-purple-300">Layer.TOP</code>. The root is a transparent <code class="text-xs font-mono text-purple-300">Gtk.EventBox</code>. Clicking anywhere outside the floating dock cards immediately terminates the process with <code class="text-xs font-mono text-purple-300">Gtk.main_quit()</code> — zero ghost windows or stuck input regions.
+          </p>
+        </div>
+
+        <!-- Pillar 2: Parabolic Cover-flow Widget -->
+        <div class="glass-card rounded-2xl p-6 space-y-3 border-pink-500/20">
+          <div class="flex items-center gap-2 text-pink-400 font-bold text-sm">
+            <span>02. Parabolic Height Curve</span>
+          </div>
+          <h3 class="text-base font-bold text-white">Dynamic Scale & Curvature</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            A centered horizontal <code class="text-xs font-mono text-pink-300">Gtk.Box</code> with 5 to 7 visible cards. As the active index shifts, cards are dynamically assigned CSS classes or resized: Center = <code class="text-xs font-mono text-pink-300">280x175px</code> (scale 1.15), Left/Right 1 = <code class="text-xs font-mono text-pink-300">220x138px</code>, Edges = <code class="text-xs font-mono text-pink-300">170x106px</code>.
+          </p>
+        </div>
+
+        <!-- Pillar 3: Smooth Input & Matugen -->
+        <div class="glass-card rounded-2xl p-6 space-y-3 border-indigo-500/20">
+          <div class="flex items-center gap-2 text-indigo-400 font-bold text-sm">
+            <span>03. 60fps Scroll & Matugen</span>
+          </div>
+          <h3 class="text-base font-bold text-white">Non-Blocking Interactions</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Mouse wheel events are captured with <code class="text-xs font-mono text-indigo-300">Gdk.EventMask.SCROLL_MASK</code> and throttled using <code class="text-xs font-mono text-indigo-300">GLib.timeout_add(16, ...)</code> to guarantee silky 60fps animation. Matugen palette preview runs asynchronously in a worker thread without freezing the UI.
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Confirmation Box -->
+      <div class="glass-card rounded-2xl p-6 border-emerald-500/30 bg-emerald-950/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="space-y-1">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Ready for Implementation
+          </h3>
+          <p class="text-xs text-slate-300">
+            All user preferences have been incorporated into the architectural blueprint. We will now update <code class="text-xs font-mono text-emerald-300">wallpaper-switcher.py</code>.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="badge badge-success font-semibold text-xs">Awaiting Execution Approval</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Wallpapers dataset with real wallpapers & extracted color palettes
+    const wallpapers = [
+      {
+        title: "Berserk — Black Swordsman",
+        tag: "Dark Fantasy",
+        res: "3840×2160 UHD",
+        url: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1600&auto=format&fit=crop",
+        music: "Guts' Theme — Susumu Hirasawa",
+        palette: ["#dc2626", "#18181b", "#f87171", "#f59e0b", "#3f3f46"]
+      },
+      {
+        title: "Spirited Water Railway",
+        tag: "Ghibli • Scenery",
+        res: "2560×1440 2K",
+        url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&auto=format&fit=crop",
+        music: "The Sixth Station — Joe Hisaishi",
+        palette: ["#0284c7", "#0f172a", "#38bdf8", "#fbbf24", "#475569"]
+      },
+      {
+        title: "Starry Comets & Lake",
+        tag: "Cosmic • Night",
+        res: "3840×2160 UHD",
+        url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600&auto=format&fit=crop",
+        music: "Sparkle — RADWIMPS",
+        palette: ["#6366f1", "#09090b", "#818cf8", "#ec4899", "#3f3f46"]
+      },
+      {
+        title: "Cyberpunk Neon Alley",
+        tag: "Cyberpunk • Vibrant",
+        res: "3840×2160 4K",
+        url: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=1600&auto=format&fit=crop",
+        music: "Night City — REL",
+        palette: ["#ec4899", "#18181b", "#f472b6", "#06b6d4", "#475569"]
+      },
+      {
+        title: "Crimson Kitsune Mask",
+        tag: "Anime • Traditional",
+        res: "3840×2160 UHD",
+        url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600&auto=format&fit=crop",
+        music: "Fox Spirit — Traditional Lo-Fi",
+        palette: ["#ef4444", "#171717", "#f87171", "#fb923c", "#525252"]
+      },
+      {
+        title: "Alpine Windmill Sunrise",
+        tag: "Nature • Mountain",
+        res: "3840×2160 UHD",
+        url: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1600&auto=format&fit=crop",
+        music: "Quiet Valley — Ambient Nature",
+        palette: ["#10b981", "#0f172a", "#34d399", "#f59e0b", "#334155"]
+      },
+      {
+        title: "Shin-chan Sunset Bridge",
+        tag: "Nostalgia • Anime",
+        res: "1920×1080 FHD",
+        url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1600&auto=format&fit=crop",
+        music: "Sunset Walk — Lo-Fi Chill",
+        palette: ["#f97316", "#1c1917", "#fdba74", "#38bdf8", "#44403c"]
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function renderCoverflow() {
+      const track = document.getElementById('flow-track');
+      track.innerHTML = '';
+
+      const total = wallpapers.length;
+      document.getElementById('total-count').innerText = total;
+      document.getElementById('active-index').innerText = currentIndex + 1;
+
+      // Current active wallpaper
+      const active = wallpapers[currentIndex];
+      document.getElementById('active-title').innerText = active.title;
+      document.getElementById('active-res').innerText = active.res;
+      document.getElementById('active-tag').innerText = active.tag;
+      document.getElementById('active-music-title').innerText = active.music;
+      document.getElementById('desktop-viewport').style.backgroundImage = `url('${active.url}')`;
+
+      // Update palette swatches
+      const swatches = document.getElementById('active-swatches');
+      swatches.innerHTML = '';
+      active.palette.forEach(hex => {
+        const d = document.createElement('div');
+        d.className = 'w-5 h-5 rounded-md border border-white/20 tooltip tooltip-top';
+        d.style.backgroundColor = hex;
+        d.setAttribute('data-tip', hex);
+        swatches.appendChild(d);
+      });
+
+      // Render 5 items around current: -2, -1, 0, +1, +2
+      const offsets = [-2, -1, 0, 1, 2];
+
+      offsets.forEach(offset => {
+        let idx = (currentIndex + offset) % total;
+        if (idx < 0) idx += total;
+
+        const wp = wallpapers[idx];
+        const card = document.createElement('div');
+        card.className = 'flow-item cursor-pointer overflow-hidden rounded-2xl border-2 transition-all';
+
+        let width = "w-28 sm:w-36";
+        let height = "h-20 sm:h-24";
+        let rot = "0deg";
+
+        if (offset === 0) {
+          card.classList.add('flow-item-center', 'border-pink-500', 'w-48', 'sm:w-64', 'h-32', 'sm:h-40');
+        } else if (Math.abs(offset) === 1) {
+          card.classList.add('flow-item-near', 'border-white/20', 'w-36', 'sm:w-44', 'h-24', 'sm:h-28');
+          rot = offset < 0 ? '12deg' : '-12deg';
+        } else {
+          card.classList.add('flow-item-far', 'border-white/10', 'w-24', 'sm:w-32', 'h-16', 'sm:h-20');
+          rot = offset < 0 ? '20deg' : '-20deg';
+        }
+
+        card.style.setProperty('--rot', rot);
+        card.innerHTML = `
+          <img src="${wp.url}" class="w-full h-full object-cover">
+        `;
+
+        card.onclick = () => {
+          currentIndex = idx;
+          renderCoverflow();
+        };
+
+        track.appendChild(card);
+      });
+    }
+
+    function navigateFlow(direction) {
+      currentIndex = (currentIndex + direction + wallpapers.length) % wallpapers.length;
+      renderCoverflow();
+    }
+
+    function shuffleFlow() {
+      currentIndex = Math.floor(Math.random() * wallpapers.length);
+      renderCoverflow();
+    }
+
+    function toggleFavorite() {
+      const btn = document.getElementById('btn-fav');
+      btn.classList.toggle('text-amber-400');
+      btn.classList.toggle('text-white');
+    }
+
+    function applyWallpaper() {
+      const active = wallpapers[currentIndex];
+      alert(`Applied "${active.title}"! In the native app, this executes matugen and recolors your Waybar & Hyprland setup.`);
+    }
+
+    // Connect Mouse Wheel to Coverflow navigation
+    const viewport = document.getElementById('desktop-viewport');
+    viewport.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.deltaY > 0 || e.deltaX > 0) {
+        navigateFlow(1);
+      } else if (e.deltaY < 0 || e.deltaX < 0) {
+        navigateFlow(-1);
+      }
+    }, { passive: false });
+
+    // Connect Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        navigateFlow(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        navigateFlow(-1);
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        shuffleFlow();
+      } else if (e.key === 'Enter') {
+        applyWallpaper();
+      }
+    });
+
+    // Initial render
+    renderCoverflow();
+  </script>
+</body>
+</html>
