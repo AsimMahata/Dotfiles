@@ -55,3 +55,8 @@ output_path = '~/.config/gtk-4.0/colors.css'
 input_path = '~/.config/matugen/templates/starship-colors.toml'
 output_path = '~/.config/starship.toml'
 
+[templates.antigravity]
+input_path = '~/.config/matugen/templates/antigravity-colors.json'
+output_path = '~/.config/matugen/antigravity-colors.json'
+post_hook = 'jq -s ".[0] * {\"workbench.colorCustomizations\": .[1]}" "$HOME/.config/Antigravity IDE/User/settings.json" "$HOME/.config/matugen/antigravity-colors.json" > /tmp/ag_settings.json && cp /tmp/ag_settings.json "$HOME/.config/Antigravity IDE/User/settings.json"'
+

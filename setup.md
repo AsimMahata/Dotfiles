@@ -531,6 +531,31 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 
 ---
 
+## 22. Antigravity IDE Theming & Matugen Integration
+
+- **Overview:**
+  - Integrated Antigravity IDE with Matugen dynamic theming and GNU Stow dotfiles management.
+  - Changes to the wallpaper instantly recolor Antigravity IDE's chrome (editor, tabs, sidebar, activity bar, status bar, and accents) in real time without requiring an editor restart or window reload.
+- **GNU Stow Package:**
+  - Created Stow module at `dotfiles-linux/antigravity/` containing:
+    - `dotfiles-linux/antigravity/.config/Antigravity IDE/User/settings.json`
+  - Stowed to user home directory via:
+    ```bash
+    stow -d dotfiles-linux -t ~ antigravity
+    ```
+- **Matugen Template & Post-Hook:**
+  - Template: [`dotfiles-linux/matugen/.config/matugen/templates/antigravity-colors.json`](file:///home/asim/setup/Dotfiles/dotfiles-linux/matugen/.config/matugen/templates/antigravity-colors.json) maps Material You tokens (`surface`, `primary`, `on_surface`, `secondary_container`, etc.) to VS Code / Antigravity IDE `workbench.colorCustomizations` keys.
+  - Configuration in [`dotfiles-linux/matugen/.config/matugen/config.toml`](file:///home/asim/setup/Dotfiles/dotfiles-linux/matugen/.config/matugen/config.toml):
+    ```toml
+    [templates.antigravity]
+    input_path = '~/.config/matugen/templates/antigravity-colors.json'
+    output_path = '~/.config/matugen/antigravity-colors.json'
+    post_hook = 'jq -s ".[0] * {\"workbench.colorCustomizations\": .[1]}" "$HOME/.config/Antigravity IDE/User/settings.json" "$HOME/.config/matugen/antigravity-colors.json" > /tmp/ag_settings.json && cp /tmp/ag_settings.json "$HOME/.config/Antigravity IDE/User/settings.json"'
+    ```
+  - Using `cp` rather than `mv` writes into the file target directly, ensuring the GNU Stow symlink pointing into `dotfiles-linux/antigravity/` is preserved and not replaced with a regular file.
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.

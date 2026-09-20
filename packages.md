@@ -86,6 +86,7 @@ This document maintains an inventory of all explicitly installed applications, t
 | :--- | :--- | :--- |
 | **`vlc`** | Official (`pacman`) | Media player supporting virtually all video and audio formats. |
 | **`dolphin`** | Official (`pacman`) | KDE file manager. |
+| **`antigravity`** | Local (`dotfiles-linux/antigravity`) | Antigravity IDE configuration (settings.json, font, Matugen dynamic theming integration). |
 
 ---
 
