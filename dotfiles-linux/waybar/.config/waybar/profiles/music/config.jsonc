@@ -6,6 +6,7 @@
         "mpris"
     ],
     "modules-center": [
+        "custom/cat",
         "custom/cava"
     ],
     "modules-right": [
@@ -35,8 +36,15 @@
         "status-icons": {
             "paused": "󰏤"
         },
-        "max-length": 45,
+        "max-length": 35,
         "tooltip-format": "{player}: {title} - {artist} ({album})"
+    },
+    "custom/cat": {
+        "exec": "python3 ~/.config/waybar/profiles/music/cat.py",
+        "return-type": "json",
+        "on-click": "playerctl play-pause",
+        "on-click-right": "playerctl next",
+        "tooltip": true
     },
     "custom/cava": {
         "exec": "~/.config/waybar/profiles/music/cava.sh",

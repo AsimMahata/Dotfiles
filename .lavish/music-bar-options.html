@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="luxury">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waybar Music Bar — AAAAA Design Options</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :where(.grid, .flex, .layout-grid, .layout-flex) > * { min-width: 0; }
+    :where(p, h1, h2, h3, h4, h5, h6, li, dd, blockquote, figcaption, td, th, .badge, .label) { overflow-wrap: anywhere; }
+    
+    /* Waybar Bar Simulation Canvas */
+    .waybar-mock {
+      background: rgba(14, 21, 20, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(128, 213, 208, 0.2);
+      border-radius: 50px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .waybar-pill {
+      background: #00201f;
+      color: #dde4e2;
+      border: 1px solid rgba(128, 213, 208, 0.25);
+      border-radius: 50px;
+      box-shadow: 0 0 10px rgba(128, 213, 208, 0.12);
+      transition: all 0.3s ease;
+    }
+    .cava-bars {
+      color: #80d5d0;
+      letter-spacing: 2px;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(128, 213, 208, 0.4);
+    }
+    .cat-text {
+      color: #80d5d0;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body class="bg-base-300 text-base-content min-h-screen p-4 sm:p-8">
+  <div class="max-w-6xl mx-auto space-y-8">
+    
+    <!-- Header -->
+    <header class="text-center space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold uppercase tracking-wider">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        AAAAA Vibe Ricing Laboratory
+      </div>
+      <h1 class="text-4xl font-extrabold tracking-tight">Waybar Music Bar: Design Options</h1>
+      <p class="text-base-content/70 max-w-2xl mx-auto">
+        Explore 3 ultra-wide, audio-reactive layouts featuring animated walking/vibing cats and wide Monstercat CAVA equalizers. Select your favorite or annotate changes!
+      </p>
+      
+      <!-- Interactive Play/Pause Simulation Toggle -->
+      <div class="flex justify-center items-center gap-3 pt-2">
+        <button id="sim-play-toggle" class="btn btn-sm btn-primary gap-2" onclick="togglePlayback()">
+          <span id="sim-btn-icon">⏸</span>
+          <span id="sim-btn-text">Simulate: Music Playing</span>
+        </button>
+        <span class="text-xs text-base-content/50">Click to toggle cats & visualizers between playing / sleeping</span>
+      </div>
+    </header>
+
+    <!-- Options Grid -->
+    <form data-lavish-question="music_bar_option" onsubmit="event.preventDefault(); const choice = new FormData(event.currentTarget).get('selected_option'); if (choice) window.lavish.queuePrompt('Use Option ' + choice + ' for the Waybar music bar', { tag: 'choice', text: 'Selected: Option ' + choice, element: event.currentTarget, data: { option: choice } });">
+      
+      <div class="grid grid-cols-1 gap-8">
+        
+        <!-- OPTION 1 -->
+        <div class="card bg-base-100 border border-base-content/10 shadow-xl overflow-hidden hover:border-primary/40 transition-all">
+          <div class="card-body p-6 sm:p-8 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-base-content/10 pb-4">
+              <div>
+                <div class="flex items-center gap-3">
+                  <span class="badge badge-primary font-bold">Option 1</span>
+                  <h2 class="text-2xl font-bold">The Cyber Neko Station</h2>
+                  <span class="badge badge-soft badge-accent">Integrated Super-Pill</span>
+                </div>
+                <p class="text-sm text-base-content/60 mt-1">
+                  A massive, unified center super-pill housing a walking cat with floating music notes on the left, a 38-bar wide Monstercat wave in the center, and a stereo indicator on the right.
+                </p>
+              </div>
+              <label class="btn btn-outline btn-primary gap-2 cursor-pointer">
+                <input type="radio" name="selected_option" value="1" class="radio radio-primary radio-sm" checked>
+                <span>Select Option 1</span>
+              </label>
+            </div>
+
+            <!-- Live Mockup 1 -->
+            <div class="space-y-2">
+              <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider">Live Waybar Simulation</div>
+              <div class="waybar-mock p-3 flex items-center justify-between gap-4 overflow-x-auto">
+                <!-- Left -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="waybar-pill px-3 py-1 text-xs"> App</div>
+                  <div class="waybar-pill px-3 py-1 text-xs text-primary truncate max-w-[220px]">󰎆 Non-stop _-_Dhurandhar Hit Songs</div>
+                </div>
+                <!-- Center (Option 1 Super-Pill) -->
+                <div class="waybar-pill px-5 py-1.5 flex items-center gap-4 shrink-0 mx-auto">
+                  <span class="cat-text text-sm whitespace-pre font-mono option1-cat">ᓚᘏᗢ ♪  </span>
+                  <span class="cava-bars text-sm font-mono option1-cava"> ▂▃▄▅▆▇██▇▆▅▄▃▂ ▂▃▅▆██▇▅▃▂  ▂▃▄▅▆▇█</span>
+                  <span class="badge badge-xs badge-primary/20 text-primary font-mono text-[10px] tracking-widest uppercase">STEREO</span>
+                </div>
+                <!-- Right -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="waybar-pill px-3 py-1 text-xs">󰕾 96%</div>
+                  <div class="waybar-pill px-3 py-1 text-xs"> 80%</div>
+                  <div class="waybar-pill px-3 py-1 text-xs"> 17:15</div>
+                  <div class="waybar-pill px-3 py-1 text-xs text-error">⏻</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Features -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-primary mb-1">🐾 Walking Neko</div>
+                <div class="text-base-content/70">Cat paces across the left side of the pill while music plays; sleeps with <code>zZ</code> when paused.</div>
+              </div>
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-primary mb-1">🌊 38-Bar Monstercat Wave</div>
+                <div class="text-base-content/70">Wide, organic frequency curves spanning ~420px of center space with 60fps responsiveness.</div>
+              </div>
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-primary mb-1">⚡ Super-Pill Architecture</div>
+                <div class="text-base-content/70">Zero jitter, stable pill width, unified glowing neon border.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPTION 2 -->
+        <div class="card bg-base-100 border border-base-content/10 shadow-xl overflow-hidden hover:border-primary/40 transition-all">
+          <div class="card-body p-6 sm:p-8 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-base-content/10 pb-4">
+              <div>
+                <div class="flex items-center gap-3">
+                  <span class="badge badge-secondary font-bold">Option 2</span>
+                  <h2 class="text-2xl font-bold">Bongo Cat DJ & Dual Spectrum</h2>
+                  <span class="badge badge-soft badge-secondary">Split Stereo Equalizer</span>
+                </div>
+                <p class="text-sm text-base-content/60 mt-1">
+                  Bongo Cat stands right in the center, vigorously tapping paws to the beat, flanked by separate Left (Bass) and Right (Treble) visualizer wings.
+                </p>
+              </div>
+              <label class="btn btn-outline btn-secondary gap-2 cursor-pointer">
+                <input type="radio" name="selected_option" value="2" class="radio radio-secondary radio-sm">
+                <span>Select Option 2</span>
+              </label>
+            </div>
+
+            <!-- Live Mockup 2 -->
+            <div class="space-y-2">
+              <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider">Live Waybar Simulation</div>
+              <div class="waybar-mock p-3 flex items-center justify-between gap-4 overflow-x-auto">
+                <!-- Left -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="waybar-pill px-3 py-1 text-xs"> App</div>
+                  <div class="waybar-pill px-3 py-1 text-xs text-primary truncate max-w-[220px]">󰎆 Non-stop _-_Dhurandhar Hit Songs</div>
+                </div>
+                <!-- Center (Option 2 Bongo Cat Split) -->
+                <div class="waybar-pill px-5 py-1.5 flex items-center gap-3 shrink-0 mx-auto">
+                  <span class="cava-bars text-sm font-mono option2-cava-left"> ▂▃▄▅▆▇██▇▆▅▄▃▂ </span>
+                  <span class="cat-text text-base whitespace-pre font-mono option2-cat">ฅ(＾・ω・＾ฅ)</span>
+                  <span class="cava-bars text-sm font-mono option2-cava-right"> ▂▃▄▅▆▇██▇▆▅▄▃▂ </span>
+                </div>
+                <!-- Right -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="waybar-pill px-3 py-1 text-xs">󰕾 96%</div>
+                  <div class="waybar-pill px-3 py-1 text-xs"> 80%</div>
+                  <div class="waybar-pill px-3 py-1 text-xs"> 17:15</div>
+                  <div class="waybar-pill px-3 py-1 text-xs text-error">⏻</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Features -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-secondary mb-1">🥁 Bongo Cat Tapping</div>
+                <div class="text-base-content/70">Alternates raising left and right paws <code>ฅ(＾・ω・＾ฅ)</code> to the rhythm; sleeps <code>( ˘ω˘ )zzZ</code> when paused.</div>
+              </div>
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-secondary mb-1">🎧 Split Stereo Wings</div>
+                <div class="text-base-content/70">Visualizer split into two symmetrical wings (18 bars left, 18 bars right) surrounding the DJ cat.</div>
+              </div>
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-secondary mb-1">🖱️ Click-Interactive</div>
+                <div class="text-base-content/70">Clicking Bongo Cat toggles Play/Pause; right-clicking skips to next track.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OPTION 3 -->
+        <div class="card bg-base-100 border border-base-content/10 shadow-xl overflow-hidden hover:border-primary/40 transition-all">
+          <div class="card-body p-6 sm:p-8 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-base-content/10 pb-4">
+              <div>
+                <div class="flex items-center gap-3">
+                  <span class="badge badge-accent font-bold">Option 3</span>
+                  <h2 class="text-2xl font-bold">Vibing Neko Lounge</h2>
+                  <span class="badge badge-soft badge-accent">Dual Floating Companion Pills</span>
+                </div>
+                <p class="text-sm text-base-content/60 mt-1">
+                  Two distinct, beautifully spaced pills in the center: a dedicated mini "Cat Stage" pill on the left, and a massive 42-bar wide Monstercat visualizer pill on the right.
+                </p>
+              </div>
+              <label class="btn btn-outline btn-accent gap-2 cursor-pointer">
+                <input type="radio" name="selected_option" value="3" class="radio radio-accent radio-sm">
+                <span>Select Option 3</span>
+              </label>
+            </div>
+
+            <!-- Live Mockup 3 -->
+            <div class="space-y-2">
+              <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider">Live Waybar Simulation</div>
+              <div class="waybar-mock p-3 flex items-center justify-between gap-4 overflow-x-auto">
+                <!-- Left -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="waybar-pill px-3 py-1 text-xs"> App</div>
+                  <div class="waybar-pill px-3 py-1 text-xs text-primary truncate max-w-[200px]">󰎆 Non-stop _-_Dhurandhar Hit Songs</div>
+                </div>
+                <!-- Center (Option 3 Dual Pills) -->
+                <div class="flex items-center gap-3 shrink-0 mx-auto">
+                  <div class="waybar-pill px-4 py-1.5 flex items-center gap-2">
+                    <span class="cat-text text-sm whitespace-pre font-mono option3-cat">ᓚᘏᗢ ♪  </span>
+                    <span class="badge badge-xs badge-accent text-[10px] font-bold">VIBING</span>
+                  </div>
+                  <div class="waybar-pill px-5 py-1.5 flex items-center shrink-0">
+                    <span class="cava-bars text-sm font-mono option3-cava"> ▂▃▄▅▆▇██▇▆▅▄▃▂  ▂▃▄▅▆▇██▇▆▅▄▃▂  ▂▃▄▅▆▇██▇▆▅▄▃▂</span>
+                  </div>
+                </div>
+                <!-- Right -->
+                <div class="flex items-center gap-2 shrink-0">
+                  <div class="waybar-pill px-3 py-1 text-xs">󰕾 96%</div>
+                  <div class="waybar-pill px-3 py-1 text-xs"> 80%</div>
+                  <div class="waybar-pill px-3 py-1 text-xs"> 17:15</div>
+                  <div class="waybar-pill px-3 py-1 text-xs text-error">⏻</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Features -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-accent mb-1">🎭 Dedicated Cat Stage</div>
+                <div class="text-base-content/70">A standalone pill for the animated pet with live status badge ("VIBING" / "SLEEPING").</div>
+              </div>
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-accent mb-1">🌊 42-Bar Superwide Spectrum</div>
+                <div class="text-base-content/70">Our widest visualizer pill, creating a full studio equalizer console experience.</div>
+              </div>
+              <div class="bg-base-200/50 p-3 rounded-box border border-base-content/5 text-xs">
+                <div class="font-bold text-accent mb-1">⚖️ Golden Ratio Spacing</div>
+                <div class="text-base-content/70">Fills ~540px of center space, leaving clean ~100px margins on each side.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Panel -->
+      <div class="sticky bottom-6 mt-8 p-4 bg-base-100/90 backdrop-blur-md rounded-box border border-primary/30 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div class="font-bold text-lg">Ready to make your choice?</div>
+          <div class="text-xs text-base-content/70">Select your preferred option above and click "Queue Selection", or annotate any element directly!</div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-wide shadow-lg shadow-primary/20">
+          Queue Selection for Agent
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- Live Animation Script -->
+  <script>
+    let isPlaying = true;
+    let frame = 0;
+
+    // Cat frame sequences
+    const walkingCatFrames = [
+      "ᓚᘏᗢ ♪    ",
+      " ᓚᘏᗢ ♫   ",
+      "  ᓚᘏᗢ ♬  ",
+      "   ᓚᘏᗢ ♪ ",
+      "    ᓚᘏᗢ ♫",
+      "   ᓚᘏᗢ ♪ ",
+      "  ᓚᘏᗢ ♬  ",
+      " ᓚᘏᗢ ♫   ",
+    ];
+
+    const bongoCatFrames = [
+      "ฅ(＾・ω・＾ฅ)",
+      "(ฅ＾・ω・＾)ฅ"
+    ];
+
+    // Unicode bars
+    const bars = [" ", "▂", "▃", "▄", "▅", "▆", "▇", "█"];
+
+    function generateCavaWave(count, offset, intensity) {
+      if (!isPlaying) {
+        return " ".repeat(count);
+      }
+      let str = "";
+      for (let i = 0; i < count; i++) {
+        // Multi-frequency sine wave simulation
+        let val = Math.sin((i + offset) * 0.35) * Math.cos((i - offset * 0.8) * 0.25) * 0.5 + 0.5;
+        val = Math.pow(val, 1.4) * intensity;
+        let index = Math.min(7, Math.max(0, Math.floor(val * 8)));
+        str += bars[index];
+      }
+      return str;
+    }
+
+    function togglePlayback() {
+      isPlaying = !isPlaying;
+      document.getElementById('sim-btn-icon').textContent = isPlaying ? '⏸' : '▶';
+      document.getElementById('sim-btn-text').textContent = isPlaying ? 'Simulate: Music Playing' : 'Simulate: Music Paused';
+      document.getElementById('sim-play-toggle').className = isPlaying ? 'btn btn-sm btn-primary gap-2' : 'btn btn-sm btn-outline gap-2';
+    }
+
+    // Animation Loop
+    setInterval(() => {
+      frame++;
+      
+      // Update Cats
+      const catEl1 = document.querySelector('.option1-cat');
+      const catEl2 = document.querySelector('.option2-cat');
+      const catEl3 = document.querySelector('.option3-cat');
+
+      if (isPlaying) {
+        catEl1.textContent = walkingCatFrames[frame % walkingCatFrames.length];
+        catEl2.textContent = bongoCatFrames[frame % bongoCatFrames.length];
+        catEl3.textContent = walkingCatFrames[frame % walkingCatFrames.length];
+      } else {
+        catEl1.textContent = "ᓚᘏᗢ zZ   ";
+        catEl2.textContent = "( ˘ω˘ )zzZ";
+        catEl3.textContent = "ᓚᘏᗢ zZ   ";
+      }
+
+      // Update Visualizers (Simulating 60fps wave movement)
+      const cava1 = document.querySelector('.option1-cava');
+      const cava2L = document.querySelector('.option2-cava-left');
+      const cava2R = document.querySelector('.option2-cava-right');
+      const cava3 = document.querySelector('.option3-cava');
+
+      cava1.textContent = generateCavaWave(38, frame * 0.8, 0.95);
+      cava2L.textContent = generateCavaWave(16, frame * 0.7, 0.9);
+      cava2R.textContent = generateCavaWave(16, frame * 0.7 + 10, 0.9);
+      cava3.textContent = generateCavaWave(44, frame * 0.85, 1.0);
+
+    }, 180);
+  </script>
+</body>
+</html>

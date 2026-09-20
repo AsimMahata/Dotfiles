@@ -51,6 +51,7 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`cava`** | Official (`pacman`) | Console-based audio visualizer with PipeWire/PulseAudio backend. |
 | **`toggle.sh`** | Local Script (`waybar/scripts`) | Toggles Waybar between Default and Music profiles using atomic symlink swapping. |
 | **`cava.sh`** | Local Script (`waybar/profiles/music`) | Formats and streams CAVA audio visualizer sticks to Waybar `custom/cava`. |
+| **`cat.py`** | Local Script (`waybar/profiles/music`) | Animated walking/vibing cat companion widget for Waybar (`custom/cat`). |
 | **`quick-slider.py`** | Local Script (`waybar/scripts`) | Unified GTK Layer Shell modal slider daemon for Volume & Brightness. |
 | **`volume-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for volume mode (SIGUSR1). |
 | **`brightness-toggle.sh`** | Local Script (`waybar/scripts`) | Ultra-fast (0ms) IPC toggle launcher for brightness mode (SIGUSR2). |
