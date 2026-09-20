@@ -31,16 +31,17 @@ window#waybar.empty #window {
 }
 
 #window {
-  background: @inverse_on_surface;
+  background: @on_primary_fixed;
   color: @on_surface;
   margin: 8px 8px 8px 0;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
   border-radius: 50px;
+  border: 1px solid alpha(@outline_variant, 0.4);
 }
 
 button {
-  background: alpha(@on_surface, 0.1);
+  background: alpha(@primary, 0.2);
   padding: 0 4px;
   margin: 4px;
   border-radius: 50px;
@@ -49,15 +50,15 @@ button {
 }
 
 #workspaces {
-  background: @background;
-  border-radius: 20px;
+  background: @on_primary_fixed;
+  border-radius: 50px;
   margin-top: 8px;
   margin-bottom: 8px;
-  padding: 0 4px 0 4px;
+  padding: 0 6px 0 6px;
 }
 
 #workspaces button:hover {
-  background: alpha(@on_background, 0.2);
+  background: alpha(@primary, 0.45);
 }
 
 #workspaces button.focused {
@@ -66,9 +67,10 @@ button {
 }
 
 #workspaces button.active {
-  background: alpha(@on_surface, 0.5);
-  color: lighter(@surface_container_highest);
-  border-radius: 20px;
+  background: @primary;
+  color: @on_primary;
+  border-radius: 50px;
+  box-shadow: 0 0 10px alpha(@primary, 0.4);
   transition: color 0.3s;
   margin-left: 3px;
   padding-left: 15px;
@@ -221,8 +223,8 @@ button {
 }
 
 #language {
-  background: @secondary_fixed;
-  color: @source_color;
+  background: @on_primary_fixed;
+  color: @primary;
   margin: 8px 8px 8px 0;
   padding-left: 15px;
   padding-right: 15px;
@@ -407,7 +409,7 @@ button {
   margin: 8px 8px 8px 0;
   padding-left: 15px;
   padding-right: 15px;
-  min-width: 110px;
+  min-width: 145px;
   border-radius: 50px;
   border: 1px solid alpha(@primary, 0.25);
   box-shadow: 0 0 10px alpha(@primary, 0.12);
@@ -421,6 +423,12 @@ button {
 
 #custom-island.idle {
   color: @secondary;
+}
+
+#custom-island.sleeping {
+  color: @outline;
+  border-color: alpha(@outline, 0.25);
+  box-shadow: none;
 }
 
 #custom-island.playing {

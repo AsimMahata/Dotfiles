@@ -34,13 +34,13 @@ ANIMALS = [
         ],
         "idle_frames": [
             f"ᓚᘏᗢ ~{NBSP*2}",
-            f"(=^･ω･^=)",
             f"ᓚᘏᗢ ฅ{NBSP*2}",
-            f"(=^･ｪ･^=)",
-            f"ᓚᘏᗢ zZ{NBSP}"
+            f"ᓚᘏᗢ ~{NBSP*2}",
+            f"ᓚᘏᗢ ฅ^{NBSP}"
         ],
         "petted": f"ᓚᘏᗢ ❤️ (purr~)",
-        "heat": f"ᓚᘏᗢ 💦"
+        "heat": f"ᓚᘏᗢ 🔥",
+        "sleep": f"ᓚᘏᗢ zZ{NBSP}"
     },
     {
         "name": "Usagi (Bunny)",
@@ -57,7 +57,8 @@ ANIMALS = [
             "(\\_/) ( •_•)"
         ],
         "petted": "(\\_/) />❤️",
-        "heat": "(\\_/) 💦"
+        "heat": "(\\_/) 🔥",
+        "sleep": f"(\\_/) zZ{NBSP}"
     },
     {
         "name": "Duck (Honk)",
@@ -74,7 +75,8 @@ ANIMALS = [
             "( •ө•)"
         ],
         "petted": "( •ө•) ❤️",
-        "heat": "( >ө<) 💨"
+        "heat": "( >ө<) 💨",
+        "sleep": f"( -ө-) zZ{NBSP}"
     },
     {
         "name": "Ghost (Booo)",
@@ -91,7 +93,8 @@ ANIMALS = [
             "👻 booo~"
         ],
         "petted": "👻 ❤️",
-        "heat": "👻 🔥"
+        "heat": "👻 🔥",
+        "sleep": f"👻 zZ{NBSP*2}"
     },
     {
         "name": "Crab (Rave)",
@@ -108,7 +111,8 @@ ANIMALS = [
             "🦀 *snip*"
         ],
         "petted": "🦀 ❤️",
-        "heat": "🦀 ♨️"
+        "heat": "🦀 ♨️",
+        "sleep": f"🦀 zZ{NBSP*2}"
     },
     {
         "name": "Inu (Puppy)",
@@ -125,7 +129,8 @@ ANIMALS = [
             "(U・x・U) ~"
         ],
         "petted": "(՞•ﻌ•՞) ❤️",
-        "heat": "(U・x・U) 💦"
+        "heat": "(U・x・U) 🔥",
+        "sleep": "(U・x・U) zZ"
     }
 ]
 
@@ -133,22 +138,49 @@ ANIMALS = [
 current_animal_idx = 0
 affection_score = 0
 petted_until = 0.0
+awake_until = 0.0
 force_mode = None  # None: auto-cycle, 0: PET, 1: VITALS, 2: MUSIC
 force_mode_until = 0.0
+last_media_meta = ""
+music_tick = 0
+
+def marquee_scroll(text: str, max_len: int = 13, tick: int = 0) -> str:
+    """Smooth bounce ticker (moving left to right and back) for any text exceeding max_len."""
+    clean = text.strip()
+    if len(clean) <= max_len:
+        return clean
+    
+    max_shift = len(clean) - max_len
+    hold_ticks = 8  # ~1.75s pause at start and end
+    total_cycle = (max_shift + hold_ticks) * 2
+    pos = tick % total_cycle
+    
+    if pos < hold_ticks:
+        shift = 0
+    elif pos < hold_ticks + max_shift:
+        shift = pos - hold_ticks
+    elif pos < hold_ticks + max_shift + hold_ticks:
+        shift = max_shift
+    else:
+        shift = max_shift - (pos - (hold_ticks + max_shift + hold_ticks))
+        
+    return clean[shift : shift + max_len]
 
 def handle_sigterm(signum, frame):
     os._exit(0)
 
 def handle_pet(signum, frame):
-    """SIGUSR1: Pet the companion (Left-click)"""
-    global affection_score, petted_until
+    """SIGUSR1: Pet the companion (Left-click) - wakes up for 15s!"""
+    global affection_score, petted_until, awake_until
     affection_score += 1
     petted_until = time.time() + 3.0
+    awake_until = time.time() + 15.0
 
 def handle_switch_animal(signum, frame):
-    """SIGUSR2: Switch companion animal (Right-click)"""
-    global current_animal_idx
+    """SIGUSR2: Switch companion animal (Right-click) - wakes up for 15s!"""
+    global current_animal_idx, awake_until
     current_animal_idx = (current_animal_idx + 1) % len(ANIMALS)
+    awake_until = time.time() + 15.0
 
 def handle_morph_mode(signum, frame):
     """SIGRTMIN+1: Force cycle display mode (Middle-click)"""
@@ -223,7 +255,7 @@ def get_media_status():
         return "Stopped", "", ""
 
 def main():
-    global force_mode, force_mode_until
+    global force_mode, force_mode_until, last_media_meta, music_tick, awake_until
     frame_idx = 0
     poll_counter = 0
 
@@ -238,20 +270,30 @@ def main():
         if poll_counter % 7 == 0:
             cpu_pct, cpu_temp, ram_used, ram_total, ram_pct = get_system_vitals()
             player_status, media_meta, player_raw = get_media_status()
+            if media_meta != last_media_meta:
+                last_media_meta = media_meta
+                music_tick = 0
         poll_counter += 1
+        music_tick += 1
 
         animal = ANIMALS[current_animal_idx]
         is_playing = (player_status == "Playing")
         is_heat_alert = (cpu_temp >= 80 or cpu_pct >= 85)
+
+        # Keep awake while music is playing
+        if is_playing:
+            awake_until = now + 15.0
+
+        is_awake = is_playing or (now < awake_until) or (now < force_mode_until)
 
         # Determine active mode
         if now < force_mode_until and force_mode is not None:
             active_mode = force_mode
         else:
             force_mode = None
-            # Auto cycle: 0..119 ticks (0-26s) -> PET
-            #             120..149 ticks (26-33s) -> VITALS
-            #             150..179 ticks (33-40s) -> MUSIC (if playing)
+            # Auto cycle when awake: 0..119 ticks (0-26s) -> PET
+            #                        120..149 ticks (26-33s) -> VITALS
+            #                        150..179 ticks (33-40s) -> MUSIC (if playing)
             cycle_pos = poll_counter % 180
             if cycle_pos < 120:
                 active_mode = 0  # PET
@@ -268,24 +310,29 @@ def main():
         if is_heat_alert:
             display_text = f"{animal['heat']} {cpu_temp}°C"
             css_class = "alert"
-            mood = "Overheating & Sweating! 🔥"
-        # Priority 2: Petted Reaction
+            mood = "Overheating! 🔥"
+        # Priority 2: Sleeping Mode (when music stopped and not petted/awake)
+        elif not is_awake:
+            display_text = animal['sleep']
+            css_class = "sleeping"
+            mood = "Sleeping peacefully 💤 (Click to wake up!)"
+        # Priority 3: Petted Reaction
         elif now < petted_until:
             display_text = animal['petted']
             css_class = "petted"
             mood = "Ecstatic & Loved! ✨"
-        # Priority 3: Normal Modes
+        # Priority 4: Normal Awake Modes
         elif active_mode == 1:  # VITALS
             display_text = f"🌡️ {cpu_temp}°C • 󰻠 {cpu_pct}%"
             css_class = "vitals"
             mood = "Monitoring System"
         elif active_mode == 2 and is_playing:  # MUSIC
-            # Truncate song title for compact bar display
-            short_meta = media_meta if len(media_meta) <= 22 else media_meta[:19] + "..."
-            display_text = f"󰎆 {short_meta}"
+            # Marquee scrolling song title (left to right bounce) so it never expands the bar
+            scrolled_title = marquee_scroll(media_meta, max_len=13, tick=music_tick)
+            display_text = f"󰎆 {scrolled_title}"
             css_class = "music"
             mood = f"Vibing to {media_meta}"
-        else:  # PET
+        else:  # PET (Awake & chilling or dancing)
             if is_playing:
                 frames = animal['music_frames']
                 display_text = frames[frame_idx % len(frames)]
@@ -293,10 +340,14 @@ def main():
                 mood = f"Dancing to {media_meta}"
             else:
                 frames = animal['idle_frames']
-                # Idle frames update slower (every 3 ticks)
                 display_text = frames[(frame_idx // 3) % len(frames)]
                 css_class = "idle"
-                mood = "Chilling Happily"
+                rem_sec = max(1, int(awake_until - now))
+                mood = f"Awake & chilling ({rem_sec}s until sleep)"
+
+        # Safeguard: if any mode's text exceeds 16 chars, smoothly marquee it
+        if len(display_text) > 16:
+            display_text = marquee_scroll(display_text, max_len=16, tick=frame_idx)
 
         frame_idx += 1
 

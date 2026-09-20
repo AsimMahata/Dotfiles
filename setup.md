@@ -471,7 +471,7 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
   - `~/.config/waybar/profiles/music/config.jsonc`: Focused music/visualizer bar featuring:
     - **Left:** App launcher (`custom/app`) and player status (`mpris` with playback icons, song title, and artist).
     - **Center (Dual Companion Pills):**
-      - `custom/cat`: Dedicated "Cat Stage" pill with animated walking cat (`ᓚᘏᗢ ♪`) pacing to the music, sleeping (`ᓚᘏᗢ zZ`) when paused, with click controls (`playerctl play-pause` / `next`).
+      - `custom/island`: Multi-animal dynamic companion & vitals engine (`ᓚᘏᗢ`, `🐰`, `🦆`, `👻`, `🦀`, `🐶`) with dancing music animations, marquee title bounce, petting, vitals, and heat alerts.
       - `custom/cava`: Super-wide 42-bar Monstercat wave visualizer streaming real-time audio frequencies with organic wave physics and 8-level Unicode bar heights (` ▂▃▄▅▆▇█`).
     - **Right:** Volume (`pulseaudio`), power profile/battery (`group/power`), clock, and power menu (`custom/power`).
   - `~/.config/waybar/config.jsonc`: A relative symlink pointing to the active profile (`profiles/default/config.jsonc` or `profiles/music/config.jsonc`).
@@ -509,6 +509,21 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
       - **Right-Click:** Switch companion animal (`pkill -SIGUSR2 -f dynamic-island.py`).
       - **Middle-Click:** Force cycle view mode (`pkill -SIGRTMIN+1 -f dynamic-island.py`).
     - **Styling:** Matugen-themed pill in `style.css` with `@on_primary_fixed` background, glowing `@primary` borders, and responsive `.playing`, `.idle`, `.petted`, `.vitals`, `.music`, and `.alert` state classes.
+
+---
+
+## 21. Waybar Theming Harmonization (Language, Window & Workspaces)
+
+- **Problem:**
+  - `hyprland/language` (`us`): Used `background: @secondary_fixed` (`#e0e1f9`) and dark navy text, rendering as an inverted white pill that clashed with the dark theme.
+  - `hyprland/window` (`Dotfiles - Antigravity IDE`): Used `background: @inverse_on_surface` (`#303036`, flat dark grey) with narrow `10px` padding, lacking the midnight-blue tint and sizing of adjacent pills.
+  - `hyprland/workspaces`: Container was flat `@background` (`#131318`), inactive buttons were dull grey circles (`alpha(@on_surface, 0.1)`), and the active workspace was a flat 50% grey pill (`alpha(@on_surface, 0.5)`), missing the palette's accent colors and glow.
+- **Solution:**
+  - In [`dotfiles-linux/waybar/.config/waybar/style.css`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/style.css):
+    - **Language (`#language`):** Updated to `background: @on_primary_fixed; color: @primary;` to match the bar's deep midnight-blue aesthetic.
+    - **Active Window (`#window`):** Updated to `background: @on_primary_fixed; padding-left: 15px; padding-right: 15px; border: 1px solid alpha(@outline_variant, 0.4);` for unified pill sizing and subtle borders. Added `"max-length": 25` in `config.jsonc` to avoid layout jitter from long titles.
+    - **Workspaces (`#workspaces` & buttons):** Styled container with `background: @on_primary_fixed; border-radius: 50px; padding: 0 6px;`. Inactive buttons use `alpha(@primary, 0.2)` with `alpha(@primary, 0.45)` on hover. Active workspace styled with `@primary` accent background, `@on_primary` text, and a glowing `box-shadow: 0 0 10px alpha(@primary, 0.4)`.
+    - **Dynamic Island Size Stabilization, Marquee & Sleep Mechanic:** Set `min-width: 145px;` in `style.css` (avoiding GTK3 `max-width` which causes crashes) and implemented a smooth left-to-right bounce marquee ticker in [`dynamic-island.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/island/dynamic-island.py) for music titles and long text. Removed odd face frames from the cat, and implemented the sleep & wake-up mechanic: companion automatically sleeps (`zZ`, styled calmly with `.sleeping`) when music is not playing, and wakes up for 15 seconds when clicked/petted before dozing back off.
 
 ---
 

@@ -45,6 +45,7 @@
     },
     "hyprland/window": {
         "format": "{}",
+        "max-length": 25,
         "rewrite": {
             "(.*) .* Brave": "󰦝  $1",
             "^nvim(.*)": "   $1",
