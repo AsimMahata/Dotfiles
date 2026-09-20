@@ -1,11 +1,22 @@
-format = '''
-$directory$git_branch$rust$python
-$character'''
+# Starship configuration dynamically themed by Matugen
+
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$python\
+$rust\
+$nodejs\
+$golang\
+$cmd_duration\
+$line_break\
+$character"""
 
 palette = 'colors'
 
 [palettes.colors]
-mustard = '#af8700' # example
 color1 = '{{colors.primary_fixed_dim.default.hex}}'
 color2 = '{{colors.on_primary.default.hex}}'
 color3 = '{{colors.on_surface_variant.default.hex}}'
@@ -15,15 +26,25 @@ color6 = '{{colors.surface_dim.default.hex}}'
 color7 = '{{colors.surface.default.hex}}'
 color8 = '{{colors.primary.default.hex}}'
 color9 = '{{colors.tertiary.default.hex}}'
+error = '{{colors.error.default.hex}}'
+on_surface = '{{colors.on_surface.default.hex}}'
 
-# Prompt symbols 
-[character]
-success_symbol = "[🞈](color9 bold)"
-error_symbol = "[🞈](@{error})"
-vicmd_symbol = "[🞈](#f9e2af)"
+[username]
+show_always = true
+style_user = "bg:color4 fg:color9 bold"
+style_root = "bg:color4 fg:error bold"
+format = '[](fg:color4)[󰣇 ](fg:color1 bg:color4)[$user]($style)'
+
+[hostname]
+ssh_only = false
+style = "bg:color4 fg:color8"
+format = '[@$hostname]($style)[](fg:color4) '
 
 [directory]
-format = "[](fg:color1 bg:color4)[󰉋](bg:color1 fg:color2)[ ](fg:color1 bg:color4)[$path ](fg:color3 bg:color4)[ ](fg:color4)"
+style = "bg:color4 fg:color3"
+format = '[](fg:color4)[󰉋 ](fg:color1 bg:color4)[$path ]($style)[](fg:color4) '
+truncation_length = 4
+truncation_symbol = "…/"
 
 [directory.substitutions]
 "Documents" = "󰈙 "
@@ -32,15 +53,51 @@ format = "[](fg:color1 bg:color4)[󰉋](bg:color1 fg:color2)[ ](fg:color1 
 "Pictures" = " "
 
 [git_branch]
-format = "[](fg:color8 bg:color4)[ ](bg:color8 fg:color5)[](fg:color8 bg:color4)[(bg:color8 fg:color5) $branch](fg:color3 bg:color4)[](fg:color4) "
+symbol = " "
+style = "bg:color4 fg:color9 bold"
+format = '[](fg:color4)[$symbol$branch]($style)[](fg:color4) '
 
-[time]
-format = "[](fg:color8 bg:color4)[ ](bg:color8 fg:color5)[](fg:color8 bg:color4)[(bg:color8 fg:color5) $time](fg:color3 bg:color4)[](fg:color4) "
-disabled = false
-time_format = "%R" # Hour:Minute Format
+[git_status]
+style = "bg:color4 fg:color9"
+format = '[](fg:color4)[$all_status$ahead_behind]($style)[](fg:color4) '
+conflicted = '󰞇 '
+ahead = '⇡$count '
+behind = '⇣$count '
+diverged = '⇕⇡$ahead_count⇣$behind_count '
+untracked = '? '
+stashed = '󰒍 '
+modified = '! '
+staged = '+ '
+renamed = '» '
+deleted = '󰆴 '
 
 [python]
-format = "[](fg:color8 bg:color4)[${symbol}${version}](bg:color8 fg:color5)[](fg:color8 bg:color4)[(bg:color8 fg:color5)( ${virtualenv})](fg:color3 bg:color4)[](fg:color4) "
-symbol = '🐍'
-# pyenv_version_name = true
+symbol = "󰌠 "
+style = "bg:color4 fg:color1"
+format = '[](fg:color4)[$symbol$version( \($virtualenv\))]($style)[](fg:color4) '
 pyenv_prefix = 'venv'
+
+[rust]
+symbol = "󱘗 "
+style = "bg:color4 fg:color9"
+format = '[](fg:color4)[$symbol$version]($style)[](fg:color4) '
+
+[nodejs]
+symbol = "󰎙 "
+style = "bg:color4 fg:color1"
+format = '[](fg:color4)[$symbol$version]($style)[](fg:color4) '
+
+[golang]
+symbol = "󰟓 "
+style = "bg:color4 fg:color8"
+format = '[](fg:color4)[$symbol$version]($style)[](fg:color4) '
+
+[cmd_duration]
+min_time = 2_000
+style = "bg:color4 fg:color3"
+format = '[](fg:color4)[󱎫 $duration]($style)[](fg:color4) '
+
+[character]
+success_symbol = "[❯](color8 bold)"
+error_symbol = "[❯](error bold)"
+vicmd_symbol = "[❮](color9 bold)"

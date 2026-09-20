@@ -12,7 +12,10 @@
 **/.config/**/colors.txt
 **/.config/**/colors.json5
 **/.config/**/colors.jsonc
+**/.config/**/colors.fish
 **/btop/themes/colors.theme
+**/.config/fastfetch/config.jsonc
+**/.config/starship.toml
 
 !**/matugen/**/templates/**
 **/__pycache__/

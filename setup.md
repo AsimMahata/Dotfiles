@@ -106,6 +106,47 @@ Expected:
 
 Log out and back in after changing the default shell.
 
+### Fish Configuration & Stow
+
+Fish configuration is tracked under `dotfiles-linux/fish/` and managed with GNU Stow:
+
+```bash
+stow -d dotfiles-linux -t ~ fish
+```
+
+Key settings in `config.fish`:
+- Disables interactive welcome greeting (`set -g fish_greeting`).
+- Initializes Starship prompt with Matugen dynamic theming (`starship init fish | source`).
+- Exports `~/.local/bin` to `$PATH`.
+
+### Starship Prompt Installation & Matugen Theming
+
+Install Starship:
+
+```bash
+sudo pacman -S starship
+```
+
+Starship is configured in a 2-line Modern Material Rounded Pills layout using proper Nerd Font icons (`󰣇`, `󰉋`, ``, `󰌠`, `󱘗`, `󰎙`, `󰟓`, `❯`) and dynamically receives its color scheme from Matugen:
+- Template: `dotfiles-linux/matugen/.config/matugen/templates/starship-colors.toml`
+- Target: `~/.config/starship.toml`
+- When wallpaper changes via Matugen, `~/.config/starship.toml` is re-rendered automatically.
+
+### Fish Shell Dynamic Theming (Whole Fish Theme)
+
+Fish syntax highlighting, autosuggestions, search highlights, and pager completions dynamically match the active wallpaper palette:
+- Template: `dotfiles-linux/matugen/.config/matugen/templates/fish-colors.fish`
+- Target: `~/.config/fish/conf.d/colors.fish`
+- Fish automatically sources all files in `conf.d/` on startup, applying matching colors for commands (`primary`), quotes (`tertiary`), keywords (`secondary`), autosuggestions (`outline`), and errors (`error`).
+
+### Fastfetch Dynamic Theming
+
+Fastfetch is integrated into Matugen's dynamic color pipeline:
+- Template: `dotfiles-linux/matugen/.config/matugen/templates/fastfetch-config.jsonc`
+- Target: `~/.config/fastfetch/config.jsonc`
+- Keys, logo, and module icons dynamically match `@primary`.
+- Title displays `{user-name}` in bold `@tertiary` (accent pop color) and `@{host-name}` in `@primary`.
+
 ---
 
 ## 5. GNU Stow

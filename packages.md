@@ -28,6 +28,7 @@ This document maintains an inventory of all explicitly installed applications, t
 | :--- | :--- | :--- |
 | **`kitty`** | Official (`pacman`) | GPU-accelerated terminal emulator. |
 | **`fish`** | Official (`pacman`) | User-friendly interactive shell with autosuggestions and syntax highlighting. |
+| **`starship`** | Official (`pacman`) | Fast, customizable cross-shell prompt integrated with Matugen themes. |
 | **`stow`** | Official (`pacman`) | Symlink farm manager used to manage dotfiles in `~/.config`. |
 | **`fastfetch`** | Official (`pacman`) | Fast, lightweight system information tool (neofetch alternative). |
 | **`btop`** | Official (`pacman`) | Resource monitor showing CPU, memory, disks, network, and process usage. |

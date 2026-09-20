@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starship 2-Line Prompt Designs — Matugen Ricing Suite</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@nerdfonts/font-web@3.3.0/css/nerd-font-symbols.min.css">
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :where(.grid, .flex, .layout-grid, .layout-flex) > * { min-width: 0; }
+    :where(p, h1, h2, h3, h4, h5, h6, li, dd, blockquote, figcaption, td, th, .badge, .label) { overflow-wrap: anywhere; }
+    
+    body {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Terminal Simulation Styling */
+    .term-window {
+      background: #131318;
+      border: 1px solid rgba(188, 195, 255, 0.15);
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .term-header {
+      background: #1a1a22;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 10px 16px;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
+    .term-body {
+      padding: 20px;
+      background: #131318;
+      color: #c7c5d0;
+      line-height: 1.7;
+    }
+
+    /* Palette variables derived from active Matugen wallpaper */
+    :root {
+      --m-primary: #bcc3ff;
+      --m-on-primary: #242b61;
+      --m-surface-container: #1f1f25;
+      --m-on-surface-var: #c7c5d0;
+      --m-tertiary: #e6bad7;
+      --m-on-tertiary: #46263e;
+      --m-error: #ffb4ab;
+      --m-on-error: #690005;
+      --m-secondary: #c5c4dd;
+      --m-on-secondary: #2e2f42;
+    }
+
+    /* Pill Styles */
+    .pill-segment {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.95rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .pill-icon-left, .pill-icon-right {
+      line-height: 1;
+    }
+    .pill-badge {
+      padding: 2px 6px;
+      line-height: 1.2;
+    }
+    .pill-text {
+      padding: 2px 8px;
+      line-height: 1.2;
+    }
+  </style>
+</head>
+<body class="bg-base-300 text-base-content min-h-screen p-4 sm:p-8">
+  <div class="max-w-5xl mx-auto space-y-8">
+    
+    <!-- Header -->
+    <header class="text-center space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-semibold uppercase tracking-wider">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        2-Line Edition • Matugen Starship Suite
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Two-Line Starship Designs</h1>
+      <p class="text-base-content/70 max-w-2xl mx-auto text-sm sm:text-base">
+        Back to <strong>2-line format</strong>! Gives you full context (user@host, path, git, venv) on line 1, and a dedicated, spacious prompt line for typing commands on line 2.
+      </p>
+
+      <!-- Active Palette Swatches -->
+      <div class="flex flex-wrap justify-center items-center gap-2 pt-2 text-xs">
+        <span class="opacity-60 mr-1">Active Wallpaper Palette:</span>
+        <div class="badge badge-sm" style="background-color: var(--m-primary); color: var(--m-on-primary);">Primary #bcc3ff</div>
+        <div class="badge badge-sm" style="background-color: var(--m-tertiary); color: var(--m-on-tertiary);">Tertiary #e6bad7</div>
+        <div class="badge badge-sm" style="background-color: var(--m-surface-container); color: var(--m-on-surface-var);">Surface #1f1f25</div>
+        <div class="badge badge-sm" style="background-color: var(--m-secondary); color: var(--m-on-secondary);">Secondary #c5c4dd</div>
+      </div>
+
+      <!-- Interactive Sim Toggles -->
+      <div class="flex flex-wrap justify-center items-center gap-4 pt-3 text-sm">
+        <label class="cursor-pointer inline-flex items-center gap-2">
+          <input type="checkbox" id="toggle-git-dirty" class="checkbox checkbox-xs checkbox-primary" checked onchange="toggleSim()">
+          <span>Git Modified (Dirty)</span>
+        </label>
+        <label class="cursor-pointer inline-flex items-center gap-2">
+          <input type="checkbox" id="toggle-venv" class="checkbox checkbox-xs checkbox-primary" checked onchange="toggleSim()">
+          <span>Python Venv Active</span>
+        </label>
+        <label class="cursor-pointer inline-flex items-center gap-2">
+          <input type="checkbox" id="toggle-cmd-fail" class="checkbox checkbox-xs checkbox-error" onchange="toggleSim()">
+          <span>Command Error State</span>
+        </label>
+      </div>
+    </header>
+
+    <!-- Options Showcase Form -->
+    <form id="starship-choice-form" data-lavish-question="starship-design" onsubmit="handleChoiceSubmit(event)" class="space-y-8">
+      
+      <!-- Option 1: Modern Material Rounded Pills (2-Line) -->
+      <div class="card bg-base-100 border-2 border-primary/40 shadow-xl transition-all hover:border-primary">
+        <div class="card-body p-6 sm:p-8 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-base-content/10 pb-4">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="design_choice" value="option_2line_pills" id="choice-pills-2" class="radio radio-primary radio-lg" checked>
+              <div>
+                <label for="choice-pills-2" class="text-xl font-bold cursor-pointer flex items-center gap-2">
+                  Option 1: Modern Material Rounded Pills (2-Line)
+                  <span class="badge badge-primary badge-sm">Recommended</span>
+                </label>
+                <p class="text-xs sm:text-sm text-base-content/60">
+                  Smooth powerline capsules (...). Line 1 hosts the badges; Line 2 provides a clean <code>❯</code> cursor.
+                </p>
+              </div>
+            </div>
+            <div class="badge badge-soft badge-primary text-xs shrink-0 self-start sm:self-auto">Pill Capsule • 2-Line</div>
+          </div>
+
+          <!-- Terminal Mockup 1 -->
+          <div class="term-window">
+            <div class="term-header flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-error/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-warning/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-success/80 inline-block"></span>
+              </div>
+              <span class="text-xs text-base-content/40">fish — ~/setup/Dotfiles</span>
+              <div class="w-10"></div>
+            </div>
+            <div class="term-body space-y-2">
+              <div class="text-base-content/50 text-xs">// Terminal output preview:</div>
+              <!-- Line 1: Badges -->
+              <div class="flex flex-wrap items-center gap-2 leading-relaxed">
+                <!-- User/Host Pill -->
+                <span class="pill-segment">
+                  <span class="pill-icon-left" style="color: var(--m-primary);"></span><span class="pill-badge" style="background: var(--m-primary); color: var(--m-on-primary);">󰣇 asim@archlinux</span><span class="pill-icon-right" style="color: var(--m-primary);"></span>
+                </span>
+                <!-- Directory Pill -->
+                <span class="pill-segment">
+                  <span class="pill-icon-left" style="color: var(--m-surface-container);"></span><span class="pill-badge" style="background: var(--m-surface-container); color: var(--m-primary);">󰉋</span><span class="pill-text" style="background: var(--m-surface-container); color: var(--m-on-surface-var);">~/setup/Dotfiles</span><span class="pill-icon-right" style="color: var(--m-surface-container);"></span>
+                </span>
+                <!-- Git Pill -->
+                <span class="pill-segment">
+                  <span class="pill-icon-left" style="color: var(--m-surface-container);"></span><span class="pill-badge" style="background: var(--m-surface-container); color: var(--m-tertiary);"></span><span class="pill-text" style="background: var(--m-surface-container); color: var(--m-on-surface-var);">main <span class="git-status-badge text-warning">⇡1 *</span></span><span class="pill-icon-right" style="color: var(--m-surface-container);"></span>
+                </span>
+                <!-- Python Venv Pill -->
+                <span class="pill-segment venv-pill">
+                  <span class="pill-icon-left" style="color: var(--m-surface-container);"></span><span class="pill-badge" style="background: var(--m-surface-container); color: var(--m-secondary);">🐍</span><span class="pill-text" style="background: var(--m-surface-container); color: var(--m-on-surface-var);">.venv</span><span class="pill-icon-right" style="color: var(--m-surface-container);"></span>
+                </span>
+              </div>
+              <!-- Line 2: Character -->
+              <div class="flex items-center gap-2 text-lg font-bold pt-1">
+                <span class="prompt-char" style="color: var(--m-tertiary);">❯</span>
+                <span class="text-sm font-normal text-base-content/80">git status</span>
+                <span class="w-2 h-4 bg-primary inline-block animate-pulse"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option 2: Clean Developer Two-Line (Minimalist) -->
+      <div class="card bg-base-100 border border-base-content/10 shadow-lg transition-all hover:border-primary/50">
+        <div class="card-body p-6 sm:p-8 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-base-content/10 pb-4">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="design_choice" value="option_2line_minimal" id="choice-minimal-2" class="radio radio-primary radio-lg">
+              <div>
+                <label for="choice-minimal-2" class="text-xl font-bold cursor-pointer">
+                  Option 2: Clean Developer Two-Line (No Big Bubbles)
+                </label>
+                <p class="text-xs sm:text-sm text-base-content/60">
+                  Crisp and lightweight. Uses icons and Matugen colors directly on text without heavy background boxes.
+                </p>
+              </div>
+            </div>
+            <div class="badge badge-soft badge-neutral text-xs shrink-0 self-start sm:self-auto">Minimalist • 2-Line</div>
+          </div>
+
+          <!-- Terminal Mockup 2 -->
+          <div class="term-window">
+            <div class="term-header flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-error/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-warning/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-success/80 inline-block"></span>
+              </div>
+              <span class="text-xs text-base-content/40">fish — ~/setup/Dotfiles</span>
+              <div class="w-10"></div>
+            </div>
+            <div class="term-body space-y-2">
+              <div class="text-base-content/50 text-xs">// Terminal output preview:</div>
+              <!-- Line 1: Text Prompt -->
+              <div class="flex flex-wrap items-center gap-2 text-sm leading-relaxed">
+                <span class="font-bold" style="color: var(--m-primary);">󰣇 asim@archlinux</span>
+                <span class="text-base-content/40">in</span>
+                <span class="font-semibold" style="color: var(--m-secondary);">󰉋 ~/setup/Dotfiles</span>
+                <span class="text-base-content/40">on</span>
+                <span class="font-semibold" style="color: var(--m-tertiary);"> main <span class="git-status-badge text-warning">[⇡1 *]</span></span>
+                <span class="venv-pill text-xs px-2 py-0.5 rounded bg-base-200" style="color: var(--m-primary);">🐍 .venv</span>
+                <span class="text-base-content/30 text-xs ml-auto">23:35</span>
+              </div>
+              <!-- Line 2: Character -->
+              <div class="flex items-center gap-2 text-lg font-bold pt-1">
+                <span class="prompt-char" style="color: var(--m-primary);">❯</span>
+                <span class="text-sm font-normal text-base-content/80">cargo build</span>
+                <span class="w-2 h-4 bg-primary inline-block animate-pulse"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option 3: Connected Powerline Arrow Breadcrumb (2-Line) -->
+      <div class="card bg-base-100 border border-base-content/10 shadow-lg transition-all hover:border-primary/50">
+        <div class="card-body p-6 sm:p-8 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-base-content/10 pb-4">
+            <div class="flex items-center gap-3">
+              <input type="radio" name="design_choice" value="option_2line_powerline" id="choice-powerline-2" class="radio radio-primary radio-lg">
+              <div>
+                <label for="choice-powerline-2" class="text-xl font-bold cursor-pointer">
+                  Option 3: Connected Powerline Breadcrumb (2-Line)
+                </label>
+                <p class="text-xs sm:text-sm text-base-content/60">
+                  Continuous chevron arrows () across user, path, and git on Line 1, with <code>❯</code> on Line 2.
+                </p>
+              </div>
+            </div>
+            <div class="badge badge-soft badge-neutral text-xs shrink-0 self-start sm:self-auto">Powerline Classic • 2-Line</div>
+          </div>
+
+          <!-- Terminal Mockup 3 -->
+          <div class="term-window">
+            <div class="term-header flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-error/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-warning/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-success/80 inline-block"></span>
+              </div>
+              <span class="text-xs text-base-content/40">fish — ~/setup/Dotfiles</span>
+              <div class="w-10"></div>
+            </div>
+            <div class="term-body space-y-2">
+              <div class="text-base-content/50 text-xs">// Terminal output preview:</div>
+              <!-- Line 1: Connected Arrows -->
+              <div class="inline-flex items-center text-sm font-semibold overflow-x-auto max-w-full">
+                <!-- Segment 1: User -->
+                <span class="px-3 py-1" style="background: var(--m-primary); color: var(--m-on-primary);">󰣇 asim@archlinux</span>
+                <span class="text-lg leading-none" style="background: var(--m-surface-container); color: var(--m-primary);"></span>
+                <!-- Segment 2: Path -->
+                <span class="px-3 py-1" style="background: var(--m-surface-container); color: var(--m-on-surface-var);">󰉋 ~/setup/Dotfiles</span>
+                <span class="text-lg leading-none" style="background: var(--m-tertiary); color: var(--m-surface-container);"></span>
+                <!-- Segment 3: Git -->
+                <span class="px-3 py-1" style="background: var(--m-tertiary); color: var(--m-on-tertiary);"> main <span class="git-status-badge">⇡1 *</span></span>
+                <span class="text-lg leading-none" style="color: var(--m-tertiary);"></span>
+              </div>
+              <!-- Line 2: Character -->
+              <div class="flex items-center gap-2 text-lg font-bold pt-1">
+                <span class="prompt-char" style="color: var(--m-primary);">❯</span>
+                <span class="text-sm font-normal text-base-content/80">ls -la</span>
+                <span class="w-2 h-4 bg-primary inline-block animate-pulse"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="sticky bottom-4 z-20 bg-base-200/90 backdrop-blur-md p-4 rounded-2xl border border-base-content/10 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <div class="text-sm font-bold">Ready to apply your favorite 2-line prompt?</div>
+          <div class="text-xs text-base-content/70">Pick your favorite option and click below to write the Matugen template.</div>
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          <button type="submit" class="btn btn-primary px-6 shadow-lg shadow-primary/20">
+            <span>Apply Selected 2-Line Prompt</span>
+            <span>➔</span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+  <script>
+    // Interactive toggles for previewing states
+    function toggleSim() {
+      const gitDirty = document.getElementById('toggle-git-dirty').checked;
+      const venvActive = document.getElementById('toggle-venv').checked;
+      const cmdFail = document.getElementById('toggle-cmd-fail').checked;
+
+      // Update Git dirty indicators
+      document.querySelectorAll('.git-status-badge').forEach(el => {
+        el.style.display = gitDirty ? 'inline' : 'none';
+      });
+
+      // Update Venv pills
+      document.querySelectorAll('.venv-pill').forEach(el => {
+        el.style.display = venvActive ? (el.classList.contains('text-xs') ? 'inline' : 'inline-flex') : 'none';
+      });
+
+      // Update Prompt character color
+      document.querySelectorAll('.prompt-char').forEach(el => {
+        if (cmdFail) {
+          el.style.color = 'var(--m-error)';
+          el.textContent = '✖';
+        } else {
+          el.style.color = 'var(--m-tertiary)';
+          el.textContent = '❯';
+        }
+      });
+    }
+
+    // Lavish Queue / Submit Handler
+    function handleChoiceSubmit(event) {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      const choice = formData.get('design_choice');
+      
+      const choiceNames = {
+        option_2line_pills: 'Option 1: Modern Material Rounded Pills (2-Line ... with asim@archlinux)',
+        option_2line_minimal: 'Option 2: Clean Developer Two-Line (Minimalist text with icons)',
+        option_2line_powerline: 'Option 3: Connected Powerline Breadcrumb (Continuous  chevrons)'
+      };
+
+      const selectedName = choiceNames[choice] || choice;
+
+      if (window.lavish && typeof window.lavish.queuePrompt === 'function') {
+        window.lavish.queuePrompt(
+          `Apply ${selectedName} for my Starship prompt in Dotfiles. Update the Matugen template dotfiles-linux/matugen/.config/matugen/templates/starship-colors.toml and re-render ~/.config/starship.toml.`,
+          {
+            tag: 'choice',
+            text: '2-Line Starship Choice: ' + selectedName,
+            element: event.currentTarget,
+            data: { question: 'starship-design', answer: choice, label: selectedName }
+          }
+        );
+        if (typeof window.lavish.sendQueuedPrompts === 'function') {
+          window.lavish.sendQueuedPrompts();
+        }
+      } else {
+        alert('Selected: ' + selectedName + '. Please inform the agent in chat!');
+      }
+    }
+
+    // Initial state setup
+    toggleSim();
+  </script>
+</body>
+</html>
