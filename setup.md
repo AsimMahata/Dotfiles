@@ -235,6 +235,20 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
 6. Reloaded with `hyprctl reload full-reset` to switch compositor runtime to the Lua config manager.
 7. Added `fullscreen-no-rounding` window rule in `hyprland.lua` (`rounding = 0`, `border_size = 0`) for edge-to-edge fullscreen windows.
 
+### Hyprlock Theming & Dynamic Matugen Colors
+To provide a creative, unified lockscreen matching wallpaper colors:
+1. Created template `dotfiles-linux/matugen/.config/matugen/templates/hyprlock-colors.conf` to generate Hyprlock-compatible `rgb(...)` definitions.
+2. Added `[templates.hyprlock]` in `dotfiles-linux/matugen/.config/matugen/config.toml` outputting to `~/.config/hypr/colors.conf`.
+3. Configured `dotfiles-linux/hypr/.config/hypr/hyprlock.conf` with a high-DPI optimized layout, animations, and avatar badge:
+   - **Dynamic Island:** Top-center frosted capsule (`size = 480, 46`) driven by `dotfiles-linux/hypr/.config/hypr/scripts/dynamic-island.sh` showing battery telemetry and active media title.
+   - **Native Animations:** Enabled GPU-accelerated transition tree (`fadeIn`, `fadeOut`, `inputFieldColors`, bouncy `inputFieldWidth`, and `inputFieldDots`).
+   - **Avatar Badge:** Centered frosted circular badge (`size = 72, 72`) with default human silhouette glyph (``) positioned cleanly above the username.
+   - **Background:** `path = $image` using the active Matugen wallpaper with subtle softening (`blur_passes = 1`, `blur_size = 2`, `brightness = 0.80`) so the artwork remains clearly visible.
+   - **Time & Date:** Large 24-hour monospace typography (`font_size = 145`, `JetBrainsMono Nerd Font SemiBold`) with soft drop shadows and letter-spaced date (`font_size = 20`).
+   - **User Identifier:** Clean username (`font_size = 18`) positioned directly below the avatar badge.
+   - **Input Field:** Capsule input (`size = 340, 58`, `outer_color = rgba(255, 255, 255, 0.25)`, `dots_size = 0.28`).
+   - **Now Playing:** Dedicated helper script `dotfiles-linux/hypr/.config/hypr/scripts/songdetail.sh` fetching full track metadata via `playerctl` (`󰝚 {{title}} — {{artist}}`, `font_size = 16`).
+
 
 ---
 
@@ -609,6 +623,40 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
     git update-index --skip-worktree "dotfiles-linux/antigravity/.config/Antigravity IDE/User/settings.json"
     ```
   - The runtime-generated color file `antigravity-colors.json` is ignored via `**/.config/**/antigravity-colors.json` in [`.gitignore`](file:///home/asim/setup/Dotfiles/.gitignore).
+
+---
+
+## Hyprlock Modern Aesthetic Redesign
+
+- **Overview:**
+  - Redesigned `hyprlock.conf` with a clean, balanced layout optimized for 2880x1800 at 2x scaling (effective 1440x900 viewport).
+  - Eliminates broken mouse `onclick` widgets (which miss hitboxes on HiDPI) and removes overcrowded cards (Dynamic Island, Weather pill, Media card).
+  - Uses dynamic Matugen palette variables (`$primary`, `$secondary`, `$on_background`, `$error`) and active wallpaper blur.
+- **Dedicated GNU Stow Module:**
+  - Separated Hyprlock completely from Hyprland into its own Stow module at `dotfiles-linux/hyprlock/`:
+    - `dotfiles-linux/hyprlock/.config/hypr/hyprlock.conf`
+    - `dotfiles-linux/hyprlock/.config/hypr/hyprlock/assets/`: `avatar.png`, `default-avatar.png`, `default-album.png`.
+    - `dotfiles-linux/hyprlock/.config/hypr/hyprlock/scripts/`: helper scripts for media and assets.
+  - Avoids directory conflicts with `dotfiles-linux/hypr/` while preserving default Hyprlock configuration discovery.
+  - Stowed via:
+    ```bash
+    stow -d dotfiles-linux -t ~ hyprlock
+    ```
+- **Configuration & Visual Elements:**
+  - Configured in [`dotfiles-linux/hyprlock/.config/hypr/hyprlock.conf`](file:///home/asim/setup/Dotfiles/dotfiles-linux/hyprlock/.config/hypr/hyprlock.conf).
+  - Native GPU animations enabled (`fadeIn`, `fadeOut`, `inputFieldColors`, `inputFieldWidth`, `inputFieldDots`).
+  - **Dynamic Island (Top Pill):** High-speed (0.02s) battery, media, and network status via `hyprlock-island.sh` (optimized without slow Wi-Fi scanning).
+  - **Centered Stack:**
+    - Two-tone bold clock via `hyprlock-clock.sh` (bold white hours, `$primary` accent blue minutes).
+    - Letter-spaced uppercase date (`font_size = 14`, `$secondary`).
+    - Circular user avatar with `$primary` accent border (`size = 68`, `avatar.png`).
+    - Username label (`$USER`, `font_size = 16`).
+    - Centered frosted password field (`size = 310, 48`, `inner_color = rgba(5, 10, 18, 0.70)`, `check_color = $primary`, `fail_color = $error`).
+  - **Bottom Widgets:**
+    - Weather pill (bottom left) with cached 15-minute wttr.in weather data via `hyprlock-weather.sh`.
+    - Music player (bottom center) with album art (`hyprlock-art.sh` with URL caching), song title, Unicode progress bar (`hyprlock-progress.sh`), and interactive playback controls.
+    - Session buttons (bottom right) for screen off, reboot, and poweroff.
+  - All helper scripts symlinked across both `~/.config/hypr/hyprlock/scripts/` and `~/.config/hypr/scripts/` for 100% path resolution.
 
 ---
 

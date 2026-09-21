@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="luxury">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimalist Frosted Glass Variations - Hyprlock</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :where(.grid, .flex, .layout-grid, .layout-flex) > * { min-width: 0; }
+    :where(p, h1, h2, h3, h4, h5, h6, li, dd, blockquote, figcaption, td, th, .badge, .label) { overflow-wrap: anywhere; }
+    :where(img, svg, video, canvas, iframe) { max-width: 100%; height: auto; }
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .font-outfit { font-family: 'Outfit', sans-serif; }
+    .screen-preview {
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+  </style>
+</head>
+<body class="bg-base-300 text-base-content min-h-screen">
+
+  <!-- Header / Nav -->
+  <header class="navbar bg-base-100/80 backdrop-blur sticky top-0 z-50 border-b border-base-content/10 px-6">
+    <div class="navbar-start gap-3">
+      <div class="p-2 rounded-xl bg-primary/20 text-primary font-mono font-bold text-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight">Minimalist Frosted Glass Variations</h1>
+        <p class="text-xs text-base-content/60 font-mono">24h Clock &bull; GPU Blur (24px) &bull; Media &bull; Battery &bull; Avatar</p>
+      </div>
+    </div>
+    <div class="navbar-end gap-2">
+      <span class="badge badge-primary badge-soft">4 Layout Variations</span>
+      <span class="badge badge-neutral font-mono text-xs">asim@archlinux</span>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto p-6 md:p-10 space-y-10">
+
+    <!-- Overview Banner -->
+    <section class="card bg-base-100 shadow-xl border border-base-content/5 p-6 md:p-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="badge badge-primary">Deep Dive</span>
+            <span class="text-xs text-base-content/50 uppercase tracking-widest font-semibold font-mono">Theme: Minimalist Frosted Glass</span>
+          </div>
+          <h2 class="text-3xl font-extrabold tracking-tight">Select Your Preferred Layout Variation</h2>
+          <p class="text-base-content/70 mt-1 max-w-3xl">
+            You chose the <strong>Minimalist Frosted Glass</strong> base with a <strong>24-hour clock</strong>, <strong>blurred wallpaper</strong>, and active widgets for <strong>Media Player</strong>, <strong>Battery</strong>, and <strong>User Avatar</strong>. Here are 4 distinct layout interpretations of this style.
+          </p>
+        </div>
+        <div class="stats bg-base-200/50 shadow-inner border border-base-content/5">
+          <div class="stat py-3 px-5">
+            <div class="stat-title text-xs">Chosen Style</div>
+            <div class="stat-value text-sm font-mono text-primary">Frosted Glass</div>
+            <div class="stat-desc text-xs text-success">24h &bull; Blurred BG &bull; Widgets</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 Variations Grid -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-2xl font-bold">4 Curated Layout Variations</h3>
+          <p class="text-sm text-base-content/60">Compare the visual hierarchy, placement of widgets, and typography below</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <!-- VARIATION 1: Floating Airy Pillars -->
+        <div class="card bg-base-100 border border-base-content/10 shadow-lg hover:border-primary/50 transition duration-300">
+          <div class="card-body p-6 space-y-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="badge badge-primary badge-outline text-xs mb-1">Variation 1</span>
+                <h4 class="text-xl font-bold">Airy Pillars (Clean & Centered)</h4>
+                <p class="text-xs text-base-content/60">Giant ultra-light 24h clock, floating avatar pill, bottom media capsule</p>
+              </div>
+              <span class="badge badge-ghost text-xs">Light & Balanced</span>
+            </div>
+
+            <!-- Visual Mockup -->
+            <div class="screen-preview bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 flex flex-col items-center justify-between p-6 border border-white/10 relative">
+              <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/25 via-transparent to-transparent"></div>
+
+              <!-- Top Right Battery / System Status -->
+              <div class="w-full flex justify-end relative z-10">
+                <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[11px] font-mono text-slate-300">
+                  <span class="text-emerald-400">󰁹 88%</span>
+                  <span class="text-white/20">&bull;</span>
+                  <span>asim</span>
+                </div>
+              </div>
+
+              <!-- Center Clock & Input -->
+              <div class="relative z-10 flex flex-col items-center space-y-3">
+                <div class="text-center space-y-0.5">
+                  <div class="text-6xl font-extralight tracking-tight text-white font-mono drop-shadow-md">
+                    22:38
+                  </div>
+                  <div class="text-[11px] font-medium text-slate-400 tracking-widest uppercase">
+                    Monday, September 21
+                  </div>
+                </div>
+
+                <!-- Avatar & Input -->
+                <div class="w-full max-w-xs space-y-2 pt-2">
+                  <div class="w-10 h-10 rounded-full bg-white/10 border border-white/20 backdrop-blur-md mx-auto flex items-center justify-center text-sm font-bold text-white shadow-inner">
+                    A
+                  </div>
+                  <div class="py-2 px-4 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl shadow-lg flex items-center justify-between text-slate-300 text-xs">
+                    <span class="tracking-widest">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom Song Widget -->
+              <div class="relative z-10 flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-[11px] text-slate-300">
+                <span class="text-primary animate-pulse">󰝚</span>
+                <span class="truncate max-w-[200px]">Starboy &bull; The Weeknd</span>
+              </div>
+            </div>
+
+            <!-- Details -->
+            <div class="text-xs text-base-content/70 space-y-1 pt-1">
+              <div>&bull; <strong>Clock:</strong> Center top, ultra-light font weight (90pt)</div>
+              <div>&bull; <strong>Battery:</strong> Top-right corner pill indicator</div>
+              <div>&bull; <strong>Input:</strong> Round pill input with centered avatar above it</div>
+              <div>&bull; <strong>Media:</strong> Centered bottom capsule</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VARIATION 2: Centered Elevated Glassmorphic Card -->
+        <div class="card bg-base-100 border-2 border-primary/40 shadow-xl relative">
+          <div class="absolute -top-3 right-6 badge badge-primary font-semibold shadow">
+            Cleanest All-in-One
+          </div>
+          <div class="card-body p-6 space-y-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="badge badge-primary badge-outline text-xs mb-1">Variation 2</span>
+                <h4 class="text-xl font-bold">Centered Glass Card (Unified)</h4>
+                <p class="text-xs text-base-content/60">Everything encapsulated in a floating frosted glass sheet</p>
+              </div>
+            </div>
+
+            <!-- Visual Mockup -->
+            <div class="screen-preview bg-gradient-to-tr from-zinc-950 via-slate-900 to-stone-900 flex items-center justify-center p-6 border border-white/10 relative">
+              <div class="absolute inset-0 bg-black/40 backdrop-blur-md"></div>
+
+              <!-- Elevated Frosted Card -->
+              <div class="relative z-10 w-full max-w-sm p-6 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-2xl shadow-2xl flex flex-col items-center space-y-4 text-center">
+                
+                <!-- Avatar & Status -->
+                <div class="relative">
+                  <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary/80 to-secondary/80 flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-white/30">
+                    A
+                  </div>
+                  <div class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-full bg-emerald-500 text-[9px] font-bold text-white shadow">
+                    88%
+                  </div>
+                </div>
+
+                <!-- Clock inside card -->
+                <div>
+                  <div class="text-4xl font-bold text-white font-mono tracking-tight">22:38</div>
+                  <div class="text-[11px] text-slate-300 font-medium">Monday, September 21</div>
+                </div>
+
+                <!-- Input Box -->
+                <div class="w-full py-2.5 px-4 rounded-xl bg-black/40 border border-white/15 text-xs text-slate-300 flex items-center justify-between">
+                  <span class="tracking-widest">&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;</span>
+                  <span class="text-[10px] text-slate-500 font-mono">Unlock</span>
+                </div>
+
+                <!-- Media Widget inside card footer -->
+                <div class="w-full pt-1 border-t border-white/10 flex items-center justify-center gap-2 text-[11px] text-slate-300">
+                  <span class="text-accent">󰝚</span>
+                  <span class="truncate max-w-[200px]">Starboy &bull; The Weeknd</span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Details -->
+            <div class="text-xs text-base-content/70 space-y-1 pt-1">
+              <div>&bull; <strong>Card:</strong> Single unified frosted box (300px width, 24px blur)</div>
+              <div>&bull; <strong>Clock:</strong> Inside the card, bold 24h format</div>
+              <div>&bull; <strong>Avatar:</strong> Prominent header badge with embedded battery %</div>
+              <div>&bull; <strong>Media:</strong> Embedded into card footer</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VARIATION 3: Asymmetric Split (Left Tower + Right Pill) -->
+        <div class="card bg-base-100 border border-base-content/10 shadow-lg hover:border-secondary/50 transition duration-300">
+          <div class="card-body p-6 space-y-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="badge badge-secondary badge-outline text-xs mb-1">Variation 3</span>
+                <h4 class="text-xl font-bold">Asymmetric Split (Desktop Classic)</h4>
+                <p class="text-xs text-base-content/60">Left column for clock & media, right-center for unlock</p>
+              </div>
+              <span class="badge badge-ghost text-xs">Uncluttered</span>
+            </div>
+
+            <!-- Visual Mockup -->
+            <div class="screen-preview bg-gradient-to-r from-slate-950 via-zinc-900 to-indigo-950 flex items-center justify-between p-8 border border-white/10 relative">
+              
+              <!-- Left Column -->
+              <div class="relative z-10 text-left space-y-3">
+                <div class="flex items-center gap-2 text-[11px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/20 px-2.5 py-1 rounded-lg w-fit">
+                  <span>󰁹 88% Battery</span>
+                </div>
+                <div>
+                  <div class="text-5xl font-black text-white font-mono leading-none">22:38</div>
+                  <div class="text-xs text-slate-400 mt-1">Monday, September 21</div>
+                </div>
+                <div class="pt-2 flex items-center gap-2 text-xs text-slate-300 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl backdrop-blur-md w-fit">
+                  <span class="text-secondary">󰝚</span>
+                  <span class="truncate max-w-[150px]">Starboy &bull; The Weeknd</span>
+                </div>
+              </div>
+
+              <!-- Right Column Input -->
+              <div class="relative z-10 w-52 p-4 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-xl shadow-xl flex flex-col items-center space-y-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-secondary to-purple-600 flex items-center justify-center text-white font-bold shadow-md">
+                  A
+                </div>
+                <div class="text-xs font-bold text-white">asim</div>
+                <div class="w-full py-1.5 px-3 rounded-lg bg-black/40 border border-white/10 text-center text-xs text-slate-300 font-mono">
+                  &bull;&bull;&bull;&bull;&bull;&bull;
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Details -->
+            <div class="text-xs text-base-content/70 space-y-1 pt-1">
+              <div>&bull; <strong>Layout:</strong> Clock & widgets separated from login field</div>
+              <div>&bull; <strong>Clock:</strong> Large bold typography on the left margin</div>
+              <div>&bull; <strong>Media:</strong> Fixed bottom-left capsule under date</div>
+              <div>&bull; <strong>Input:</strong> Minimal floating card on the right</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VARIATION 4: Minimalist Capsule Bar (Sleek Horizontal) -->
+        <div class="card bg-base-100 border border-base-content/10 shadow-lg hover:border-accent/50 transition duration-300">
+          <div class="card-body p-6 space-y-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="badge badge-accent badge-outline text-xs mb-1">Variation 4</span>
+                <h4 class="text-xl font-bold">Minimalist Capsule (Modern Dock)</h4>
+                <p class="text-xs text-base-content/60">Center-focused with sleek horizontal status bar</p>
+              </div>
+              <span class="badge badge-ghost text-xs">Compact & Sleek</span>
+            </div>
+
+            <!-- Visual Mockup -->
+            <div class="screen-preview bg-gradient-to-b from-slate-950 via-zinc-950 to-neutral-950 flex flex-col items-center justify-center p-6 border border-white/10 relative">
+              
+              <div class="relative z-10 flex flex-col items-center space-y-4 w-full max-w-sm text-center">
+                <!-- Stacked 24h Clock -->
+                <div>
+                  <div class="text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 font-mono">
+                    22:38
+                  </div>
+                  <div class="text-xs text-slate-400 tracking-wider uppercase mt-0.5">
+                    Monday &bull; Sep 21
+                  </div>
+                </div>
+
+                <!-- Input Box with User Badge -->
+                <div class="w-full flex items-center gap-2 p-1.5 pr-3 rounded-full bg-white/10 border border-white/20 backdrop-blur-xl shadow-lg">
+                  <div class="w-8 h-8 rounded-full bg-accent text-accent-content flex items-center justify-center text-xs font-bold">
+                    A
+                  </div>
+                  <div class="text-xs text-slate-300 tracking-widest flex-1 text-left pl-2">
+                    &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </div>
+
+                <!-- Horizontal Status & Media Capsule -->
+                <div class="flex items-center justify-between w-full px-4 py-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-[11px] text-slate-300">
+                  <span class="text-emerald-400">󰁹 88%</span>
+                  <span class="text-white/20">&bull;</span>
+                  <span class="truncate max-w-[150px]">󰝚 Starboy</span>
+                  <span class="text-white/20">&bull;</span>
+                  <span class="text-slate-400 font-mono">Hyprland</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Details -->
+            <div class="text-xs text-base-content/70 space-y-1 pt-1">
+              <div>&bull; <strong>Layout:</strong> Vertical compact stack in exact center</div>
+              <div>&bull; <strong>Clock:</strong> High-contrast gradient 24h clock</div>
+              <div>&bull; <strong>Status Bar:</strong> Combined battery + media + session horizontal pill</div>
+              <div>&bull; <strong>Input:</strong> Ultra-smooth integrated capsule with avatar on left</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Selection & Submission Form -->
+    <section class="card bg-base-100 shadow-2xl border-2 border-primary/30 p-6 md:p-8">
+      <form data-lavish-question="hyprlock-variation-choice" onsubmit="
+        event.preventDefault();
+        const form = event.currentTarget;
+        const formData = new FormData(form);
+        const variation = formData.get('variation');
+
+        if (!variation) {
+          alert('Please select a layout variation before queueing!');
+          return;
+        }
+
+        if (window.lavish && window.lavish.queuePrompt) {
+          window.lavish.queuePrompt(
+            `Apply ${variation} to ~/.config/hypr/hyprlock.conf with:
+- 24-Hour clock
+- GPU blurred wallpaper background (24px blur)
+- Media player widget (songdetail.sh)
+- Battery & power indicator
+- User profile avatar
+- Fix colors.conf sourcing to use current palette`,
+            {
+              tag: 'hyprlock-variation',
+              text: `Selected: ${variation}`,
+              element: form,
+              data: {
+                variation: variation,
+                theme: 'Minimalist Frosted Glass',
+                clock: '24-Hour',
+                background: 'GPU Blur 24px'
+              }
+            }
+          );
+          document.getElementById('queue-alert').classList.remove('hidden');
+        } else {
+          alert('Queued: ' + variation);
+        }
+      ">
+        <div class="space-y-6">
+          <div>
+            <span class="badge badge-primary font-semibold mb-2">Final Step</span>
+            <h3 class="text-2xl font-bold">Choose Your Preferred Variation</h3>
+            <p class="text-sm text-base-content/60">Select which layout variation of Minimalist Frosted Glass you want implemented in your <code class="bg-black/30 px-1 py-0.5 rounded font-mono">hyprlock.conf</code>.</p>
+          </div>
+
+          <fieldset class="fieldset space-y-3">
+            <legend class="fieldset-legend text-base font-bold text-primary">Select Variation</legend>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              
+              <label class="cursor-pointer border border-base-content/10 rounded-xl p-4 flex flex-col gap-2 hover:bg-base-200/50 has-[:checked]:border-primary has-[:checked]:bg-primary/10 transition">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm">Variation 1</span>
+                  <input type="radio" name="variation" value="Variation 1: Airy Pillars (Clean & Centered)" class="radio radio-primary radio-sm" />
+                </div>
+                <span class="text-xs font-semibold">Airy Pillars</span>
+                <span class="text-[11px] text-base-content/60">Giant clock, centered pill, bottom media capsule.</span>
+              </label>
+
+              <label class="cursor-pointer border border-base-content/10 rounded-xl p-4 flex flex-col gap-2 hover:bg-base-200/50 has-[:checked]:border-primary has-[:checked]:bg-primary/10 transition">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm text-primary">Variation 2 (Rec)</span>
+                  <input type="radio" name="variation" value="Variation 2: Centered Glass Card (Unified)" class="radio radio-primary radio-sm" checked />
+                </div>
+                <span class="text-xs font-semibold">Unified Glass Card</span>
+                <span class="text-[11px] text-base-content/60">All-in-one floating frosted box with avatar & media.</span>
+              </label>
+
+              <label class="cursor-pointer border border-base-content/10 rounded-xl p-4 flex flex-col gap-2 hover:bg-base-200/50 has-[:checked]:border-secondary has-[:checked]:bg-secondary/10 transition">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm text-secondary">Variation 3</span>
+                  <input type="radio" name="variation" value="Variation 3: Asymmetric Split (Left Tower + Right Pill)" class="radio radio-secondary radio-sm" />
+                </div>
+                <span class="text-xs font-semibold">Asymmetric Split</span>
+                <span class="text-[11px] text-base-content/60">Left clock/widgets tower, floating login on right.</span>
+              </label>
+
+              <label class="cursor-pointer border border-base-content/10 rounded-xl p-4 flex flex-col gap-2 hover:bg-base-200/50 has-[:checked]:border-accent has-[:checked]:bg-accent/10 transition">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm text-accent">Variation 4</span>
+                  <input type="radio" name="variation" value="Variation 4: Minimalist Capsule (Modern Dock)" class="radio radio-accent radio-sm" />
+                </div>
+                <span class="text-xs font-semibold">Minimalist Capsule</span>
+                <span class="text-[11px] text-base-content/60">Dock-style pill input with combined status bar.</span>
+              </label>
+
+            </div>
+          </fieldset>
+
+          <!-- Queue Alert -->
+          <div id="queue-alert" class="alert alert-success hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <div>
+              <div class="font-bold">Variation Queued!</div>
+              <div class="text-xs">Your layout variation choice has been staged. Press "Send to Agent" in the Lavish bar or submit directly to apply it.</div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex items-center justify-end gap-4 pt-2">
+            <button type="submit" class="btn btn-primary btn-lg shadow-xl gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Queue Variation for Implementation
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+</body>
+</html>

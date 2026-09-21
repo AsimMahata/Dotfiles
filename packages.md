@@ -68,6 +68,12 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`power-profile-status.sh`** | Local Script (`waybar/scripts/power`) | Generates JSON status for Waybar's `custom/power-profile` module with icons and tooltips. |
 | **`power-profile-cycle.sh`** | Local Script (`waybar/scripts/power`) | Cycles `powerprofilesctl` modes, signals Waybar (SIGRTMIN+8), and spawns the OSD HUD. |
 | **`power-profile-osd.py`** | Local Script (`waybar/scripts/power`) | GTK Layer Shell OSD HUD showing power profile changes with 1.5s auto-dismiss. |
+| **`hyprlock-island.sh`** | Local Script (`hyprlock/scripts`) | Dynamic Island top capsule status script (Battery, Music, WiFi) for Hyprlock. |
+| **`hyprlock-weather.sh`** | Local Script (`hyprlock/scripts`) | Cached 15-minute wttr.in weather fetcher and formatter for Hyprlock. |
+| **`hyprlock-mpris.sh`** | Local Script (`hyprlock/scripts`) | Playerctl metadata and Unicode progress bar generator for Hyprlock media widget. |
+| **`hyprlock-art.sh`** | Local Script (`hyprlock/scripts`) | Album cover artwork extractor and fallback handler for Hyprlock media widget. |
+| **`hyprlock-clock.sh`** | Local Script (`hyprlock/scripts`) | Two-tone clock helper script for Hyprlock. |
+| **`hyprlock-progress.sh`** | Local Script (`hyprlock/scripts`) | Playerctl progress bar generator (Unicode ━/─) for Hyprlock media widget. |
 | **`thermald`** | Official (`pacman`) | Linux Thermal Daemon for Intel processors (monitors thermal zones, regulates DPTF cooling curves, and prevents CPU throttling). |
 
 ---

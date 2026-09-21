@@ -1,0 +1,1 @@
+/home/asim/setup/Dotfiles/dotfiles-linux/hyprlock/.config/hypr/hyprlock/scripts/hyprlock-island.sh
