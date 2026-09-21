@@ -22,8 +22,8 @@ bat_str="$bat_icon ${bat_cap}%"
 # Music / Now Playing
 status=$(playerctl status 2>/dev/null)
 if [ "$status" = "Playing" ] || [ "$status" = "Paused" ]; then
-    song_title=$(playerctl metadata --format '{{title}}' 2>/dev/null | cut -c 1-20)
-    song_artist=$(playerctl metadata --format '{{artist}}' 2>/dev/null | cut -c 1-14)
+    song_title=$(playerctl metadata --format '{{title}}' 2>/dev/null | cut -c 1-20 | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g')
+    song_artist=$(playerctl metadata --format '{{artist}}' 2>/dev/null | cut -c 1-14 | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g')
     if [ -n "$song_title" ]; then
         if [ -n "$song_artist" ]; then
             music_str="󰝚 $song_title - $song_artist"
@@ -41,15 +41,16 @@ else
 fi
 
 # Network / WiFi (fast lookup without scanning)
-wifi_ssid=$(iwgetid -r 2>/dev/null)
-if [ -z "$wifi_ssid" ]; then
-    wifi_ssid=$(nmcli -t -f NAME,TYPE c show --active 2>/dev/null | grep ":802-11-wireless" | head -n1 | cut -d: -f1)
-fi
-
-if [ -n "$wifi_ssid" ]; then
-    wifi_str="󰤨 $wifi_ssid"
-elif nmcli -t -f TYPE c show --active 2>/dev/null | grep -q "802-3-ethernet" || ip route get 1.1.1.1 &>/dev/null; then
+if grep -q "up" /sys/class/net/e*/operstate 2>/dev/null; then
     wifi_str="󰈀 Ethernet"
+elif grep -q "up" /sys/class/net/w*/operstate 2>/dev/null; then
+    wifi_ssid=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | grep '^yes:' | cut -d: -f2 | head -n1)
+    if [ -n "$wifi_ssid" ]; then
+        wifi_ssid_esc=$(echo "$wifi_ssid" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g')
+        wifi_str="󰤨 $wifi_ssid_esc"
+    else
+        wifi_str="󰤨 Connected"
+    fi
 else
     wifi_str="󰤮 Offline"
 fi

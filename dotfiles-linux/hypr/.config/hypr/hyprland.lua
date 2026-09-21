@@ -68,7 +68,7 @@ local terminal = "kitty"
 
 local fileManager = "dolphin"
 
-local menu = "pkill rofi || .config/rofi/launchers/launcher.sh"
+local menu = "pkill rofi || ~/.config/rofi/launchers/launcher.sh"
 
 local logoutmenu = "pkill wlogout || wlogout"
 
@@ -363,7 +363,7 @@ hl.bind(mainMod .. " + " .. "ALT" .. " + " .. "Space", hl.dsp.window.float())
 
 hl.bind(mainMod .. " + " .. "F", hl.dsp.window.fullscreen())
 
-hl.bind(mainMod .. " + " .. "TAB", hl.dsp.exec_cmd("pkill rofi || .config/rofi/launchers/launcher.sh"))
+hl.bind(mainMod .. " + " .. "TAB", hl.dsp.exec_cmd("pkill rofi || ~/.config/rofi/launchers/launcher.sh"))
 
 hl.bind(mainMod .. " + " .. "P", hl.dsp.window.pseudo())
 
@@ -404,8 +404,6 @@ hl.bind(mainMod .. " + " .. "B", hl.dsp.exec_cmd("python3 ~/.config/hypr/scripts
 hl.bind("CTRL + ALT + Delete", hl.dsp.exec_cmd("wlogout"))
 
 hl.bind(mainMod .. " + " .. "C", hl.dsp.exec_cmd("hyprpicker -a"))
-
-hl.bind(mainMod .. " + " .. "Escape", hl.dsp.exec_cmd("hyprlauncher"))
 
 -- Move focus with mainMod + arrow keys
 
@@ -580,7 +578,6 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("awww-daemon & disown")
     hl.exec_cmd("waybar")
     hl.exec_cmd("swaync")
-    hl.exec_cmd("hyprlauncher -d")
     hl.exec_cmd("aw-server & disown")
     hl.exec_cmd("aw-awatcher & disown")
     -- hl.exec_cmd("fcitx5") -- disabled: causes dropped keystrokes in Electron/Antigravity on Wayland

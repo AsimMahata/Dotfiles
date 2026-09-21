@@ -46,12 +46,11 @@ class KeybindWindow(Gtk.Window):
             ],
             
             "   Applications": [
-                ("Super + T", "Open Terminal"),
-                ("Super + E", "Open File Manager"),
-                ("Super + Tab", "Open App Launcher"),
-                ("Super + Y", "Open hyprlauncher"),
-                ("Super + W", "Open Zen Browser"),
-                ("Super + M", "Open Music Player"),
+                ("Super + Enter", "Open Terminal (kitty)"),
+                ("Super + E", "Open File Manager (dolphin)"),
+                ("Super + Tab", "Open App Launcher (rofi)"),
+                ("Super + W", "Toggle Waybar Profile (default/music)"),
+                ("Super + M", "Logout Menu (wlogout)"),
                 ("Super + End", "Open System Monitor (btop)"),
             ],
             
@@ -61,15 +60,14 @@ class KeybindWindow(Gtk.Window):
             ],
             
             "   OS & System": [
-                ("Super + L", "Lock Screen"),
-                ("Ctrl + Alt + Delete", "Logout Menu"),
+                ("Super + L", "Lock Screen (hyprlock)"),
+                ("Ctrl + Alt + Delete", "Logout Menu (wlogout)"),
                 ("Super + I", "System Information"),
                 ("Super + R", "Restart Waybar"),
-                ("Super + N", "Toggle Notifications"),
+                ("Super + N", "Toggle Notifications (swaync)"),
                 ("Super + H", "Open This Help Window"),
-                ("Super + B", "Open Change Background Window"),
-                ("Super + C", "Color Picker"),
-                ("Super + Space", "Change Language Layout"),
+                ("Super + B", "Open Wallpaper Switcher"),
+                ("Super + C", "Color Picker (hyprpicker)"),
             ],
             
             "󰨇   Workspaces": [

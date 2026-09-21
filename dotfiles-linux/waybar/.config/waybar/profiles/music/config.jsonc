@@ -16,7 +16,7 @@
         "custom/power"
     ],
     "custom/app": {
-        "on-click": "pkill rofi || .config/rofi/launchers/launcher.sh",
+        "on-click": "pkill rofi || ~/.config/rofi/launchers/launcher.sh",
         "format": "{icon}   App",
         "format-icons": {
             "default": ""

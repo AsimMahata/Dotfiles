@@ -13,12 +13,18 @@ if [ -n "$url" ] && [ "$url" != "$last_url" ]; then
     echo "$url" > "$URL_CACHE"
     if [[ "$url" == file://* ]]; then
         local_path="${url#file://}"
+        local_path=$(python3 -c "import urllib.parse, sys; print(urllib.parse.unquote(sys.argv[1]))" "$local_path" 2>/dev/null || echo "$local_path")
         if [ -f "$local_path" ]; then
             cp -f "$local_path" "$ART_OUT"
         fi
     elif [[ "$url" == http* ]]; then
         curl -s --connect-timeout 2 "$url" -o "${ART_OUT}.tmp" && mv -f "${ART_OUT}.tmp" "$ART_OUT"
     fi
+elif [ -z "$url" ]; then
+    if [ -f "$DEFAULT_ART" ]; then
+        cp -f "$DEFAULT_ART" "$ART_OUT"
+    fi
+    rm -f "$URL_CACHE"
 fi
 
 if [ ! -f "$ART_OUT" ]; then

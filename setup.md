@@ -657,6 +657,8 @@ To provide a creative, unified lockscreen matching wallpaper colors:
     - Music player (bottom center) with album art (`hyprlock-art.sh` with URL caching), song title, Unicode progress bar (`hyprlock-progress.sh`), and interactive playback controls.
     - Session buttons (bottom right) for screen off, reboot, and poweroff.
   - All helper scripts symlinked across both `~/.config/hypr/hyprlock/scripts/` and `~/.config/hypr/scripts/` for 100% path resolution.
+  - **Asynchronous Wallpaper Pre-Blur:** `hyprlock-bg-blur.sh` runs via `matugen` post-hook in the background on wallpaper change to scale and blur to `~/.cache/hyprlock/hyprlock-bg.png`. Enables instant 0ms Hyprlock startup with `blur_passes = 0`.
+  - **Script Hardening & Pango Escaping:** XML character escaping added in `hyprlock-mpris.sh` and `hyprlock-island.sh` to prevent Pango markup parsing errors on track titles with ampersands; percent-decoding added in `hyprlock-art.sh`.
 
 ---
 

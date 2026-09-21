@@ -21,5 +21,6 @@ else
     info="Unknown Track"
 fi
 
-# Truncate to 26 characters max
-echo "$info" | cut -c 1-26
+# Truncate to 26 characters max and escape XML for Pango
+out=$(echo "$info" | cut -c 1-26 | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g')
+echo "$out"

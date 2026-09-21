@@ -71,4 +71,5 @@ output_path = '~/.config/fastfetch/config.jsonc'
 [templates.hyprlock]
 input_path = '~/.config/matugen/templates/hyprlock-colors.conf'
 output_path = '~/.config/hypr/colors.conf'
+post_hook = '(~/.config/hypr/hyprlock/scripts/hyprlock-bg-blur.sh &)'
 

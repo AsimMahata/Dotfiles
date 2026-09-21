@@ -19,6 +19,8 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`wl-clipboard`** | Official (`pacman`) | Command-line copy/paste tool for Wayland (`wl-copy`, `wl-paste`). |
 | **`xdg-desktop-portal-hyprland`** | Official (`pacman`) | XDG desktop portal backend for screen sharing, file pickers, and permissions. |
 | **`polkit-gnome`** | Official (`pacman`) | Graphical authentication agent for root/sudo permission prompts. |
+| **`hyprlock`** | Official (`pacman`) | Fast, modern screen locker for Hyprland with Matugen theming and MPRIS support. |
+| **`hyprlock-bg-blur.sh`** | Local Script (`hyprlock/scripts`) | Background pre-render script that crops, scales, and blurs wallpaper for 0ms lockscreen startup. |
 
 ---
 
