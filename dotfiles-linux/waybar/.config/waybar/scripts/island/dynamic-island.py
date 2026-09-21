@@ -524,9 +524,12 @@ try:
 except Exception:
     pass
 
+smoothed_cpu_temp = None
+
 def get_system_vitals():
+    global smoothed_cpu_temp
     cpu_pct = 0
-    cpu_temp = 45.0
+    raw_temp = None
     ram_used = 0.0
     ram_total = 0.0
     ram_pct = 0
@@ -541,17 +544,28 @@ def get_system_vitals():
 
             temps = psutil.sensors_temperatures()
             if 'coretemp' in temps and temps['coretemp']:
-                cpu_temp = temps['coretemp'][0].current
-            elif 'acpitz' in temps and temps['acpitz']:
-                cpu_temp = temps['acpitz'][0].current
-            elif temps:
-                first_sensor = list(temps.values())[0]
-                if first_sensor:
-                    cpu_temp = first_sensor[0].current
+                # Explicitly match Package id 0 label
+                for s in temps['coretemp']:
+                    if s.label == 'Package id 0':
+                        raw_temp = s.current
+                        break
+                if raw_temp is None:
+                    raw_temp = temps['coretemp'][0].current
         except Exception:
             pass
 
-    return cpu_pct, int(round(cpu_temp)), ram_used, ram_total, ram_pct
+    # EMA smoothing on Package id 0 (alpha = 0.35, ~1.54s sampling)
+    if raw_temp is not None:
+        if smoothed_cpu_temp is None:
+            smoothed_cpu_temp = raw_temp
+        else:
+            alpha = 0.35
+            smoothed_cpu_temp = alpha * raw_temp + (1.0 - alpha) * smoothed_cpu_temp
+    elif smoothed_cpu_temp is None:
+        smoothed_cpu_temp = 45.0
+
+    display_temp = int(round(smoothed_cpu_temp))
+    return cpu_pct, display_temp, ram_used, ram_total, ram_pct, raw_temp
 
 def get_media_status():
     try:
@@ -586,8 +600,12 @@ def main():
     poll_counter = 0
     last_payload_str = ""
 
+    # Thermal hysteresis and confirmation state
+    current_heat_tier = None
+    critical_sample_count = 0
+
     # Cached readings
-    cpu_pct, cpu_temp, ram_used, ram_total, ram_pct = get_system_vitals()
+    cpu_pct, cpu_temp, ram_used, ram_total, ram_pct, raw_temp = get_system_vitals()
     player_status, media_meta, player_raw = get_media_status()
 
     while True:
@@ -612,30 +630,69 @@ def main():
 
         # Update vitals & media every 7 ticks (~1.5s)
         if poll_counter % 7 == 0:
-            cpu_pct, cpu_temp, ram_used, ram_total, ram_pct = get_system_vitals()
+            cpu_pct, cpu_temp, ram_used, ram_total, ram_pct, raw_temp = get_system_vitals()
             player_status, media_meta, player_raw = get_media_status()
             if media_meta != last_media_meta:
                 last_media_meta = media_meta
                 music_tick = 0
+
+            # U5: Tiered heat detection with Hysteresis & Critical Confirmation
+            heat_alerts_on = island_settings.get("heat_alerts_enabled", True)
+            if not heat_alerts_on:
+                current_heat_tier = None
+                critical_sample_count = 0
+            else:
+                t_crit = island_settings.get("temp_critical", 93)
+                t_hot = island_settings.get("temp_hot", 86)
+                t_warm = island_settings.get("temp_warm", 78)
+
+                # Hysteresis exit thresholds: 3-4°C below entry
+                t_crit_exit = max(t_hot, t_crit - 4)
+                t_hot_exit = max(t_warm, t_hot - 3)
+                t_warm_exit = max(50, t_warm - 3)
+
+                # Track consecutive samples for critical confirmation (~3s sustained)
+                if (raw_temp is not None and raw_temp >= t_crit) or cpu_temp >= t_crit:
+                    critical_sample_count += 1
+                else:
+                    critical_sample_count = 0
+
+                # State machine with hysteresis (CPU % decoupled from thermal tiers)
+                if current_heat_tier == "critical":
+                    if cpu_temp < t_crit_exit:
+                        if cpu_temp >= t_hot:
+                            current_heat_tier = "hot"
+                        elif cpu_temp >= t_warm:
+                            current_heat_tier = "warm"
+                        else:
+                            current_heat_tier = None
+                elif current_heat_tier == "hot":
+                    if critical_sample_count >= 2:
+                        current_heat_tier = "critical"
+                    elif cpu_temp < t_hot_exit:
+                        if cpu_temp >= t_warm:
+                            current_heat_tier = "warm"
+                        else:
+                            current_heat_tier = None
+                elif current_heat_tier == "warm":
+                    if critical_sample_count >= 2:
+                        current_heat_tier = "critical"
+                    elif cpu_temp >= t_hot:
+                        current_heat_tier = "hot"
+                    elif cpu_temp < t_warm_exit:
+                        current_heat_tier = None
+                else:  # current_heat_tier is None (normal)
+                    if critical_sample_count >= 2:
+                        current_heat_tier = "critical"
+                    elif cpu_temp >= t_hot:
+                        current_heat_tier = "hot"
+                    elif cpu_temp >= t_warm:
+                        current_heat_tier = "warm"
         poll_counter += 1
         music_tick += 1
 
         animal = ANIMALS[current_animal_idx]
         is_playing = (player_status == "Playing")
-
-        # U5: Tiered heat detection
-        current_heat_tier = None  # None, "warm", "hot", "critical"
-        heat_alerts_on = island_settings.get("heat_alerts_enabled", True)
-        if heat_alerts_on:
-            t_crit = island_settings.get("temp_critical", 90)
-            t_hot = island_settings.get("temp_hot", 80)
-            t_warm = island_settings.get("temp_warm", 70)
-            if cpu_temp >= t_crit or cpu_pct >= 95:
-                current_heat_tier = "critical"
-            elif cpu_temp >= t_hot or cpu_pct >= 85:
-                current_heat_tier = "hot"
-            elif cpu_temp >= t_warm:
-                current_heat_tier = "warm"
 
         # Check if user is actively interacting with the island
         is_user_active = (now < user_active_until) or (now < petted_until)

@@ -544,9 +544,14 @@ To ensure dynamic wallpaper theming via Matugen generates Lua colors:
     - **Multi-Animal Companions:** Features animated Cat (`ᓚᘏᗢ`), Bunny (`(\_/)`), Duck (`( •ө•)`), Ghost (`👻`), Crab (`🦀`), and Doggo (`(U・x・U)`).
     - **Dynamic State Morphing:**
       - **Pet Mode:** Lively animated companion (paces/dances when music plays; stretches, grooms, or sleeps when idle).
-      - **Vitals Mode:** Auto-morphs to display live CPU temperature (`🌡️ 52°C`) and load (`󰻠 18%`).
+      - **Vitals Mode:** Auto-morphs to display live smoothed CPU temperature (`🌡️ 65°C`) and load (`󰻠 18%`).
       - **Music Peek Mode:** Shows currently playing song title and artist marquee (`󰎆 Song - Artist`).
-      - **Heat/Overload Alert:** Instantly triggers an alert state (`(；•̀д•́) 82°C 🔥`) with coral red styling if CPU temp > 80°C or CPU > 85%.
+      - **Calibrated Thermal Alerts & Hysteresis:**
+        - **Explicit Sensor Targeting:** Directly queries Intel `coretemp` for `Package id 0`, dropping misleading ACPI motherboard fallbacks (`acpitz` 92°C).
+        - **EMA Smoothing ($\alpha = 0.35$):** Filters out instantaneous 100ms boost micro-spikes so displayed temperature reflects true sustained thermal mass.
+        - **Decoupled CPU Load:** CPU utilization (`cpu_pct`) is treated purely as an informational metric rather than promoting false "CRITICAL TEMPERATURE" alerts during cool multi-core compile loads.
+        - **Hysteresis State Machine:** Stabilizes tier transitions to prevent flickering (Warm: Enter ≥ 78°C, Exit < 75°C; Hot: Enter ≥ 86°C, Exit < 83°C; Critical: Enter ≥ 93°C, Exit < 89°C).
+        - **Critical Confirmation:** Requires 2 consecutive samples at ≥ 93°C (~3s sustained) before firing critical alarms (`⚠️ 🔥 93°C !!`).
     - **Instant Interactive Controls:**
       - **Left-Click:** Pet the companion (`pkill -SIGUSR1 -f dynamic-island.py`) — triggers a happy purr animation with floating hearts (`❤️`) and increments affection counter.
       - **Right-Click:** Switch companion animal (`pkill -SIGUSR2 -f dynamic-island.py`).

@@ -1,1 +1,2 @@
-fastfetch style switching
+fastfetch style switching,
+fix issue 

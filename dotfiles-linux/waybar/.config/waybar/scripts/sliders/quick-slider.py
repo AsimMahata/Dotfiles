@@ -228,21 +228,21 @@ class QuickSlider(Gtk.Window):
     # ---------------------------------------------------------
     def get_volume_icon(self, vol, muted):
         if muted:
-            return ""
+            return " "
         elif vol == 0:
-            return ""
+            return " "
         elif vol < 50:
-            return ""
+            return " "
         else:
-            return ""
+            return " "
 
     def get_brightness_icon(self, val):
         if val < 30:
-            return "󰃞"
+            return "󰃞 "
         elif val < 70:
-            return "󰃟"
+            return "󰃟 "
         else:
-            return "󰃠"
+            return "󰃠 "
 
     def update_volume_ui(self):
         self.lbl_icon.set_text(self.get_volume_icon(self.vol, self.is_muted))

@@ -37,9 +37,9 @@ DEFAULT_SETTINGS = {
     "sleep_enabled": True,
     "sleep_timeout": 15,
     "heat_alerts_enabled": True,
-    "temp_warm": 70,
-    "temp_hot": 80,
-    "temp_critical": 90,
+    "temp_warm": 78,
+    "temp_hot": 86,
+    "temp_critical": 93,
     "decay_enabled": True,
     "decay_interval": 1800,
     "music_dance_enabled": True,
@@ -273,7 +273,7 @@ class CompactIslandSettings(Gtk.Window):
 
         # Sliders (Sleep timeout & Alert temp)
         list_box.pack_start(self.create_compact_slider("⏱️ Sleep After", 5, 60, settings.get("sleep_timeout", 15), "s", "sleep_timeout"), False, False, 0)
-        list_box.pack_start(self.create_compact_slider("🔥 Alert Temp", 60, 95, settings.get("temp_hot", 80), "°C", "temp_hot"), False, False, 0)
+        list_box.pack_start(self.create_compact_slider("🔥 Alert Temp", 65, 98, settings.get("temp_hot", 86), "°C", "temp_hot"), False, False, 0)
 
         self.card_box.pack_start(list_box, False, False, 0)
 
@@ -332,8 +332,8 @@ class CompactIslandSettings(Gtk.Window):
         self.config_data["settings"][key] = val
         if key == "temp_hot":
             # Keep warm and critical tiers proportionally synced
-            self.config_data["settings"]["temp_warm"] = max(50, val - 10)
-            self.config_data["settings"]["temp_critical"] = min(105, val + 10)
+            self.config_data["settings"]["temp_warm"] = max(55, val - 8)
+            self.config_data["settings"]["temp_critical"] = min(100, val + 7)
         self.schedule_save()
 
 
