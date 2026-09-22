@@ -662,6 +662,28 @@ To provide a creative, unified lockscreen matching wallpaper colors:
 
 ---
 
+## 17. Brave Browser Hardware Acceleration (GPU Video Decoding)
+
+- **Problem:**
+  - By default on Linux Wayland, Chromium/Brave runs software video decoding and CPU canvas rasterization, consuming ~70% CPU during media playback or heavy tab rendering, causing rapid heating on Intel Alder Lake CPUs.
+- **GNU Stow Module:**
+  - Created module at `dotfiles-linux/brave/`:
+    - [`dotfiles-linux/brave/.config/brave-flags.conf`](file:///home/asim/setup/Dotfiles/dotfiles-linux/brave/.config/brave-flags.conf)
+  - Configured flags:
+    ```text
+    --ozone-platform-hint=auto
+    --enable-features=VaapiVideoDecodeLinuxGL,VaapiIgnoreDriverChecks
+    --enable-gpu-rasterization
+    --enable-zero-copy
+    ```
+  - Stowed to user home directory via:
+    ```bash
+    stow -d dotfiles-linux -t ~ brave
+    ```
+  - Offloads video decoding (AV1, VP9, H.264) and rasterization to Intel Iris Xe GPU (`intel-media-driver`), dropping browser CPU usage from ~70% to under 5%.
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.
