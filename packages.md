@@ -70,6 +70,10 @@ This document maintains an inventory of all explicitly installed applications, t
 | **`power-profile-status.sh`** | Local Script (`waybar/scripts/power`) | Generates JSON status for Waybar's `custom/power-profile` module with icons and tooltips. |
 | **`power-profile-cycle.sh`** | Local Script (`waybar/scripts/power`) | Cycles `powerprofilesctl` modes, signals Waybar (SIGRTMIN+8), and spawns the OSD HUD. |
 | **`power-profile-osd.py`** | Local Script (`waybar/scripts/power`) | GTK Layer Shell OSD HUD showing power profile changes with 1.5s auto-dismiss. |
+| **`net-layout.py`** | Local Script (`waybar/scripts/net-layout`) | Streaming Waybar engine for real-time network speed, keyboard layout, and dynamic 59s/1s rotation. |
+| **`net-layout-cycle.sh`** | Local Script (`waybar/scripts/net-layout`) | Left-click mode cycler (Speed ➔ Layout ➔ Dynamic) via SIGUSR1. |
+| **`net-layout-settings-toggle.sh`** | Local Script (`waybar/scripts/net-layout`) | Ultra-fast (0ms) toggle launcher for quick-net-settings.py. |
+| **`quick-net-settings.py`** | Local Script (`waybar/scripts/net-layout`) | Stateless GTK3 + GtkLayerShell settings modal for net speed format, mode, and dynamic timing. |
 | **`hyprlock-island.sh`** | Local Script (`hyprlock/scripts`) | Dynamic Island top capsule status script (Battery, Music, WiFi) for Hyprlock. |
 | **`hyprlock-weather.sh`** | Local Script (`hyprlock/scripts`) | Cached 15-minute wttr.in weather fetcher and formatter for Hyprlock. |
 | **`hyprlock-mpris.sh`** | Local Script (`hyprlock/scripts`) | Playerctl metadata and Unicode progress bar generator for Hyprlock media widget. |
@@ -117,3 +121,12 @@ This document maintains an inventory of all explicitly installed applications, t
 | Utility | Location | Description / Purpose |
 | :--- | :--- | :--- |
 | **`unused-apps.py`** | [`scripts/unused-apps.py`](file:///home/asim/setup/Dotfiles/scripts/unused-apps.py) | Audit script that queries ActivityWatch data for the past N days and cross-references against installed `.desktop` applications to identify apps with 0 usage. |
+
+---
+
+## 8. Development & Data Science
+
+| Package | Source | Description / Purpose |
+| :--- | :--- | :--- |
+| **`python-pandas`** | Official (`pacman`) | Fast, powerful, flexible, and easy-to-use open-source data analysis and manipulation library for Python. |
+

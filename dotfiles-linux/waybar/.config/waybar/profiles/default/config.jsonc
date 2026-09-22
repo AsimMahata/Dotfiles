@@ -3,7 +3,7 @@
     "height": 2,
     "modules-left": [
         "custom/app",
-        "hyprland/language",
+        "custom/net-layout",
         "hyprland/window",
         "custom/island"
     ],
@@ -27,6 +27,14 @@
         "format-icons": {
             "default": ""
         }
+    },
+    "custom/net-layout": {
+        "exec": "python3 ~/.config/waybar/scripts/net-layout/net-layout.py",
+        "return-type": "json",
+        "restart-interval": 1,
+        "on-click": "~/.config/waybar/scripts/net-layout/net-layout-cycle.sh",
+        "on-click-right": "~/.config/waybar/scripts/net-layout/net-layout-settings-toggle.sh",
+        "tooltip": true
     },
     "custom/island": {
         "exec": "python3 ~/.config/waybar/scripts/island/dynamic-island.py",

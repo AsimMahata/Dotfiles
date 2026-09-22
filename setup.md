@@ -684,6 +684,33 @@ To provide a creative, unified lockscreen matching wallpaper colors:
 
 ---
 
+## 23. Python Development & Data Science
+
+Install Pandas for data analysis and manipulation:
+
+```bash
+sudo pacman -S python-pandas
+```
+
+## 24. Waybar Network Speed & Keyboard Layout ("dmeter" — AAA UX)
+
+- **Feature:**
+  - Replaced the static `hyprland/language` module with a multi-mode, interactive Network Speed and Keyboard Layout monitor (`custom/net-layout`).
+- **Modes:**
+  - **Speed Mode (Normal):** Real-time download/upload speed using `/proc/net/dev` with dominant rate and directional icon (`󰇚` for download, `󰕒` for upload).
+  - **Keyboard Layout Mode:** Clean keyboard layout indicator (e.g. `US`) without icons.
+  - **Dynamic Mode:** Cycles 59 seconds internet speed, then flashes 1 second keyboard layout (duration customizable in modal).
+- **Interactions:**
+  - **Left-Click:** Cycles modes (Speed ➔ Layout ➔ Dynamic ➔ Speed) via `SIGUSR1` with instant 0ms update.
+  - **Right-Click:** Toggles a stateless GTK3 Layer-Shell settings modal (`quick-net-settings.py`) adhering to the SwayNC click-catcher pattern.
+- **Files Created:**
+  - [`dotfiles-linux/waybar/.config/waybar/scripts/net-layout/net-layout.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/net-layout/net-layout.py): Zero-overhead streaming engine.
+  - [`dotfiles-linux/waybar/.config/waybar/scripts/net-layout/net-layout-cycle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/net-layout/net-layout-cycle.sh): Left-click mode cycler via `SIGUSR1`.
+  - [`dotfiles-linux/waybar/.config/waybar/scripts/net-layout/net-layout-settings-toggle.sh`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/net-layout/net-layout-settings-toggle.sh): Stateless launcher for settings modal.
+  - [`dotfiles-linux/waybar/.config/waybar/scripts/net-layout/quick-net-settings.py`](file:///home/asim/setup/Dotfiles/dotfiles-linux/waybar/.config/waybar/scripts/net-layout/quick-net-settings.py): GTK3 settings modal with mode switch, speed format, dynamic timing sliders, and interface selector.
+
+---
+
 ## Notes
 
 * Keep GNOME installed until Hyprland is confirmed to be stable.

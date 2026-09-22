@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="luxury">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Waybar Net Speed & Layout ("dmeter") - Architecture & Design Review</title>
+
+  <!-- DaisyUI v5 & Tailwind CSS v4 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/daisyui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@5.5.19/themes.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.2.4/dist/index.global.js"></script>
+
+  <!-- Layout safety styles -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :where(.grid, .flex, .layout-grid, .layout-flex) > * { min-width: 0; }
+    :where(p, h1, h2, h3, h4, h5, h6, li, dd, blockquote, figcaption, td, th, .badge, .label) {
+      overflow-wrap: anywhere;
+    }
+    :where(img, svg, video, canvas, iframe) { max-width: 100%; height: auto; }
+
+    /* Custom Matugen theme accents matching user's Dotfiles */
+    :root {
+      --matugen-bg: #101418;
+      --matugen-primary: #9ecafc;
+      --matugen-on-primary-fixed: #001d35;
+      --matugen-surface-container: #1d2024;
+      --matugen-outline: #42474e;
+      --matugen-secondary: #bac8db;
+      --matugen-tertiary: #d5bee5;
+    }
+
+    .font-mono-nerd {
+      font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+    }
+
+    /* Interactive Waybar Pill Simulator */
+    .waybar-mockup {
+      background: rgba(16, 20, 24, 0.95);
+      border-bottom: 1px solid rgba(140, 145, 153, 0.2);
+    }
+    .waybar-pill {
+      background: #001d35;
+      color: #9ecafc;
+      border-radius: 50px;
+      border: 1px solid rgba(66, 71, 78, 0.4);
+      padding: 4px 14px;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .waybar-pill:hover {
+      background: #154974;
+      border-color: #9ecafc;
+      cursor: pointer;
+    }
+    .waybar-pill.active-mode-speed {
+      color: #9ecafc;
+    }
+    .waybar-pill.active-mode-layout {
+      color: #bac8db;
+    }
+    .waybar-pill.active-mode-dynamic {
+      color: #d5bee5;
+      border-color: rgba(213, 190, 229, 0.5);
+    }
+
+    /* Modal Card Preview */
+    .gtk-modal-preview {
+      background: rgba(16, 20, 24, 0.96);
+      border: 1px solid rgba(66, 71, 78, 0.6);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+      border-radius: 18px;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-base-300 text-base-content antialiased p-4 md:p-8">
+
+  <main class="mx-auto max-w-6xl space-y-10">
+
+    <!-- Header / Decision Context -->
+    <header class="card bg-base-200 border border-base-content/10 shadow-lg">
+      <div class="card-body gap-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span class="badge badge-primary badge-outline font-mono text-xs">Waybar Custom Module & GTK3 Modal</span>
+          <span class="text-xs text-base-content/60 font-mono">hyprland/language → custom/net-layout</span>
+        </div>
+        <h1 class="card-title text-3xl font-bold tracking-tight text-primary">
+          Waybar Network Speed & Keyboard Layout ("dmeter")
+        </h1>
+        <p class="text-base-content/80 text-sm leading-relaxed max-w-3xl">
+          Upgrade the top bar’s current static <code class="badge badge-neutral font-mono font-bold text-xs">us</code> pill
+          into a dynamic, switchable <strong>Internet Speed & Keyboard Layout Meter</strong> with zero CPU overhead,
+          instant click-cycling, and a native <strong>GTK Layer-Shell settings modal</strong> following the
+          bulletproof SwayNC pattern.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <div class="bg-base-300/80 p-3 rounded-box border border-base-content/5">
+            <div class="text-xs text-base-content/60 font-medium">Left-Click Action</div>
+            <div class="text-sm font-semibold text-primary mt-1">Cycle 3 Modes</div>
+            <div class="text-xs text-base-content/70">Speed ➔ Layout ➔ Dynamic 59s/1s</div>
+          </div>
+          <div class="bg-base-300/80 p-3 rounded-box border border-base-content/5">
+            <div class="text-xs text-base-content/60 font-medium">Right-Click Action</div>
+            <div class="text-sm font-semibold text-secondary mt-1">Settings Modal</div>
+            <div class="text-xs text-base-content/70">GTK LayerShell, stateless, SwayNC pattern</div>
+          </div>
+          <div class="bg-base-300/80 p-3 rounded-box border border-base-content/5">
+            <div class="text-xs text-base-content/60 font-medium">Data Source</div>
+            <div class="text-sm font-semibold text-tertiary mt-1">/proc/net/dev & hyprctl</div>
+            <div class="text-xs text-base-content/70">Zero external tools, &lt;0.1% CPU</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Interactive Waybar & Modal Simulator -->
+    <section class="card bg-base-200 border border-base-content/10 shadow-lg">
+      <div class="card-body space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-bold text-base-content flex items-center gap-2">
+            <span>🎮 Interactive Live Simulator</span>
+            <span class="badge badge-accent badge-soft text-xs">Test In Browser</span>
+          </h2>
+          <span class="text-xs text-base-content/60 font-mono">Click pill or controls below</span>
+        </div>
+        <p class="text-xs text-base-content/70">
+          Try left-clicking the pill on the simulated Waybar to cycle modes, or click "Open Settings Modal" to test the GTK settings card.
+        </p>
+
+        <!-- Simulated Waybar Bar -->
+        <div class="waybar-mockup p-3 rounded-box flex items-center justify-between overflow-x-auto shadow-inner">
+          <div class="flex items-center gap-2">
+            <div class="waybar-pill text-xs flex items-center gap-1.5 opacity-90 cursor-default">
+              <span></span> <span>App</span>
+            </div>
+
+            <!-- Target Module Pill (Clickable) -->
+            <div id="simulated-pill" class="waybar-pill active-mode-speed flex items-center gap-2 ring-2 ring-primary/40 animate-pulse"
+                 onclick="cycleSimulatedMode()" title="Left click to cycle modes">
+              <span id="pill-icon" class="text-xs">󰇚</span>
+              <span id="pill-text" class="font-mono text-xs">2.4 MB/s</span>
+            </div>
+
+            <div class="waybar-pill text-xs flex items-center gap-1.5 opacity-80 cursor-default">
+              <span>󰦝</span> <span>Dotfiles</span>
+            </div>
+          </div>
+
+          <div class="hidden sm:flex items-center gap-1 opacity-75 text-xs font-mono">
+            <span class="px-2 py-1 rounded bg-base-300">1</span>
+            <span class="px-2 py-1 rounded bg-primary text-primary-content font-bold">2</span>
+            <span class="px-2 py-1 rounded bg-base-300">3</span>
+          </div>
+
+          <div class="flex items-center gap-2 text-xs">
+            <div class="waybar-pill opacity-80 cursor-default">󰛳 Wifi</div>
+            <div class="waybar-pill opacity-80 cursor-default"> 15:52</div>
+            <div class="waybar-pill opacity-80 cursor-default">⏻</div>
+          </div>
+        </div>
+
+        <!-- Simulator State & Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          <div class="bg-base-300 p-4 rounded-box border border-base-content/5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-primary">CURRENT STATE</span>
+              <span id="sim-mode-badge" class="badge badge-primary font-mono text-xs">Speed Mode</span>
+            </div>
+            <div class="text-xs text-base-content/80 space-y-1">
+              <p><strong>Pill Action:</strong> <span id="sim-status-desc">Showing live download speed.</span></p>
+              <p id="sim-timer-line" class="hidden font-mono text-tertiary">
+                Dynamic cycle: <span id="sim-seconds">59</span>s speed / 1s layout (<span id="sim-substate">speed</span>)
+              </p>
+            </div>
+            <div class="flex gap-2 pt-2">
+              <button type="button" class="btn btn-sm btn-primary" onclick="cycleSimulatedMode()">
+                Left-Click (Cycle Mode)
+              </button>
+              <button type="button" class="btn btn-sm btn-secondary btn-outline" onclick="toggleSimulatedModal()">
+                Right-Click (Open Settings)
+              </button>
+            </div>
+          </div>
+
+          <!-- Simulated GTK Modal Card -->
+          <div id="sim-gtk-modal" class="gtk-modal-preview p-5 space-y-4 border border-primary/30">
+            <div class="flex items-center justify-between border-b border-base-content/10 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="text-primary text-sm">󰒓</span>
+                <h3 class="font-bold text-sm text-base-content">Network & Layout Settings</h3>
+              </div>
+              <button type="button" class="btn btn-ghost btn-xs text-base-content/60" onclick="toggleSimulatedModal()">✕ Esc</button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="font-bold block mb-1 text-base-content/80">Active Mode</label>
+                <div class="join w-full">
+                  <button type="button" id="btn-mode-speed" class="btn btn-xs join-item flex-1 btn-primary" onclick="setSimMode('speed')">Speed</button>
+                  <button type="button" id="btn-mode-layout" class="btn btn-xs join-item flex-1 btn-ghost" onclick="setSimMode('layout')">Layout</button>
+                  <button type="button" id="btn-mode-dynamic" class="btn btn-xs join-item flex-1 btn-ghost" onclick="setSimMode('dynamic')">Dynamic</button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="font-bold block mb-1 text-base-content/80">Speed Format</label>
+                  <select id="sim-format-select" class="select select-xs w-full bg-base-100" onchange="updateSimFormat()">
+                    <option value="dual">Dual (↓ 1.2M ↑ 240K)</option>
+                    <option value="download">Download Only (󰇚 2.4 MB/s)</option>
+                    <option value="compact">Compact (2.4M)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="font-bold block mb-1 text-base-content/80">Dynamic Timing</label>
+                  <select class="select select-xs w-full bg-base-100">
+                    <option value="59-1">59s Speed / 1s Layout</option>
+                    <option value="29-1">29s Speed / 1s Layout</option>
+                    <option value="10-2">10s Speed / 2s Layout</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex justify-end gap-2 pt-2 border-t border-base-content/10">
+                <button type="button" class="btn btn-xs btn-ghost" onclick="toggleSimulatedModal()">Close</button>
+                <button type="button" class="btn btn-xs btn-primary" onclick="toggleSimulatedModal()">Save & Apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture & Flow Diagram (Hand-authored inline SVG) -->
+    <section class="card bg-base-200 border border-base-content/10 shadow-lg">
+      <div class="card-body space-y-4">
+        <h2 class="text-xl font-bold text-base-content flex items-center gap-2">
+          <span>📐 Architecture & Interaction Flow</span>
+          <span class="badge badge-neutral text-xs font-mono">Zero-Overhead Stateless Flow</span>
+        </h2>
+        <p class="text-xs text-base-content/70">
+          How Waybar, Hyprland, the click-cycle script, and the GTK Layer-Shell settings modal interact with <code>state.json</code>.
+        </p>
+
+        <div class="w-full overflow-x-auto bg-base-300 p-4 rounded-box border border-base-content/5">
+          <svg viewBox="0 0 920 320" width="100%" class="font-mono-nerd text-xs select-none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background grid styling -->
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#9ecafc" />
+              </marker>
+              <marker id="arrow-sec" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#bac8db" />
+              </marker>
+              <marker id="arrow-tert" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#d5bee5" />
+              </marker>
+            </defs>
+
+            <!-- Waybar Box -->
+            <g id="node-waybar">
+              <title>Waybar Custom Module (custom/net-layout)</title>
+              <rect x="30" y="30" width="220" height="90" rx="12" fill="#101418" stroke="#9ecafc" stroke-width="1.5" />
+              <text x="45" y="60" fill="#9ecafc" font-weight="bold" font-size="13">Waybar (custom/net-layout)</text>
+              <text x="45" y="82" fill="#e0e2e8" font-size="11">• interval: 1s</text>
+              <text x="45" y="100" fill="#e0e2e8" font-size="11">• exec: net-layout.py</text>
+            </g>
+
+            <!-- State JSON Box -->
+            <g id="node-state">
+              <title>Central state file: ~/.config/waybar/scripts/net-layout/state.json</title>
+              <rect x="340" y="30" width="240" height="90" rx="12" fill="#101418" stroke="#bac8db" stroke-width="1.5" />
+              <text x="355" y="60" fill="#bac8db" font-weight="bold" font-size="13">state.json</text>
+              <text x="355" y="82" fill="#e0e2e8" font-size="11">• mode: "speed" | "layout" | "dynamic"</text>
+              <text x="355" y="100" fill="#e0e2e8" font-size="11">• speed_format: "dual" | "download"</text>
+            </g>
+
+            <!-- Hardware Sources Box -->
+            <g id="node-sources">
+              <title>Kernel and IPC Data Sources</title>
+              <rect x="670" y="30" width="220" height="90" rx="12" fill="#101418" stroke="#d5bee5" stroke-width="1.5" />
+              <text x="685" y="60" fill="#d5bee5" font-weight="bold" font-size="13">System Feeds</text>
+              <text x="685" y="82" fill="#e0e2e8" font-size="11">• /proc/net/dev (rx/tx bytes)</text>
+              <text x="685" y="100" fill="#e0e2e8" font-size="11">• hyprctl devices -j (keymap)</text>
+            </g>
+
+            <!-- Left-Click Cycle Script -->
+            <g id="node-cycle">
+              <title>Left Click Handler: net-layout-cycle.sh</title>
+              <rect x="30" y="190" width="220" height="90" rx="12" fill="#101418" stroke="#9ecafc" stroke-width="1.5" stroke-dasharray="4" />
+              <text x="45" y="220" fill="#9ecafc" font-weight="bold" font-size="13">Left-Click Cycle</text>
+              <text x="45" y="242" fill="#e0e2e8" font-size="11">• net-layout-cycle.sh</text>
+              <text x="45" y="260" fill="#e0e2e8" font-size="11">• speed ➔ layout ➔ dynamic</text>
+            </g>
+
+            <!-- Right-Click GTK Modal -->
+            <g id="node-modal">
+              <title>Right Click Handler: quick-net-settings.py (GtkLayerShell)</title>
+              <rect x="340" y="190" width="240" height="90" rx="12" fill="#101418" stroke="#d5bee5" stroke-width="1.5" />
+              <text x="355" y="220" fill="#d5bee5" font-weight="bold" font-size="13">GTK3 Settings Modal</text>
+              <text x="355" y="242" fill="#e0e2e8" font-size="11">• SwayNC click-catcher backdrop</text>
+              <text x="355" y="260" fill="#e0e2e8" font-size="11">• Esc / click-outside = main_quit()</text>
+            </g>
+
+            <!-- Connectors -->
+            <!-- Waybar -> State.json -->
+            <line x1="250" y1="75" x2="330" y2="75" stroke="#9ecafc" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="260" y="68" fill="#9ecafc" font-size="10">Reads state</text>
+
+            <!-- State.json -> Sources -->
+            <line x1="580" y1="75" x2="660" y2="75" stroke="#bac8db" stroke-width="2" marker-end="url(#arrow-sec)" />
+            <text x="590" y="68" fill="#bac8db" font-size="10">Fetch delta</text>
+
+            <!-- Waybar -> Left-Click -->
+            <line x1="140" y1="120" x2="140" y2="180" stroke="#9ecafc" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="148" y="155" fill="#9ecafc" font-size="10">Left-click</text>
+
+            <!-- Left-Click -> State.json -->
+            <line x1="250" y1="235" x2="330" y2="110" stroke="#9ecafc" stroke-width="1.5" stroke-dasharray="3" marker-end="url(#arrow)" />
+            <text x="270" y="170" fill="#9ecafc" font-size="10">Update mode</text>
+
+            <!-- Waybar -> Right-Click Modal -->
+            <path d="M 230 120 Q 280 160 335 210" fill="none" stroke="#d5bee5" stroke-width="2" marker-end="url(#arrow-tert)" />
+            <text x="265" y="210" fill="#d5bee5" font-size="10">Right-click</text>
+
+            <!-- Modal -> State.json -->
+            <line x1="460" y1="190" x2="460" y2="130" stroke="#d5bee5" stroke-width="2" marker-end="url(#arrow-tert)" />
+            <text x="468" y="165" fill="#d5bee5" font-size="10">Hot-write</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Playbook: Visual Pill Display Options -->
+    <section class="card bg-base-200 border border-base-content/10 shadow-lg">
+      <div class="card-body space-y-6">
+        <div>
+          <span class="badge badge-secondary badge-outline text-xs font-mono">Comparison Playbook</span>
+          <h2 class="text-2xl font-bold text-base-content mt-1">Pill Display Style Options</h2>
+          <p class="text-xs text-base-content/70">
+            Compare concrete visual styles for how the module appears on Waybar in both Speed and Layout states.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Option A -->
+          <div class="card bg-base-300 border border-primary/40 shadow">
+            <div class="card-body p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-primary text-xs font-bold">Option A (Recommended)</span>
+                <span class="text-xs font-mono text-base-content/50">Dual Stream</span>
+              </div>
+              <h3 class="font-bold text-sm text-base-content">Dual-Stream Compact</h3>
+              <p class="text-xs text-base-content/70">
+                Displays download and upload simultaneously in speed mode; cleanly flips to layout code in layout mode.
+              </p>
+
+              <!-- Mockup Preview -->
+              <div class="bg-base-100 p-3 rounded-box space-y-2 text-center border border-base-content/5">
+                <div class="text-xs font-mono text-base-content/50">Speed Mode Preview:</div>
+                <div class="inline-block bg-[#001d35] text-[#9ecafc] font-bold font-mono text-xs px-3 py-1.5 rounded-full border border-primary/30">
+                  ↓ 1.4M  ↑ 240K
+                </div>
+                <div class="text-xs font-mono text-base-content/50 pt-1">Layout Mode Preview:</div>
+                <div class="inline-block bg-[#001d35] text-[#bac8db] font-bold font-mono text-xs px-3 py-1.5 rounded-full border border-secondary/30">
+                  󰌌  US
+                </div>
+              </div>
+
+              <div class="text-xs space-y-1 text-base-content/80 pt-2 border-t border-base-content/10">
+                <div class="flex items-center gap-1 text-success">✓ Complete network visibility (upload & download)</div>
+                <div class="flex items-center gap-1 text-success">✓ Fixed-width formatting prevents bar jumping</div>
+                <div class="flex items-center gap-1 text-warning">△ Slightly wider pill (~110px)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option B -->
+          <div class="card bg-base-300 border border-base-content/10 shadow">
+            <div class="card-body p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-ghost text-xs font-bold">Option B</span>
+                <span class="text-xs font-mono text-base-content/50">Dominant Rate</span>
+              </div>
+              <h3 class="font-bold text-sm text-base-content">Dominant Rate with Icon</h3>
+              <p class="text-xs text-base-content/70">
+                Shows the larger stream rate with a directional arrow icon (󰇚 for download, 󰕒 for upload).
+              </p>
+
+              <!-- Mockup Preview -->
+              <div class="bg-base-100 p-3 rounded-box space-y-2 text-center border border-base-content/5">
+                <div class="text-xs font-mono text-base-content/50">Speed Mode Preview:</div>
+                <div class="inline-block bg-[#001d35] text-[#9ecafc] font-bold font-mono text-xs px-3 py-1.5 rounded-full border border-primary/30">
+                  󰇚  2.4 MB/s
+                </div>
+                <div class="text-xs font-mono text-base-content/50 pt-1">Layout Mode Preview:</div>
+                <div class="inline-block bg-[#001d35] text-[#bac8db] font-bold font-mono text-xs px-3 py-1.5 rounded-full border border-secondary/30">
+                  󰌌  US
+                </div>
+              </div>
+
+              <div class="text-xs space-y-1 text-base-content/80 pt-2 border-t border-base-content/10">
+                <div class="flex items-center gap-1 text-success">✓ Clean, uncluttered single-number reading</div>
+                <div class="flex items-center gap-1 text-success">✓ Auto-switches icon when uploading heavily</div>
+                <div class="flex items-center gap-1 text-base-content/60">• Hides small concurrent background transfers</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option C -->
+          <div class="card bg-base-300 border border-base-content/10 shadow">
+            <div class="card-body p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="badge badge-ghost text-xs font-bold">Option C</span>
+                <span class="text-xs font-mono text-base-content/50">Ultra Minimal</span>
+              </div>
+              <h3 class="font-bold text-sm text-base-content">Ultra-Minimal Compact</h3>
+              <p class="text-xs text-base-content/70">
+                Smallest footprint matching the original <code class="text-xs">us</code> pill size without icons.
+              </p>
+
+              <!-- Mockup Preview -->
+              <div class="bg-base-100 p-3 rounded-box space-y-2 text-center border border-base-content/5">
+                <div class="text-xs font-mono text-base-content/50">Speed Mode Preview:</div>
+                <div class="inline-block bg-[#001d35] text-[#9ecafc] font-bold font-mono text-xs px-3 py-1.5 rounded-full border border-primary/30">
+                  2.4M
+                </div>
+                <div class="text-xs font-mono text-base-content/50 pt-1">Layout Mode Preview:</div>
+                <div class="inline-block bg-[#001d35] text-[#bac8db] font-bold font-mono text-xs px-3 py-1.5 rounded-full border border-secondary/30">
+                  us
+                </div>
+              </div>
+
+              <div class="text-xs space-y-1 text-base-content/80 pt-2 border-t border-base-content/10">
+                <div class="flex items-center gap-1 text-success">✓ Exact size of current 'us' module</div>
+                <div class="flex items-center gap-1 text-success">✓ Zero visual clutter</div>
+                <div class="flex items-center gap-1 text-warning">△ No icon to identify unit at a quick glance</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Plan & GTK Modal Architecture (gtk.md compliance) -->
+    <section class="card bg-base-200 border border-base-content/10 shadow-lg">
+      <div class="card-body space-y-4">
+        <h2 class="text-xl font-bold text-base-content flex items-center gap-2">
+          <span>🛠️ Implementation Specifications</span>
+          <span class="badge badge-primary badge-outline text-xs">gtk.md & Rule Compliant</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs leading-relaxed">
+          <div class="bg-base-300 p-4 rounded-box border border-base-content/5 space-y-2">
+            <h3 class="font-bold text-sm text-primary">1. Waybar Script & Module Setup</h3>
+            <ul class="list-disc list-inside space-y-1 text-base-content/80">
+              <li><strong>Module location:</strong> Replace <code>"hyprland/language"</code> with <code>"custom/net-layout"</code> in <code>config.jsonc</code> lines 4–9.</li>
+              <li><strong>Script directory:</strong> <code>~/.config/waybar/scripts/net-layout/</code></li>
+              <li><strong>Daemonless:</strong> Waybar calls <code>net-layout.py</code> every 1s (interval: 1). Reads <code>/proc/net/dev</code> and stores previous timestamp in memory/temp file.</li>
+              <li><strong>Tooltip:</strong> Shows comprehensive stats (Total IP, Gateway, Ping/latency, Session Downloaded/Uploaded, Active Interface).</li>
+            </ul>
+          </div>
+
+          <div class="bg-base-300 p-4 rounded-box border border-base-content/5 space-y-2">
+            <h3 class="font-bold text-sm text-secondary">2. GTK3 Settings Modal (gtk.md)</h3>
+            <ul class="list-disc list-inside space-y-1 text-base-content/80">
+              <li><strong>SwayNC Click-Catcher:</strong> Anchored to all 4 edges on <code>Layer.TOP</code> with invisible EventBox backdrop.</li>
+              <li><strong>Stateless:</strong> Dismiss with <code>Gtk.main_quit()</code> on backdrop click or <code>Escape</code>. No PID files or background daemon.</li>
+              <li><strong>Toggle script:</strong> Clean bash launcher with <code>pgrep -f "quick-net-settings.py"</code> and <code>pkill</code>.</li>
+              <li><strong>Matugen theming:</strong> Loads <code>colors.css</code> dynamically. No unsupported <code>transform</code> properties.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Structured Feedback & Selection Form (Input Playbook) -->
+    <section class="card bg-base-200 border-2 border-primary/50 shadow-xl" id="review-selection-section">
+      <div class="card-body space-y-6">
+        <div>
+          <span class="badge badge-primary text-xs font-bold">Input Playbook</span>
+          <h2 class="text-2xl font-bold text-primary mt-1">Review & Queue Your Implementation Choices</h2>
+          <p class="text-xs text-base-content/70">
+            Select your preferred display style, default mode, and settings. Click <strong>"Queue Choices for Agent"</strong>
+            to submit directly into the pair-programming loop.
+          </p>
+        </div>
+
+        <form id="preferences-form" data-lavish-question="net-layout-choices" onsubmit="submitChoices(event)" class="space-y-6">
+
+          <!-- Question 1: Display Style -->
+          <div class="bg-base-300 p-4 rounded-box border border-base-content/5 space-y-3">
+            <label class="font-bold text-sm text-base-content flex items-center justify-between">
+              <span>1. Waybar Pill Display Format</span>
+              <span class="text-xs text-primary font-mono">Required</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="display_style" value="Option A (Dual-Stream: ↓ 1.4M  ↑ 240K)" class="radio radio-primary radio-sm mt-0.5" checked>
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">Option A: Dual-Stream</div>
+                  <div class="text-base-content/60 mt-0.5">↓ 1.4M  ↑ 240K (Full view)</div>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="display_style" value="Option B (Dominant Rate: 󰇚 2.4 MB/s)" class="radio radio-primary radio-sm mt-0.5">
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">Option B: Dominant Rate</div>
+                  <div class="text-base-content/60 mt-0.5">󰇚 2.4 MB/s with icon</div>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="display_style" value="Option C (Minimal: 2.4M / us)" class="radio radio-primary radio-sm mt-0.5">
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">Option C: Ultra Minimal</div>
+                  <div class="text-base-content/60 mt-0.5">2.4M / us (Smallest pill)</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 2: Initial / Default Mode -->
+          <div class="bg-base-300 p-4 rounded-box border border-base-content/5 space-y-3">
+            <label class="font-bold text-sm text-base-content flex items-center justify-between">
+              <span>2. Default Mode on Startup</span>
+              <span class="text-xs text-primary font-mono">Required</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="default_mode" value="Speed Mode" class="radio radio-primary radio-sm mt-0.5" checked>
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">Speed Mode (Normal)</div>
+                  <div class="text-base-content/60 mt-0.5">Always shows internet speed</div>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="default_mode" value="Dynamic Mode (59s Speed / 1s Layout)" class="radio radio-primary radio-sm mt-0.5">
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">Dynamic Mode</div>
+                  <div class="text-base-content/60 mt-0.5">59s Speed / 1s Layout cycle</div>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="default_mode" value="Remember Last State" class="radio radio-primary radio-sm mt-0.5">
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">Remember Last State</div>
+                  <div class="text-base-content/60 mt-0.5">Persists across reboots</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 3: Dynamic Timing -->
+          <div class="bg-base-300 p-4 rounded-box border border-base-content/5 space-y-3">
+            <label class="font-bold text-sm text-base-content flex items-center justify-between">
+              <span>3. Dynamic Mode Cycle Timing</span>
+              <span class="text-xs text-primary font-mono">Configurable in Modal</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="dynamic_timing" value="59s Speed / 1s Layout" class="radio radio-primary radio-sm mt-0.5" checked>
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">59s Speed / 1s Layout</div>
+                  <div class="text-base-content/60 mt-0.5">Exact requested behavior</div>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="dynamic_timing" value="29s Speed / 1s Layout" class="radio radio-primary radio-sm mt-0.5">
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">29s Speed / 1s Layout</div>
+                  <div class="text-base-content/60 mt-0.5">Faster 30-second cycle</div>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-box bg-base-200 border border-base-content/10 cursor-pointer hover:border-primary">
+                <input type="radio" name="dynamic_timing" value="Customizable in Settings Modal" class="radio radio-primary radio-sm mt-0.5">
+                <div class="text-xs">
+                  <div class="font-bold text-base-content">Customizable Slider</div>
+                  <div class="text-base-content/60 mt-0.5">Adjustable in modal slider</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 4: Additional Notes / Write-in -->
+          <div class="bg-base-300 p-4 rounded-box border border-base-content/5 space-y-2">
+            <label for="custom-notes" class="font-bold text-sm text-base-content block">
+              Additional Customizations or Preferences (Optional)
+            </label>
+            <input type="text" id="custom-notes" name="custom_notes" placeholder="e.g. Include ping in tooltip, use specific nerd font icon, etc."
+                   class="input input-sm w-full bg-base-100 text-xs">
+          </div>
+
+          <!-- Submission & Queue Button -->
+          <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+            <div id="queue-status" class="text-xs font-mono text-success hidden">
+              ✓ Choices queued! Click "Send to Agent" in the Lavish bar or send in chat.
+            </div>
+            <button type="submit" class="btn btn-primary ml-auto shadow-md">
+              Queue Choices for Agent ➔
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive Simulator Logic & Lavish Queue Handlers -->
+  <script>
+    // Simulator State
+    let currentMode = "speed"; // "speed" | "layout" | "dynamic"
+    let currentFormat = "dual";
+    let dynamicSubstate = "speed"; // "speed" | "layout"
+    let dynamicCountdown = 59;
+    let timerInterval = null;
+
+    const modes = ["speed", "layout", "dynamic"];
+
+    function cycleSimulatedMode() {
+      const nextIdx = (modes.indexOf(currentMode) + 1) % modes.length;
+      setSimMode(modes[nextIdx]);
+    }
+
+    function setSimMode(mode) {
+      currentMode = mode;
+      clearInterval(timerInterval);
+
+      const pill = document.getElementById("simulated-pill");
+      const pillIcon = document.getElementById("pill-icon");
+      const pillText = document.getElementById("pill-text");
+      const badge = document.getElementById("sim-mode-badge");
+      const desc = document.getElementById("sim-status-desc");
+      const timerLine = document.getElementById("sim-timer-line");
+
+      // Update Modal Buttons
+      document.getElementById("btn-mode-speed").className = `btn btn-xs join-item flex-1 ${mode === 'speed' ? 'btn-primary' : 'btn-ghost'}`;
+      document.getElementById("btn-mode-layout").className = `btn btn-xs join-item flex-1 ${mode === 'layout' ? 'btn-primary' : 'btn-ghost'}`;
+      document.getElementById("btn-mode-dynamic").className = `btn btn-xs join-item flex-1 ${mode === 'dynamic' ? 'btn-primary' : 'btn-ghost'}`;
+
+      pill.classList.remove("active-mode-speed", "active-mode-layout", "active-mode-dynamic");
+      pill.classList.add(`active-mode-${mode}`);
+
+      if (mode === "speed") {
+        badge.className = "badge badge-primary font-mono text-xs";
+        badge.textContent = "Speed Mode";
+        desc.textContent = "Showing live internet speed.";
+        timerLine.classList.add("hidden");
+        renderPillContent();
+      } else if (mode === "layout") {
+        badge.className = "badge badge-secondary font-mono text-xs";
+        badge.textContent = "Keyboard Layout Mode";
+        desc.textContent = "Showing active keyboard layout (US).";
+        timerLine.classList.add("hidden");
+        pillIcon.textContent = "󰌌";
+        pillText.textContent = "US";
+      } else if (mode === "dynamic") {
+        badge.className = "badge badge-accent font-mono text-xs";
+        badge.textContent = "Dynamic Mode (59s/1s)";
+        desc.textContent = "Cycling 59s network speed then 1s keyboard layout.";
+        timerLine.classList.remove("hidden");
+        startDynamicTimer();
+      }
+    }
+
+    function renderPillContent() {
+      const pillIcon = document.getElementById("pill-icon");
+      const pillText = document.getElementById("pill-text");
+
+      if (currentMode === "layout") {
+        pillIcon.textContent = "󰌌";
+        pillText.textContent = "US";
+        return;
+      }
+
+      if (currentFormat === "dual") {
+        pillIcon.textContent = "↓";
+        pillText.textContent = "1.4M  ↑ 240K";
+      } else if (currentFormat === "download") {
+        pillIcon.textContent = "󰇚";
+        pillText.textContent = "2.4 MB/s";
+      } else {
+        pillIcon.textContent = "";
+        pillText.textContent = "2.4M";
+      }
+    }
+
+    function startDynamicTimer() {
+      dynamicCountdown = 59;
+      dynamicSubstate = "speed";
+      updateTimerUI();
+
+      timerInterval = setInterval(() => {
+        dynamicCountdown--;
+        if (dynamicCountdown <= 0) {
+          if (dynamicSubstate === "speed") {
+            dynamicSubstate = "layout";
+            dynamicCountdown = 1; // 1 second for layout
+            const pillIcon = document.getElementById("pill-icon");
+            const pillText = document.getElementById("pill-text");
+            pillIcon.textContent = "󰌌";
+            pillText.textContent = "US";
+          } else {
+            dynamicSubstate = "speed";
+            dynamicCountdown = 59; // 59 seconds for speed
+            renderPillContent();
+          }
+        }
+        updateTimerUI();
+      }, 1000);
+    }
+
+    function updateTimerUI() {
+      const secSpan = document.getElementById("sim-seconds");
+      const subSpan = document.getElementById("sim-substate");
+      if (secSpan) secSpan.textContent = dynamicCountdown;
+      if (subSpan) subSpan.textContent = dynamicSubstate;
+    }
+
+    function updateSimFormat() {
+      const sel = document.getElementById("sim-format-select");
+      currentFormat = sel.value;
+      if (currentMode === "speed" || (currentMode === "dynamic" && dynamicSubstate === "speed")) {
+        renderPillContent();
+      }
+    }
+
+    function toggleSimulatedModal() {
+      const modal = document.getElementById("sim-gtk-modal");
+      if (modal.classList.contains("hidden")) {
+        modal.classList.remove("hidden");
+      } else {
+        modal.classList.add("hidden");
+      }
+    }
+
+    // Lavish Form Submission
+    function submitChoices(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+
+      const style = formData.get("display_style") || "Option A (Dual-Stream)";
+      const defaultMode = formData.get("default_mode") || "Speed Mode";
+      const timing = formData.get("dynamic_timing") || "59s Speed / 1s Layout";
+      const notes = formData.get("custom_notes") || "None";
+
+      const promptText = `I have selected the following configuration for the Waybar net speed & keyboard layout module:
+- Display Style: ${style}
+- Default Boot Mode: ${defaultMode}
+- Dynamic Timing: ${timing}
+- Additional Notes: ${notes}
+
+Please proceed with the implementation plan following these choices and gtk.md rules.`;
+
+      if (window.lavish && typeof window.lavish.queuePrompt === "function") {
+        window.lavish.queuePrompt(promptText, {
+          tag: "choice",
+          text: `Selected: ${style} | ${defaultMode}`,
+          element: form,
+          data: {
+            display_style: style,
+            default_mode: defaultMode,
+            dynamic_timing: timing,
+            custom_notes: notes
+          }
+        });
+      }
+
+      const status = document.getElementById("queue-status");
+      if (status) {
+        status.classList.remove("hidden");
+        status.textContent = `✓ Queued: ${style.split(' ')[0]} ${style.split(' ')[1]} with ${defaultMode}. Ready to send to agent.`;
+      }
+    }
+  </script>
+</body>
+</html>

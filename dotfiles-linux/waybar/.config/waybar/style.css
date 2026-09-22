@@ -45,8 +45,7 @@ button {
   padding: 0 4px;
   margin: 4px;
   border-radius: 50px;
-  animation: gradient_f 20s ease-in infinite;
-  transition: all 0.3s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+  transition: all 0.15s ease-in-out;
 }
 
 #workspaces {
@@ -55,6 +54,13 @@ button {
   margin-top: 8px;
   margin-bottom: 8px;
   padding: 0 6px 0 6px;
+}
+
+#workspaces button {
+  padding: 0 4px;
+  margin: 4px;
+  border-radius: 50px;
+  transition: all 0.15s ease-in-out;
 }
 
 #workspaces button:hover {
@@ -71,13 +77,9 @@ button {
   color: @on_primary;
   border-radius: 50px;
   box-shadow: 0 0 10px alpha(@primary, 0.4);
-  transition: color 0.3s;
-  margin-left: 3px;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-right: 3px;
-  animation: gradient_f 20s ease-in infinite;
-  transition: all 0.5s cubic-bezier(0.55, -0.68, 0.48, 1.682);
+  padding: 0 15px;
+  margin: 4px;
+  transition: all 0.15s ease-in-out;
 }
 
 #workspaces button.urgent {
@@ -222,6 +224,7 @@ button {
   border-left: 1px solid alpha(@on_surface, 0.2);
 }
 
+#custom-net-layout,
 #language {
   background: @on_primary_fixed;
   color: @primary;
@@ -229,6 +232,17 @@ button {
   padding-left: 15px;
   padding-right: 15px;
   border-radius: 50px;
+  transition: all 0.2s ease-in-out;
+}
+
+#custom-net-layout.layout,
+#custom-net-layout.dynamic-layout {
+  color: @secondary;
+}
+
+#custom-net-layout.speed,
+#custom-net-layout.dynamic-speed {
+  color: @primary;
 }
 
 #custom-app {
